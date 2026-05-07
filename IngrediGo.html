@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ingredigo</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #1c1917; --ink-2: #44403c; --ink-3: #78716c; --ink-4: #a8a29e;
+  --paper: #fafaf9; --paper-2: #f5f5f4; --paper-3: #e7e5e4;
+  --line: #e7e5e4; --line-2: #d6d3d1;
+  --green: #2d6a4f; --green-lt: #ecf4ef; --green-mid: #a7c4b5;
+  --red: #b91c1c; --red-lt: #fef2f2;
+  --amber: #92400e; --amber-lt: #fffbeb;
+  --r: 6px; --r-lg: 10px;
+  --sh: 0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04);
+  --sh-lg: 0 4px 12px rgba(0,0,0,0.1),0 2px 4px rgba(0,0,0,0.06);
+}
+body { font-family: Georgia,serif; background:var(--paper); color:var(--ink); font-size:15px; line-height:1.6; min-height:100vh; }
+
+/* HEADER */
+header { background:var(--ink); color:var(--paper); padding:0 1.5rem; display:flex; align-items:center; justify-content:space-between; height:52px; position:sticky; top:0; z-index:50; }
+.logo { font-size:17px; letter-spacing:.12em; text-transform:uppercase; font-style:italic; }
+.api-btn { font-size:11px; padding:4px 10px; border-radius:20px; border:1px solid rgba(255,255,255,.25); background:transparent; color:rgba(255,255,255,.7); cursor:pointer; font-family:inherit; letter-spacing:.04em; transition:all .15s; }
+.api-btn:hover { border-color:rgba(255,255,255,.6); color:#fff; }
+.api-btn.ok { border-color:var(--green-mid); color:var(--green-mid); }
+
+/* TABS */
+.tabs { background:var(--paper); border-bottom:1px solid var(--line); display:flex; padding:0 1.5rem; position:sticky; top:52px; z-index:40; }
+.tab { padding:0 1.25rem; height:44px; font-size:13px; letter-spacing:.06em; text-transform:uppercase; border:none; background:none; color:var(--ink-3); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; font-family:inherit; transition:color .15s; display:flex; align-items:center; gap:7px; }
+.tab:hover { color:var(--ink); }
+.tab.active { color:var(--ink); border-bottom-color:var(--ink); }
+.badge { font-size:10px; background:var(--green); color:#fff; border-radius:10px; padding:1px 6px; }
+
+/* MAIN */
+main { max-width:920px; margin:0 auto; padding:1.5rem 1rem 5rem; }
+.page { display:none; }
+.page.active { display:block; }
+
+/* TOOLBAR */
+.toolbar { display:flex; align-items:center; gap:10px; margin-bottom:1.25rem; flex-wrap:wrap; }
+.toolbar-title { font-size:20px; font-style:italic; flex:1; }
+
+/* INPUTS */
+input[type=text],input[type=search],input[type=password],select,textarea { font-family:inherit; font-size:14px; background:var(--paper); color:var(--ink); border:1px solid var(--line-2); border-radius:var(--r); padding:7px 11px; outline:none; transition:border-color .15s; }
+input:focus,select:focus,textarea:focus { border-color:var(--ink-3); }
+.search-box { width:220px; }
+
+/* BUTTONS */
+.btn { font-family:inherit; font-size:13px; padding:7px 16px; border-radius:var(--r); border:1px solid var(--line-2); background:var(--paper); color:var(--ink); cursor:pointer; transition:background .12s; display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
+.btn:hover { background:var(--paper-2); }
+.btn:disabled { opacity:.45; cursor:not-allowed; }
+.btn-primary { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.btn-primary:hover { background:var(--ink-2); }
+.btn-green { background:var(--green); color:#fff; border-color:var(--green); }
+.btn-green:hover { background:#235c42; }
+.btn-sm { padding:4px 11px; font-size:12px; }
+.btn-ghost { background:none; border-color:transparent; color:var(--ink-3); }
+.btn-ghost:hover { background:var(--paper-2); color:var(--ink); }
+.btn-danger { color:var(--red); border-color:transparent; background:none; }
+.btn-danger:hover { background:var(--red-lt); border-color:var(--red); }
+
+/* CARD */
+.card { background:var(--paper); border:1px solid var(--line); border-radius:var(--r-lg); box-shadow:var(--sh); }
+
+/* RECIPE GRID */
+.recipe-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:12px; }
+.rc { background:var(--paper); border:1px solid var(--line); border-radius:var(--r-lg); padding:1rem; cursor:pointer; transition:box-shadow .15s,border-color .15s; }
+.rc:hover { box-shadow:var(--sh-lg); border-color:var(--line-2); }
+.rc.in-week { border-color:var(--green); background:var(--green-lt); }
+.rc-name { font-size:15px; font-weight:600; margin-bottom:4px; line-height:1.3; }
+.rc-meta { font-size:12px; color:var(--ink-3); display:flex; gap:6px; flex-wrap:wrap; }
+.rc-meta span { background:var(--paper-2); padding:1px 7px; border-radius:10px; }
+.rc.in-week .rc-meta span { background:#d1e8db; }
+.rc-footer { margin-top:10px; display:flex; align-items:center; justify-content:space-between; }
+.ic { font-size:12px; color:var(--ink-4); }
+.wk-btn { font-size:11px; padding:3px 10px; border-radius:10px; border:1px solid var(--line-2); background:var(--paper); color:var(--ink-3); cursor:pointer; font-family:inherit; transition:all .12s; }
+.wk-btn:hover { border-color:var(--green); color:var(--green); }
+.rc.in-week .wk-btn { background:var(--green); color:#fff; border-color:var(--green); }
+
+/* FILTER CHIPS */
+.filter-bar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:1.25rem; }
+.chip { font-size:12px; padding:4px 12px; border-radius:20px; border:1px solid var(--line-2); background:var(--paper-2); color:var(--ink-3); cursor:pointer; font-family:inherit; transition:all .12s; }
+.chip.active { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+
+/* INGREDIENT TABLE */
+.ing-table { width:100%; border-collapse:collapse; }
+.ing-table th { text-align:left; font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-3); padding:8px 12px; border-bottom:1px solid var(--line); font-weight:600; }
+.ing-table td { padding:8px 12px; font-size:14px; border-bottom:1px solid var(--paper-3); }
+.ing-table tr:last-child td { border-bottom:none; }
+.ing-table tr:hover td { background:var(--paper-2); }
+.cat-b { font-size:11px; padding:2px 8px; border-radius:10px; background:var(--paper-2); color:var(--ink-3); }
+
+/* SHOPPING LIST */
+.shop-sec { margin-bottom:1.5rem; }
+.shop-sec-title { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); font-weight:600; padding:0 0 6px; border-bottom:1px solid var(--line); margin-bottom:4px; }
+.sl-header { display:grid; grid-template-columns:24px 1fr 95px 95px 120px; gap:0 8px; padding:3px 10px 5px; }
+.sl-header span { font-size:10px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-4); font-weight:600; }
+.si { display:grid; grid-template-columns:24px 1fr 95px 95px 120px; gap:0 8px; align-items:center; padding:7px 10px; border-radius:var(--r); cursor:pointer; transition:background .1s; }
+.si:hover { background:var(--paper-2); }
+.si.ck { opacity:.4; }
+.si.ck .si-name { text-decoration:line-through; }
+.si-chk { width:17px; height:17px; border-radius:4px; border:1.5px solid var(--line-2); background:transparent; display:flex; align-items:center; justify-content:center; transition:all .1s; }
+.si-chk.tk { background:var(--green); border-color:var(--green); }
+.si-name { font-size:14px; }
+.si-metric { font-size:13px; font-weight:600; color:var(--green); font-variant-numeric:tabular-nums; }
+.si-cups { font-size:13px; color:var(--ink-3); font-variant-numeric:tabular-nums; }
+.si-src { font-size:11px; color:var(--ink-4); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+/* MODAL */
+.mb { display:none; position:fixed; inset:0; background:rgba(28,25,23,.55); z-index:200; align-items:center; justify-content:center; padding:1rem; }
+.mb.open { display:flex; }
+.modal { background:var(--paper); border-radius:var(--r-lg); box-shadow:var(--sh-lg); width:100%; max-width:560px; max-height:90vh; overflow-y:auto; border:1px solid var(--line); }
+.mh { padding:1.25rem 1.25rem 0; display:flex; align-items:flex-start; justify-content:space-between; }
+.mh h2 { font-size:18px; font-style:italic; }
+.mbody { padding:1rem 1.25rem; }
+.mfoot { padding:0 1.25rem 1.25rem; display:flex; gap:8px; justify-content:flex-end; }
+.xbtn { background:none; border:none; cursor:pointer; color:var(--ink-3); font-size:20px; line-height:1; padding:2px; }
+
+/* FORM */
+.fr { margin-bottom:1rem; }
+.fr label { display:block; font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3); margin-bottom:5px; font-weight:600; }
+.fr input,.fr select,.fr textarea { width:100%; }
+.fr textarea { min-height:70px; resize:vertical; }
+.fg { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.fhint { font-size:12px; color:var(--ink-4); margin-top:4px; }
+
+/* ING EDITOR ROWS */
+.ie { border:1px solid var(--line); border-radius:var(--r); overflow:hidden; margin-bottom:10px; }
+.ie-wrap { border-bottom:1px solid var(--paper-3); }
+.ie-wrap:last-child { border-bottom:none; }
+.row-hint { font-size:11px; color:var(--green); padding:1px 10px 4px; font-style:italic; min-height:4px; }
+.ie-row { display:flex; align-items:center; }
+.ie-row input,.ie-row select { border:none; border-radius:0; border-right:1px solid var(--paper-3); padding:7px 10px; font-size:13px; background:var(--paper); }
+.ie-row input:focus,.ie-row select:focus { background:var(--green-lt); border-color:var(--paper-3); }
+.c-qty { width:80px; flex-shrink:0; }
+.c-unit { width:65px; flex-shrink:0; }
+.c-name { flex:1; }
+.c-note { width:130px; flex-shrink:0; }
+.c-del { width:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-right:none !important; }
+.c-del button { background:none; border:none; cursor:pointer; color:var(--ink-4); font-size:16px; padding:4px; }
+.c-del button:hover { color:var(--red); }
+.ie-head { background:var(--paper-2); }
+.ie-head span { font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3); padding:5px 10px; display:block; font-weight:600; }
+
+/* UPLOAD */
+.uzone { border:1.5px dashed var(--line-2); border-radius:var(--r); padding:1.5rem; text-align:center; cursor:pointer; transition:all .15s; color:var(--ink-3); font-size:14px; }
+.uzone:hover { border-color:var(--green); background:var(--green-lt); color:var(--green); }
+.uzone small { display:block; font-size:12px; color:var(--ink-4); margin-top:4px; }
+
+/* STATUS */
+.sbar { font-size:13px; padding:8px 12px; border-radius:var(--r); margin-top:8px; display:none; }
+.sbar.info { background:var(--green-lt); color:var(--green); }
+.sbar.error { background:var(--red-lt); color:var(--red); }
+
+/* WEEK LAYOUT */
+.wk-layout { display:grid; grid-template-columns:1fr 270px; gap:1.25rem; align-items:start; }
+@media(max-width:680px){ .wk-layout { grid-template-columns:1fr; } }
+.wk-ri { display:flex; align-items:center; justify-content:space-between; padding:9px 12px; border:1px solid var(--line); border-radius:var(--r); background:var(--paper); font-size:14px; margin-bottom:6px; }
+.wk-ri-meta { font-size:12px; color:var(--ink-3); margin-top:2px; }
+
+/* MISC */
+hr { border:none; border-top:1px solid var(--line); margin:1rem 0; }
+.empty { text-align:center; padding:3rem 1rem; color:var(--ink-4); font-size:14px; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo">Ingredigo</span>
+  <button class="api-btn" id="api-btn" onclick="oM('api')">API key</button>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" id="tab-recipes" onclick="showPage('recipes')">Recipes</button>
+  <button class="tab" id="tab-ingredients" onclick="showPage('ingredients')">Ingredients</button>
+  <button class="tab" id="tab-week" onclick="showPage('week')">
+    This Week <span class="badge" id="wk-badge" style="display:none">0</span>
+  </button>
+</nav>
+
+<main>
+
+  <!-- RECIPES -->
+  <div class="page active" id="page-recipes">
+    <div class="toolbar">
+      <span class="toolbar-title">Recipe Catalogue</span>
+      <input type="search" class="search-box" id="rsearch" placeholder="Search…" oninput="renderRecipes()">
+      <button class="btn btn-sm btn-ghost" id="r-clear-week-btn" onclick="clearWeekFromRecipes()" style="display:none;">Clear selections</button>
+      <button class="btn btn-primary" onclick="oM('rnew')">+ New Recipe</button>
+    </div>
+    <div class="filter-bar" id="rfilters"></div>
+    <div class="recipe-grid" id="rgrid"></div>
+  </div>
+
+  <!-- INGREDIENTS -->
+  <div class="page" id="page-ingredients">
+    <div class="toolbar">
+      <span class="toolbar-title">Ingredients Database</span>
+      <input type="search" class="search-box" id="isearch" placeholder="Search…" oninput="renderIngs()">
+      <select id="icat" onchange="renderIngs()" style="font-size:13px;"><option value="">All categories</option></select>
+      <button class="btn btn-primary" onclick="oM('inew')">+ Add Ingredient</button>
+    </div>
+    <div class="card" style="overflow:hidden;">
+      <table class="ing-table">
+        <thead><tr><th>Name</th><th>Default unit</th><th>Category</th><th style="width:80px"></th></tr></thead>
+        <tbody id="itbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- WEEK -->
+  <div class="page" id="page-week">
+    <div class="toolbar">
+      <span class="toolbar-title">This Week</span>
+      <button class="btn" onclick="clearWeek()">Clear week</button>
+      <button class="btn btn-green" onclick="copyList()">Copy list</button>
+    </div>
+    <div class="wk-layout">
+      <div id="wk-main"></div>
+      <div class="card" style="padding:1rem;">
+        <div style="font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:8px;">Add to week</div>
+        <input type="search" id="wksearch" placeholder="Search recipes…" oninput="renderWkPicker()" style="width:100%;margin-bottom:8px;font-size:13px;">
+        <div id="wkpicker" style="max-height:440px;overflow-y:auto;"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- MODAL: API key -->
+<div class="mb" id="m-api" onclick="if(event.target===this)cM('api')">
+  <div class="modal" style="max-width:400px;">
+    <div class="mh"><h2>Anthropic API Key</h2><button class="xbtn" onclick="cM('api')">×</button></div>
+    <div class="mbody">
+      <p style="font-size:13px;color:var(--ink-3);margin-bottom:1rem;line-height:1.7;">Used to read recipe photos with Claude. Stored only on this device, sent only to Anthropic.</p>
+      <div class="fr"><label>Key</label><input type="password" id="ak-input" placeholder="sk-ant-…" autocomplete="off"></div>
+      <p class="fhint">Get a free key at <a href="https://console.anthropic.com" target="_blank" style="color:var(--green)">console.anthropic.com</a></p>
+    </div>
+    <div class="mfoot"><button class="btn" onclick="cM('api')">Cancel</button><button class="btn btn-primary" onclick="saveAK()">Save</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Recipe -->
+<div class="mb" id="m-recipe" onclick="if(event.target===this)cM('recipe')">
+  <div class="modal" style="max-width:700px;">
+    <div class="mh"><h2 id="rm-title">New Recipe</h2><button class="xbtn" onclick="cM('recipe')">×</button></div>
+    <div class="mbody">
+      <div class="fg">
+        <div class="fr"><label>Recipe name *</label><input type="text" id="rf-name" placeholder="e.g. Spaghetti Bolognese"></div>
+        <div class="fr"><label>Source</label><input type="text" id="rf-src" placeholder="e.g. Ottolenghi, Mum's recipe"></div>
+        <div class="fr"><label>Type</label>
+          <select id="rf-type"><option value="">— select —</option><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Dessert</option><option>Snack</option><option>Side</option><option>Other</option></select>
+        </div>
+        <div class="fr"><label>Cuisine</label><input type="text" id="rf-cuisine" placeholder="e.g. Italian, Thai"></div>
+        <div class="fr"><label>Servings</label><input type="text" id="rf-servings" placeholder="e.g. 4" style="width:90px;"></div>
+      </div>
+      <hr>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <label style="font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);font-weight:600;">Ingredients</label>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-sm" onclick="addRow()">+ Row</button>
+          <button class="btn btn-sm btn-green" onclick="toggleScan()">📷 Scan photo</button>
+        </div>
+      </div>
+      <!-- Scan panel -->
+      <div id="scan-panel" style="display:none;margin-bottom:12px;padding:12px;background:var(--paper-2);border-radius:var(--r);border:1px solid var(--line);">
+        <div id="scan-zone" class="uzone" onclick="document.getElementById('scan-file').click()" ondragover="event.preventDefault()" ondrop="scanDrop(event)">
+          Drop recipe photo here or <strong>browse</strong>
+          <small>Ingredients extracted and converted to metric</small>
+          <input type="file" id="scan-file" accept="image/*" style="display:none" onchange="scanFile(this.files[0])">
+        </div>
+        <img id="scan-prev" style="display:none;max-height:150px;border-radius:var(--r);border:1px solid var(--line);margin-top:8px;" />
+        <div class="sbar" id="scan-status"></div>
+        <button class="btn btn-green btn-sm" id="scan-go" style="display:none;margin-top:8px;" onclick="runScan()">Extract ingredients</button>
+      </div>
+      <!-- Rows -->
+      <div class="ie" id="ie">
+        <div class="ie-row ie-head">
+          <span class="c-qty ie-head">Qty</span><span class="c-unit ie-head">Unit</span><span class="c-name ie-head">Ingredient</span><span class="c-note ie-head">Note</span><span class="c-del ie-head"></span>
+        </div>
+        <div id="irows"></div>
+      </div>
+      <button class="btn btn-sm btn-ghost" onclick="addRow()">+ Add row</button>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-danger btn-sm" id="r-del-btn" style="margin-right:auto;display:none;" onclick="delRecipe()">Delete recipe</button>
+      <button class="btn" onclick="cM('recipe')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveRecipe()">Save recipe</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Ingredient -->
+<div class="mb" id="m-ing" onclick="if(event.target===this)cM('ing')">
+  <div class="modal" style="max-width:380px;">
+    <div class="mh"><h2 id="im-title">New Ingredient</h2><button class="xbtn" onclick="cM('ing')">×</button></div>
+    <div class="mbody">
+      <div class="fr"><label>Name *</label><input type="text" id="if-name" placeholder="e.g. plain flour"></div>
+      <div class="fr"><label>Default unit</label>
+        <select id="if-unit">
+          <option value="g">g</option><option value="kg">kg</option><option value="ml">ml</option><option value="L">L</option>
+          <option value="tsp">tsp</option><option value="tbsp">tbsp</option><option value="whole">whole (count)</option><option value="">none</option>
+        </select>
+      </div>
+      <div class="fr"><label>Category</label>
+        <select id="if-cat">
+          <option>Pantry</option><option>Produce</option><option>Dairy &amp; Eggs</option><option>Meat &amp; Fish</option>
+          <option>Bakery</option><option>Frozen</option><option>Condiments</option><option>Spices &amp; Herbs</option><option>Beverages</option><option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-danger btn-sm" id="i-del-btn" style="margin-right:auto;display:none;" onclick="delIng()">Delete</button>
+      <button class="btn" onclick="cM('ing')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveIng()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// SEED DATA
+// ═══════════════════════════════════════
+const SEED = [
+  {n:'plain flour',u:'g',c:'Pantry'},{n:'self-raising flour',u:'g',c:'Pantry'},{n:'bread flour',u:'g',c:'Pantry'},
+  {n:'caster sugar',u:'g',c:'Pantry'},{n:'brown sugar',u:'g',c:'Pantry'},{n:'icing sugar',u:'g',c:'Pantry'},
+  {n:'salt',u:'g',c:'Spices & Herbs'},{n:'black pepper',u:'g',c:'Spices & Herbs'},{n:'olive oil',u:'ml',c:'Pantry'},
+  {n:'vegetable oil',u:'ml',c:'Pantry'},{n:'butter',u:'g',c:'Dairy & Eggs'},{n:'eggs',u:'whole',c:'Dairy & Eggs'},
+  {n:'whole milk',u:'ml',c:'Dairy & Eggs'},{n:'cream',u:'ml',c:'Dairy & Eggs'},{n:'sour cream',u:'ml',c:'Dairy & Eggs'},
+  {n:'parmesan',u:'g',c:'Dairy & Eggs'},{n:'cheddar',u:'g',c:'Dairy & Eggs'},{n:'mozzarella',u:'g',c:'Dairy & Eggs'},
+  {n:'garlic',u:'whole',c:'Produce'},{n:'brown onion',u:'whole',c:'Produce'},{n:'red onion',u:'whole',c:'Produce'},
+  {n:'tomatoes',u:'whole',c:'Produce'},{n:'lemon',u:'whole',c:'Produce'},{n:'lime',u:'whole',c:'Produce'},
+  {n:'fresh ginger',u:'g',c:'Produce'},{n:'carrot',u:'whole',c:'Produce'},{n:'celery',u:'whole',c:'Produce'},
+  {n:'chicken breast',u:'g',c:'Meat & Fish'},{n:'chicken thighs',u:'g',c:'Meat & Fish'},{n:'beef mince',u:'g',c:'Meat & Fish'},
+  {n:'pork mince',u:'g',c:'Meat & Fish'},{n:'salmon fillet',u:'g',c:'Meat & Fish'},{n:'bacon',u:'g',c:'Meat & Fish'},
+  {n:'tinned tomatoes',u:'g',c:'Pantry'},{n:'tomato paste',u:'g',c:'Pantry'},{n:'chicken stock',u:'ml',c:'Pantry'},
+  {n:'vegetable stock',u:'ml',c:'Pantry'},{n:'soy sauce',u:'ml',c:'Condiments'},{n:'fish sauce',u:'ml',c:'Condiments'},
+  {n:'honey',u:'g',c:'Pantry'},{n:'baking powder',u:'g',c:'Pantry'},{n:'bicarbonate of soda',u:'g',c:'Pantry'},
+  {n:'vanilla extract',u:'ml',c:'Pantry'},{n:'basmati rice',u:'g',c:'Pantry'},{n:'pasta',u:'g',c:'Pantry'},
+  {n:'coconut milk',u:'ml',c:'Pantry'},{n:'dried lentils',u:'g',c:'Pantry'},{n:'breadcrumbs',u:'g',c:'Pantry'},
+];
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+function ld(k,d){ try{ return JSON.parse(localStorage.getItem(k))??d; }catch{ return d; } }
+function sv(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
+
+let apiKey = localStorage.getItem('mep_ak')||'';
+let ings = ld('mep_ings', null);
+if(!ings){ ings = SEED.map((s,i)=>({id:'i'+i,name:s.n,unit:s.u,cat:s.c})); sv('mep_ings',ings); }
+let recipes = ld('mep_recs',[]);
+let weekIds = ld('mep_week',[]);
+let checked = ld('mep_chk',[]);
+
+let editRid = null, editIid = null;
+let scanB64 = null, scanMime = 'image/jpeg';
+let typeFilter = '';
+
+// ═══════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════
+function showPage(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  document.getElementById('tab-'+n).classList.add('active');
+  if(n==='recipes') renderRecipes();
+  if(n==='ingredients') renderIngs();
+  if(n==='week'){ renderWk(); renderWkPicker(); }
+}
+
+// ═══════════════════════════════════════
+// MODALS
+// ═══════════════════════════════════════
+function oM(n,d){
+  if(n==='api'){ document.getElementById('ak-input').value=apiKey; }
+  if(n==='rnew'){ editRid=null; document.getElementById('rm-title').textContent='New Recipe'; document.getElementById('r-del-btn').style.display='none'; clearRForm(); }
+  if(n==='redit'&&d){ editRid=d.id; document.getElementById('rm-title').textContent='Edit Recipe'; document.getElementById('r-del-btn').style.display='inline-flex'; populateRForm(d); }
+  if(n==='inew'){ editIid=null; document.getElementById('im-title').textContent='New Ingredient'; document.getElementById('i-del-btn').style.display='none'; document.getElementById('if-name').value=''; document.getElementById('if-unit').value='g'; document.getElementById('if-cat').value='Pantry'; }
+  if(n==='iedit'&&d){ editIid=d.id; document.getElementById('im-title').textContent='Edit Ingredient'; document.getElementById('i-del-btn').style.display='inline-flex'; document.getElementById('if-name').value=d.name; document.getElementById('if-unit').value=d.unit; document.getElementById('if-cat').value=d.cat; }
+  const key = n.replace('rnew','recipe').replace('redit','recipe').replace('inew','ing').replace('iedit','ing');
+  document.getElementById('m-'+key).classList.add('open');
+}
+function cM(n){ document.getElementById('m-'+n).classList.remove('open'); if(n==='recipe'){ scanB64=null; hideScan(); } }
+
+// ═══════════════════════════════════════
+// API KEY
+// ═══════════════════════════════════════
+function saveAK(){
+  apiKey=document.getElementById('ak-input').value.trim();
+  localStorage.setItem('mep_ak',apiKey);
+  updateAKBtn(); cM('api');
+}
+function updateAKBtn(){
+  const b=document.getElementById('api-btn');
+  b.textContent=apiKey?'✓ API key':'API key';
+  apiKey?b.classList.add('ok'):b.classList.remove('ok');
+}
+
+// ═══════════════════════════════════════
+// RECIPES — RENDER
+// ═══════════════════════════════════════
+function renderRecipes(){
+  const q=(document.getElementById('rsearch').value||'').toLowerCase();
+  const types=[...new Set(recipes.map(r=>r.type).filter(Boolean))].sort();
+  document.getElementById('rfilters').innerHTML=
+    ['', ...types].map(t=>`<button class="chip ${typeFilter===t?'active':''}" onclick="setTF('${t}')">${t||'All'}</button>`).join('');
+
+  let list=recipes;
+  if(q) list=list.filter(r=>r.name.toLowerCase().includes(q)||(r.cuisine||'').toLowerCase().includes(q)||(r.source||'').toLowerCase().includes(q));
+  if(typeFilter) list=list.filter(r=>r.type===typeFilter);
+  list=[...list].sort((a,b)=>a.name.localeCompare(b.name));
+
+  const g=document.getElementById('rgrid');
+  if(!list.length){ g.innerHTML='<div class="empty" style="grid-column:1/-1">No recipes yet — click <strong>New Recipe</strong> to add one.</div>'; return; }
+  g.innerHTML=list.map(r=>{
+    const iw=weekIds.includes(r.id);
+    return `<div class="rc ${iw?'in-week':''}" onclick="oM('redit',getRec('${r.id}'))">
+      <div class="rc-name">${esc(r.name)}</div>
+      <div class="rc-meta">${[r.type,r.cuisine,r.source].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('')}</div>
+      <div class="rc-footer">
+        <span class="ic">${r.ingredients.length} ingredient${r.ingredients.length!==1?'s':''}</span>
+        <button class="wk-btn" onclick="event.stopPropagation();toggleWk('${r.id}')">${iw?'✓ In week':'+ This week'}</button>
+      </div>
+    </div>`;
+  }).join('');
+  updBadge();
+}
+function setTF(t){ typeFilter=t; renderRecipes(); }
+function getRec(id){ return recipes.find(r=>r.id===id); }
+
+// ═══════════════════════════════════════
+// RECIPE FORM
+// ═══════════════════════════════════════
+function clearRForm(){
+  ['rf-name','rf-src','rf-cuisine','rf-servings'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('rf-type').value='';
+  document.getElementById('irows').innerHTML='';
+  hideScan();
+}
+function populateRForm(r){
+  document.getElementById('rf-name').value=r.name||'';
+  document.getElementById('rf-src').value=r.source||'';
+  document.getElementById('rf-type').value=r.type||'';
+  document.getElementById('rf-cuisine').value=r.cuisine||'';
+  document.getElementById('rf-servings').value=r.servings||'';
+  document.getElementById('irows').innerHTML='';
+  (r.ingredients||[]).forEach(i=>addRow(i));
+  hideScan();
+}
+function addRow(d){
+  const wrap=document.createElement('div');
+  wrap.className='ie-wrap';
+  const div=document.createElement('div');
+  div.className='ie-row';
+  div.innerHTML=`
+    <input class="c-qty" type="text" placeholder="qty" value="${esc(d?.qty||'')}" data-f="qty">
+    <input class="c-unit" type="text" placeholder="unit" value="${esc(d?.unit||'')}" data-f="unit">
+    <input class="c-name" type="text" placeholder="ingredient name" value="${esc(d?.name||'')}" data-f="name">
+    <input class="c-note" type="text" placeholder="note" value="${esc(d?.note||'')}" data-f="note">
+    <div class="c-del"><button onclick="this.closest('.ie-wrap').remove()" title="Remove">×</button></div>`;
+  const hint=document.createElement('div');
+  hint.className='row-hint';
+  wrap.appendChild(div);
+  wrap.appendChild(hint);
+  document.getElementById('irows').appendChild(wrap);
+
+  function updateHint(){
+    const qty=div.querySelector('[data-f="qty"]').value.trim();
+    const unit=div.querySelector('[data-f="unit"]').value.trim();
+    const b=toBase(qty,unit);
+    if(b && b.t!=='cnt'){
+      const fmt=fmtVal(b.v,b.t,unit);
+      hint.textContent=fmt.secondary ? fmt.primary+' = '+fmt.secondary : '';
+    } else { hint.textContent=''; }
+  }
+  div.querySelector('[data-f="qty"]').addEventListener('input',updateHint);
+  div.querySelector('[data-f="unit"]').addEventListener('input',updateHint);
+  if(d) updateHint();
+  if(!d) div.querySelector('[data-f="qty"]').focus();
+}
+function collectRows(){
+  return [...document.querySelectorAll('#irows .ie-wrap')].map(w=>{
+    const r=w.querySelector('.ie-row');
+    return {
+      qty:r.querySelector('[data-f="qty"]').value.trim(),
+      unit:r.querySelector('[data-f="unit"]').value.trim(),
+      name:r.querySelector('[data-f="name"]').value.trim().toLowerCase(),
+      note:r.querySelector('[data-f="note"]').value.trim(),
+    };
+  }).filter(r=>r.name);
+}
+function saveRecipe(){
+  const name=document.getElementById('rf-name').value.trim();
+  if(!name){ alert('Recipe name is required.'); return; }
+  if(recipes.find(r=>r.name.toLowerCase()===name.toLowerCase()&&r.id!==editRid)){ alert('A recipe with this name already exists.'); return; }
+  const ingList=collectRows();
+  // Auto-register unknown ingredients
+  ingList.forEach(i=>{
+    const k=i.name.toLowerCase().trim();
+    if(!ings.find(x=>x.name.toLowerCase()===k)){
+      ings.push({id:'i'+Date.now()+Math.random(),name:k,unit:i.unit||'g',cat:'Other'});
+    }
+  });
+  sv('mep_ings',ings);
+  const rec={id:editRid||('r'+Date.now()),name,source:document.getElementById('rf-src').value.trim(),
+    type:document.getElementById('rf-type').value,cuisine:document.getElementById('rf-cuisine').value.trim(),
+    servings:document.getElementById('rf-servings').value.trim(),ingredients:ingList,updatedAt:Date.now()};
+  if(editRid){ const i=recipes.findIndex(r=>r.id===editRid); recipes[i]=rec; }
+  else recipes.push(rec);
+  sv('mep_recs',recipes);
+  cM('recipe'); renderRecipes(); renderIngs();
+}
+function delRecipe(){
+  if(!editRid||!confirm('Delete this recipe?')) return;
+  recipes=recipes.filter(r=>r.id!==editRid);
+  weekIds=weekIds.filter(id=>id!==editRid);
+  sv('mep_recs',recipes); sv('mep_week',weekIds);
+  cM('recipe'); renderRecipes();
+}
+
+// ═══════════════════════════════════════
+// SCAN
+// ═══════════════════════════════════════
+const SP=`You are a recipe ingredient extractor. Extract all ingredients and return JSON only.
+
+UNIT RULES — always metric:
+- Volumes → ml or L. 1 cup=240ml, 1 fl oz=30ml, 1 tbsp=15ml, 1 tsp=5ml, 1 pint=473ml. Use L when ≥1000ml. Round sensibly.
+- Weights → g or kg. 1 oz=28g, 1 lb=454g. Use kg when ≥1000g. Round sensibly.
+- Countable (eggs, cloves, cans): qty=whole number, unit="whole".
+- Vague (to taste, pinch): qty="", unit="to taste" etc.
+
+Return ONLY raw JSON: {"ingredients":[{"qty":"250","unit":"g","name":"plain flour","note":"sifted"}]}`;
+
+function toggleScan(){ const p=document.getElementById('scan-panel'); p.style.display=p.style.display==='none'?'block':'none'; }
+function hideScan(){ document.getElementById('scan-panel').style.display='none'; document.getElementById('scan-prev').style.display='none'; document.getElementById('scan-go').style.display='none'; document.getElementById('scan-zone').style.display='block'; document.getElementById('scan-file').value=''; setSS(''); scanB64=null; }
+function scanDrop(e){ e.preventDefault(); const f=e.dataTransfer.files[0]; if(f&&f.type.startsWith('image/')) scanFile(f); }
+function scanFile(f){ if(!f) return; scanMime=f.type||'image/jpeg'; const r=new FileReader(); r.onload=e=>{ scanB64=e.target.result.split(',')[1]; const p=document.getElementById('scan-prev'); p.src=e.target.result; p.style.display='block'; document.getElementById('scan-zone').style.display='none'; document.getElementById('scan-go').style.display='inline-flex'; setSS(''); }; r.readAsDataURL(f); }
+function setSS(msg,t){ const e=document.getElementById('scan-status'); e.style.display=msg?'block':'none'; e.className='sbar '+(t||'info'); e.textContent=msg; }
+
+async function runScan(){
+  if(!scanB64) return;
+  if(!apiKey){ oM('api'); return; }
+  const btn=document.getElementById('scan-go');
+  btn.disabled=true; btn.textContent='Reading…';
+  setSS('Sending to Claude — extracting and converting to metric…','info');
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-calls':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:SP,messages:[{role:'user',content:[
+        {type:'image',source:{type:'base64',media_type:scanMime,data:scanB64}},
+        {type:'text',text:'Extract all ingredients from this recipe image.'}
+      ]}]})
+    });
+    if(res.status===401){ setSS('Invalid API key.','error'); btn.disabled=false; btn.textContent='Extract ingredients'; return; }
+    const data=await res.json();
+    const txt=data.content?.find(b=>b.type==='text')?.text||'{}';
+    let parsed; try{ parsed=JSON.parse(txt.replace(/```json|```/g,'').trim()); }catch{ parsed={}; }
+    const il=parsed.ingredients||[];
+    if(il.length>0){ il.forEach(i=>addRow(i)); setSS(`✓ ${il.length} ingredients extracted — review below then save.`,'info'); }
+    else setSS('No ingredients found — try a clearer image.','error');
+  }catch(e){ setSS('Error: '+e.message,'error'); }
+  btn.disabled=false; btn.textContent='Extract ingredients';
+}
+
+// ═══════════════════════════════════════
+// INGREDIENTS DB
+// ═══════════════════════════════════════
+function renderIngs(){
+  const q=(document.getElementById('isearch').value||'').toLowerCase();
+  const cat=document.getElementById('icat').value;
+  const cats=[...new Set(ings.map(i=>i.cat).filter(Boolean))].sort();
+  const cur=document.getElementById('icat').value;
+  document.getElementById('icat').innerHTML='<option value="">All categories</option>'+cats.map(c=>`<option value="${esc(c)}"${cur===c?' selected':''}>${esc(c)}</option>`).join('');
+  let list=ings;
+  if(q) list=list.filter(i=>i.name.toLowerCase().includes(q));
+  if(cat) list=list.filter(i=>i.cat===cat);
+  list=[...list].sort((a,b)=>a.name.localeCompare(b.name));
+  const tb=document.getElementById('itbody');
+  if(!list.length){ tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--ink-4)">No ingredients found</td></tr>'; return; }
+  tb.innerHTML=list.map(i=>`<tr><td>${esc(i.name)}</td><td>${esc(i.unit||'—')}</td><td><span class="cat-b">${esc(i.cat||'—')}</span></td><td style="text-align:right"><button class="btn btn-sm btn-ghost" onclick="oM('iedit',getIng('${i.id}'))">Edit</button></td></tr>`).join('');
+}
+function getIng(id){ return ings.find(i=>i.id===id); }
+function saveIng(){
+  const name=document.getElementById('if-name').value.trim().toLowerCase();
+  if(!name){ alert('Name is required.'); return; }
+  if(ings.find(i=>i.name.toLowerCase()===name&&i.id!==editIid)){ alert('Ingredient already exists.'); return; }
+  const obj={id:editIid||('i'+Date.now()),name,unit:document.getElementById('if-unit').value,cat:document.getElementById('if-cat').value};
+  if(editIid){ const i=ings.findIndex(x=>x.id===editIid); ings[i]=obj; }
+  else ings.push(obj);
+  sv('mep_ings',ings); cM('ing'); renderIngs();
+}
+function delIng(){
+  if(!editIid||!confirm("Delete this ingredient? It won't be removed from existing recipes.")) return;
+  ings=ings.filter(i=>i.id!==editIid);
+  sv('mep_ings',ings); cM('ing'); renderIngs();
+}
+
+// ═══════════════════════════════════════
+// WEEK
+// ═══════════════════════════════════════
+function clearWeekFromRecipes(){
+  if(!weekIds.length) return;
+  weekIds=[]; checked=[];
+  sv('mep_week',weekIds); sv('mep_chk',checked);
+  renderRecipes(); // calls updBadge internally
+  if(document.getElementById('page-week').classList.contains('active')){ renderWk(); renderWkPicker(); }
+}
+function toggleWk(id){
+  weekIds.includes(id)?weekIds=weekIds.filter(x=>x!==id):weekIds.push(id);
+  sv('mep_week',weekIds); updBadge(); renderRecipes();
+  if(document.getElementById('page-week').classList.contains('active')){ renderWk(); renderWkPicker(); }
+}
+function clearWeek(){
+  if(!weekIds.length) return;
+  if(!confirm('Clear all recipes from this week?')) return;
+  weekIds=[]; checked=[]; sv('mep_week',weekIds); sv('mep_chk',checked);
+  renderWk(); renderWkPicker(); renderRecipes();
+}
+function updBadge(){
+  const b=document.getElementById('wk-badge');
+  b.style.display=weekIds.length?'inline':'none';
+  b.textContent=weekIds.length;
+  const cb=document.getElementById('r-clear-week-btn');
+  if(cb) cb.style.display=weekIds.length?'inline-flex':'none';
+}
+
+function renderWk(){
+  const el=document.getElementById('wk-main');
+  if(!weekIds.length){ el.innerHTML='<div class="empty">No recipes selected — add from the panel on the right.</div>'; return; }
+  const wkRecs=weekIds.map(id=>recipes.find(r=>r.id===id)).filter(Boolean);
+
+  // Recipe list
+  let html='<div style="font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:8px;">Selected recipes</div>';
+  html+=wkRecs.map(r=>`<div class="wk-ri"><div><div>${esc(r.name)}</div><div class="wk-ri-meta">${[r.type,r.cuisine,r.servings?r.servings+' servings':''].filter(Boolean).join(' · ')}</div></div><button class="btn btn-sm btn-ghost" onclick="toggleWk('${r.id}')">Remove</button></div>`).join('');
+
+  // Consolidated list
+  const cons=consolidate(wkRecs);
+  const byCat={};
+  cons.forEach(item=>{ const c=catOf(item.name); (byCat[c]=byCat[c]||[]).push(item); });
+  const CAT_ORDER=['Produce','Meat & Fish','Dairy & Eggs','Bakery','Pantry','Spices & Herbs','Condiments','Frozen','Beverages','Other'];
+  const sortedCats=[...CAT_ORDER.filter(c=>byCat[c]),...Object.keys(byCat).filter(c=>!CAT_ORDER.includes(c))];
+
+  html+='<div style="font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:1.25rem 0 6px;">Shopping list</div>';
+  html+=sortedCats.map(cat=>`
+    <div class="shop-sec">
+      <div class="shop-sec-title">${esc(cat)}</div>
+      <div class="sl-header"><span></span><span>Ingredient</span><span>Metric</span><span>Cups / vol</span><span>Recipe</span></div>
+      ${byCat[cat].map(item=>{
+        const ck=checked.includes(item.name);
+        const cups=item._ml!==null ? mlToCooking(item._ml) : '';
+        const metricStr=item.dq2 ? item.dq+' ('+item.dq2+')' : item.dq;
+        return `<div class="si ${ck?'ck':''}" onclick="toggleChk('${esc(item.name)}')">
+          <div class="si-chk ${ck?'tk':''}">${ck?'<svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 3.5,6.5 9,1" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}</div>
+          <span class="si-name">${esc(item.name)}</span>
+          <span class="si-metric">${esc(metricStr)}</span>
+          <span class="si-cups">${esc(cups)}</span>
+          <span class="si-src">${esc(item.sources.join(', '))}</span>
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+  el.innerHTML=html;
+}
+
+function toggleChk(name){ checked.includes(name)?checked=checked.filter(x=>x!==name):checked.push(name); sv('mep_chk',checked); renderWk(); }
+function catOf(name){ return ings.find(i=>i.name.toLowerCase()===name.toLowerCase())?.cat||'Other'; }
+
+function renderWkPicker(){
+  const q=(document.getElementById('wksearch').value||'').toLowerCase();
+  let list=[...recipes].sort((a,b)=>a.name.localeCompare(b.name));
+  if(q) list=list.filter(r=>r.name.toLowerCase().includes(q)||(r.type||'').toLowerCase().includes(q));
+  document.getElementById('wkpicker').innerHTML=list.map(r=>{
+    const iw=weekIds.includes(r.id);
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 2px;border-bottom:1px solid var(--paper-3);">
+      <div><div style="font-size:13px;${iw?'color:var(--green);font-weight:600;':''}">${esc(r.name)}</div>${r.type?`<div style="font-size:11px;color:var(--ink-4)">${esc(r.type)}</div>`:''}</div>
+      <button class="btn btn-sm ${iw?'btn-green':'btn-ghost'}" onclick="toggleWk('${r.id}')">${iw?'✓':'+'}</button>
+    </div>`;
+  }).join('')||'<p style="font-size:13px;color:var(--ink-4);padding:8px 0">No recipes found</p>';
+}
+
+function copyList(){
+  const wkRecs=weekIds.map(id=>recipes.find(r=>r.id===id)).filter(Boolean);
+  const items=consolidate(wkRecs);
+  if(!items.length) return;
+  const lines=items.map(i=>{
+    const metric=i.dq2?i.dq+' ('+i.dq2+')':i.dq;
+    const cups=i._ml!==null?mlToCooking(i._ml):'';
+    return i.name.padEnd(28)+metric.padEnd(14)+(cups?cups.padEnd(12):'')+i.sources.join(', ');
+  });
+  navigator.clipboard.writeText(lines.join('\n')).then(()=>alert('Copied!')).catch(()=>{});
+}
+
+// ═══════════════════════════════════════
+// CUPS / COOKING UNIT CONVERSION
+// ═══════════════════════════════════════
+function mlToCooking(ml){
+  if(ml===null||ml===undefined||ml<=0) return '';
+  const cup=250,tbsp=15,tsp=5;
+  const cupFracs=[[1,'1 cup'],[0.75,'¾ cup'],[0.667,'⅔ cup'],[0.5,'½ cup'],[0.333,'⅓ cup'],[0.25,'¼ cup'],[0.125,'⅛ cup']];
+  for(const [f,label] of cupFracs){ if(Math.abs(ml-f*cup)<6) return label; }
+  if(ml>=cup){
+    const cups=ml/cup, whole=Math.floor(cups), rem=cups-whole;
+    const fracs=[[0.75,'¾'],[0.667,'⅔'],[0.5,'½'],[0.333,'⅓'],[0.25,'¼'],[0.125,'⅛']];
+    let fs=''; for(const [f,s] of fracs){ if(Math.abs(rem-f)<0.08){fs=s;break;} }
+    if(fs) return (whole>0?whole+' ':'')+fs+' cup'+(whole+(fs?0.5:0)>1?'s':'');
+    const r=Math.round(cups*10)/10; return r+' cup'+(r!==1?'s':'');
+  }
+  if(ml>=tbsp){ const r=Math.round((ml/tbsp)*2)/2; return r+(r===1?' tbsp':' tbsp'); }
+  if(ml>=tsp){ const r=Math.round((ml/tsp)*2)/2; return r+(r===1?' tsp':' tsp'); }
+  return ml<2?'pinch':'';
+}
+
+// ═══════════════════════════════════════
+// CONSOLIDATION
+// ═══════════════════════════════════════
+const VOL={ml:1,l:1000,L:1000};
+const WGT={g:1,kg:1000};
+function pn(s){ if(!s) return null; s=String(s).trim(); if(s.includes('/')){ const p=s.split('/'); return parseFloat(p[0])/parseFloat(p[1]); } const n=parseFloat(s); return isNaN(n)?null:n; }
+function toBase(qty,unit){ const n=pn(qty); if(n===null) return null; const l=(unit||'').toLowerCase(); if(VOL[l]!==undefined) return{v:n*VOL[l],t:'vol'}; if(VOL[unit]!==undefined) return{v:n*VOL[unit],t:'vol'}; if(WGT[l]!==undefined) return{v:n*WGT[l],t:'wgt'}; return{v:n,t:'cnt',u:unit}; }
+// Returns {primary, secondary}. Secondary shows alternate scale when useful.
+function fmtVal(base,t,ou){
+  if(t==='vol'){
+    const ml=Math.round(base), L=Math.round(base/100)/10;
+    if(base>=1000) return{primary:L+'L', secondary:(L%1!==0)?ml+'ml':null};
+    return{primary:ml+'ml', secondary:base>=500?(Math.round(base/100)/10)+'L':null};
+  }
+  if(t==='wgt'){
+    const g=Math.round(base), kg=Math.round(base/100)/10;
+    if(base>=1000) return{primary:kg+'kg', secondary:(kg%1!==0)?g+'g':null};
+    return{primary:g+'g', secondary:base>=500?(Math.round(base/100)/10)+'kg':null};
+  }
+  const r=Math.round(base*10)/10;
+  return{primary:ou?r+' '+ou:String(r), secondary:null};
+}
+function fmtDisplay(base,t,ou){ const f=fmtVal(base,t,ou); return f.secondary?f.primary+' ('+f.secondary+')':f.primary; }
+
+function consolidate(recs){
+  const map=new Map();
+  recs.forEach(rec=>{
+    (rec.ingredients||[]).forEach(ing=>{
+      const key=ing.name.trim().toLowerCase();
+      const b=toBase(ing.qty,ing.unit);
+      if(!map.has(key)){
+        const fmt=b?fmtVal(b.v,b.t,ing.unit):null;
+        map.set(key,{name:key,_b:b?.v??null,_t:b?.t??null,_u:ing.unit,
+          dq:fmt?fmt.primary:(ing.qty?(ing.qty+(ing.unit?' '+ing.unit:'')):'—'),
+          dq2:fmt?.secondary||null,
+          // store base ml for volume items so we can show cups
+          _ml: (b&&b.t==='vol') ? b.v : null,
+          sources:[rec.name]});
+      } else {
+        const e=map.get(key);
+        if(!e.sources.includes(rec.name)) e.sources.push(rec.name);
+        if(b&&e._b!==null&&b.t===e._t){
+          e._b+=b.v;
+          const fmt=fmtVal(e._b,e._t,e._u);
+          e.dq=fmt.primary; e.dq2=fmt.secondary||null;
+          if(b.t==='vol') e._ml=e._b;
+        } else if(b&&e._b!==null){
+          e.dq=e.dq+' + '+(ing.qty+(ing.unit?' '+ing.unit:''));
+          e.dq2=null; e._ml=null;
+        }
+      }
+    });
+  });
+  return [...map.values()].sort((a,b_)=>a.name.localeCompare(b_.name));
+}
+
+// ═══════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+updateAKBtn();
+renderRecipes();
+updBadge();
+if(!apiKey) setTimeout(()=>oM('api'),600);
+</script>
+</body>
+</html>
