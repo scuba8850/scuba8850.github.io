@@ -5,315 +5,391 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ingredigo</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=IM+Fell+English:ital@0;1&family=Caveat:wght@400;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  /* Earthy palette */
-  --parchment:   #f4efe6;
-  --parchment-2: #ede5d8;
-  --parchment-3: #e2d8c8;
-  --moss:        #2e5537;
-  --moss-2:      #3d6b48;
-  --moss-3:      #4e8259;
-  --moss-lt:     #e8f0e9;
-  --moss-mid:    #8ab394;
-  --bark:        #5c3d1e;
-  --bark-lt:     #f5ede3;
-  --soil:        #3d2b1a;
-  --soil-2:      #5a4030;
-  --soil-3:      #7a5c44;
-  --soil-4:      #a08060;
-  --line:        #d4c9b4;
-  --line-2:      #c4b89e;
-  --red:         #8b2020;
-  --red-lt:      #f9efef;
-  --r: 5px; --r-lg: 10px;
-  --sh:    0 1px 4px rgba(60,40,10,.10), 0 1px 2px rgba(60,40,10,.06);
-  --sh-lg: 0 4px 16px rgba(60,40,10,.13), 0 2px 6px rgba(60,40,10,.08);
+  --ink:       #1c2e1a;
+  --ink-2:     #2e5537;
+  --ink-3:     #3d6b48;
+  --ink-4:     #5a8060;
+  --ink-5:     #8ab394;
+  --page:      #f4efe6;
+  --page-2:    #ede5d8;
+  --page-3:    #e2d8c8;
+  --page-4:    #d4c9b4;
+  --sepia:     #8ab394;
+  --rule:      #b0c8b0;
+  --rule-2:    #8aaa8a;
+  --aged-green:#2e5537;
+  --aged-green-lt: #e8f0e9;
+  --red-ink:   #8b2020;
+  --red-lt:    #f5ece8;
+  --r: 2px; --r-lg: 3px;
+  --sh: 2px 3px 8px rgba(20,40,20,.12), 0 1px 2px rgba(20,40,20,.08);
+  --sh-lg: 3px 5px 18px rgba(20,40,20,.18), 1px 2px 6px rgba(20,40,20,.1);
 }
 
 body {
-  font-family: 'Inter', Georgia, sans-serif;
-  background: var(--parchment);
-  color: var(--soil);
-  font-size: 15px;
-  line-height: 1.6;
+  font-family: 'Crimson Text', Georgia, serif;
+  background: var(--page-2);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.65;
   min-height: 100vh;
-  /* Subtle parchment grain */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  /* Aged paper texture via layered noise */
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E"),
+    linear-gradient(160deg, #f4efe6 0%, #eae5d5 40%, #e4dcc8 100%);
 }
 
 /* HEADER */
 header {
-  background: var(--moss);
-  color: var(--parchment);
+  background: var(--aged-green);
+  color: var(--page);
   padding: 0 1.5rem;
-  display: flex; align-items: center; justify-content: space-between;
-  height: 58px;
+  display: flex; align-items: center; justify-content: center;
+  height: 64px;
   position: sticky; top: 0; z-index: 50;
-  box-shadow: 0 2px 8px rgba(30,50,30,.25);
+  border-bottom: 3px solid var(--ink);
+  box-shadow: 0 2px 8px rgba(20,50,20,.25);
   overflow: hidden;
 }
-/* Header pseudo-elements cleared — leaves are inline SVG now */
-header::before, header::after { content: none; }
-.logo {
-  font-family: 'Lora', Georgia, serif;
-  font-size: 20px;
-  font-style: italic;
-  letter-spacing: .08em;
-  color: var(--parchment);
-  position: relative; z-index: 1;
+header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='64'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='64' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
 }
-/* Small leaf accent after logo */
-.logo::after {
-  content: ' ❧';
-  font-size: 16px;
-  opacity: 0.7;
-  font-style: normal;
+.logo {
+  font-family: 'Pacifico', cursive;
+  font-size: 24px;
+  color: var(--page);
+  letter-spacing: .04em;
+  position: relative; z-index: 1;
+  text-shadow: 1px 1px 3px rgba(0,0,0,.4);
+}
+.logo-ornament {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-5);
+  letter-spacing: .15em;
+  text-align: center;
+  display: block;
+  margin-top: -4px;
 }
 
 /* TABS */
 .tabs {
-  background: var(--parchment-2);
-  border-bottom: 1px solid var(--line);
+  background: var(--page-2);
+  border-bottom: 2px solid var(--rule);
   display: flex; padding: 0 1.5rem;
-  position: sticky; top: 58px; z-index: 40;
+  position: sticky; top: 64px; z-index: 40;
+  /* Ruled line texture */
+  background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(160,130,80,.12) 27px, rgba(160,130,80,.12) 28px);
 }
 .tab {
-  padding: 0 1.25rem; height: 44px;
-  font-family: 'Inter', sans-serif;
-  font-size: 12px; letter-spacing: .07em; text-transform: uppercase;
-  border: none; background: none; color: var(--soil-3);
+  padding: 0 1.25rem; height: 42px;
+  font-family: 'Caveat', cursive;
+  font-size: 16px;
+  border: none; background: none; color: var(--ink-3);
   cursor: pointer; border-bottom: 2px solid transparent;
-  margin-bottom: -1px; transition: color .15s;
+  margin-bottom: -2px;
+  transition: color .15s;
   display: flex; align-items: center; gap: 7px;
 }
-.tab:hover { color: var(--moss); }
-.tab.active { color: var(--moss); border-bottom-color: var(--moss); font-weight: 600; }
-.badge { font-size: 10px; background: var(--moss); color: #fff; border-radius: 10px; padding: 1px 6px; }
+.tab:hover { color: var(--ink); }
+.tab.active { color: var(--aged-green); border-bottom-color: var(--aged-green); font-weight: 600; }
+.badge {
+  font-family: 'Crimson Text', serif;
+  font-size: 11px; background: var(--aged-green); color: #fff;
+  border-radius: 10px; padding: 1px 7px;
+}
 
 /* MAIN */
-main { max-width: 920px; margin: 0 auto; padding: 1.5rem 1rem 6rem; }
+main { max-width: 920px; margin: 0 auto; padding: 1.5rem 1rem 7rem; }
 .page { display: none; }
 .page.active { display: block; }
 
 /* TOOLBAR */
-.toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; flex-wrap: wrap; }
-.toolbar-title { font-family: 'Lora', serif; font-size: 22px; font-style: italic; color: var(--moss); flex: 1; }
+.toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.toolbar-title {
+  font-family: 'Pacifico', cursive;
+  font-size: 26px; color: var(--ink-2); flex: 1;
+  letter-spacing: .02em;
+}
+
+/* RULED DIVIDER */
+.ruled { border: none; border-top: 1px solid var(--rule); margin: 1rem 0; position: relative; }
+.ruled::after { content: '✦'; position: absolute; left: 50%; top: -9px; transform: translateX(-50%); background: var(--page-2); padding: 0 8px; font-size: 10px; color: var(--rule); }
 
 /* INPUTS */
 input[type=text],input[type=search],input[type=password],select,textarea {
-  font-family: 'Inter', sans-serif; font-size: 14px;
-  background: var(--parchment); color: var(--soil);
-  border: 1px solid var(--line-2); border-radius: var(--r);
-  padding: 7px 11px; outline: none; transition: border-color .15s, box-shadow .15s;
+  font-family: 'Caveat', cursive; font-size: 16px;
+  background: var(--page); color: var(--ink);
+  border: none;
+  border-bottom: 1.5px solid var(--rule-2);
+  border-radius: 0;
+  padding: 5px 8px;
+  outline: none;
+  transition: border-color .15s;
+  box-shadow: none;
 }
-input:focus,select:focus,textarea:focus {
-  border-color: var(--moss-3);
-  box-shadow: 0 0 0 2px rgba(78,130,89,.15);
-}
+input:focus,select:focus,textarea:focus { border-bottom-color: var(--ink); background: #fdf8ee; }
+select { border: 1px solid var(--rule-2); border-radius: var(--r); background: var(--page); padding: 5px 8px; }
 .search-box { width: 220px; }
 
 /* BUTTONS */
 .btn {
-  font-family: 'Inter', sans-serif; font-size: 13px;
-  padding: 7px 16px; border-radius: var(--r);
-  border: 1px solid var(--line-2);
-  background: var(--parchment); color: var(--soil);
-  cursor: pointer; transition: background .12s, border-color .12s;
+  font-family: 'Caveat', cursive; font-size: 15px;
+  padding: 5px 16px; border-radius: var(--r);
+  border: 1.5px solid var(--rule-2);
+  background: var(--page); color: var(--ink-2);
+  cursor: pointer; transition: all .12s;
   display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  letter-spacing: .02em;
 }
-.btn:hover { background: var(--parchment-2); border-color: var(--line-2); }
+.btn:hover { background: var(--page-3); border-color: var(--ink-3); }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
-.btn-primary { background: var(--moss); color: var(--parchment); border-color: var(--moss); }
-.btn-primary:hover { background: var(--moss-2); border-color: var(--moss-2); }
-.btn-green { background: var(--moss-2); color: #fff; border-color: var(--moss-2); }
-.btn-green:hover { background: var(--moss); border-color: var(--moss); }
-.btn-sm { padding: 4px 11px; font-size: 12px; }
-.btn-ghost { background: none; border-color: transparent; color: var(--soil-3); }
-.btn-ghost:hover { background: var(--parchment-2); color: var(--soil); border-color: transparent; }
-.btn-danger { color: var(--red); border-color: transparent; background: none; }
-.btn-danger:hover { background: var(--red-lt); border-color: var(--red); }
+.btn-primary { background: var(--ink-2); color: var(--page); border-color: var(--ink); }
+.btn-primary:hover { background: var(--ink); }
+.btn-green { background: var(--aged-green); color: #fff; border-color: var(--aged-green); }
+.btn-green:hover { background: #3a5430; }
+.btn-sm { padding: 3px 12px; font-size: 14px; }
+.btn-ghost { background: none; border-color: transparent; color: var(--ink-3); }
+.btn-ghost:hover { background: var(--page-3); color: var(--ink); border-color: transparent; }
+.btn-danger { color: var(--red-ink); border-color: transparent; background: none; }
+.btn-danger:hover { background: var(--red-lt); border-color: var(--red-ink); }
 
-/* CARD */
-.card { background: var(--parchment); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--sh); }
+/* CARD — looks like an aged index card / torn journal page */
+.card {
+  background: var(--page);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh);
+  position: relative;
+  /* Ruled lines inside card */
+  background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(160,130,80,.1) 27px, rgba(160,130,80,.1) 28px);
+  background-position: 0 12px;
+}
 
 /* RECIPE GRID */
-.recipe-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 12px; }
+.recipe-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 14px; }
 .rc {
-  background: var(--parchment);
-  border: 1px solid var(--line);
+  background: var(--page);
+  border: 1px solid var(--rule);
   border-radius: var(--r-lg);
-  padding: 1rem; cursor: pointer;
-  transition: box-shadow .15s, border-color .15s, transform .15s;
+  padding: 1rem;
+  cursor: pointer;
+  transition: box-shadow .15s, transform .15s;
   position: relative; overflow: hidden;
+  box-shadow: var(--sh);
+  /* Ruled lines */
+  background-image: repeating-linear-gradient(transparent, transparent 23px, rgba(160,130,80,.12) 23px, rgba(160,130,80,.12) 24px);
+  background-position: 0 10px;
 }
-/* Subtle leaf watermark on recipe cards */
-.rc::after {
+/* Ink smudge corner decoration */
+.rc::before {
   content: '';
-  position: absolute; bottom: -8px; right: -8px;
-  width: 60px; height: 60px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Cpath d='M55 55 Q20 20 5 5 Q35 8 55 55Z' fill='%232e5537' opacity='0.07'/%3E%3Cpath d='M55 55 Q30 10 8 2' stroke='%232e5537' stroke-width='1' fill='none' opacity='0.06'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  pointer-events: none;
+  position: absolute; top: 0; right: 0;
+  width: 28px; height: 28px;
+  background: radial-gradient(circle at top right, rgba(30,15,0,.06) 0%, transparent 70%);
 }
-.rc:hover { box-shadow: var(--sh-lg); border-color: var(--moss-mid); transform: translateY(-1px); }
-.rc.in-week { border-color: var(--moss); background: var(--moss-lt); }
-.rc-name { font-family: 'Lora', serif; font-size: 15px; font-weight: 600; margin-bottom: 5px; line-height: 1.35; color: var(--soil); }
-.rc-meta { font-size: 12px; color: var(--soil-3); display: flex; gap: 6px; flex-wrap: wrap; }
-.rc-meta span { background: var(--parchment-2); padding: 1px 7px; border-radius: 10px; border: 1px solid var(--line); }
-.rc.in-week .rc-meta span { background: #cde3d0; border-color: var(--moss-mid); }
+.rc:hover { box-shadow: var(--sh-lg); transform: translateY(-2px) rotate(0.3deg); }
+.rc.in-week { border-color: var(--aged-green); background-color: #f0f5ec; }
+.rc-name {
+  font-family: 'IM Fell English', serif;
+  font-size: 15px; font-weight: 600;
+  margin-bottom: 5px; line-height: 1.35; color: var(--ink);
+}
+.rc-meta { font-size: 13px; color: var(--ink-3); display: flex; gap: 6px; flex-wrap: wrap; font-family: 'Caveat', cursive; }
+.rc-meta span { background: var(--page-3); padding: 0 8px; border-radius: 10px; border: 1px solid var(--rule); }
+.rc.in-week .rc-meta span { background: #daecd4; border-color: #a0c090; }
 .rc-footer { margin-top: 10px; display: flex; align-items: center; justify-content: space-between; }
-.ic { font-size: 12px; color: var(--soil-4); }
+.ic { font-size: 13px; color: var(--ink-4); font-family: 'Caveat', cursive; font-style: italic; }
 .wk-btn {
-  font-size: 11px; padding: 3px 10px; border-radius: 10px;
-  border: 1px solid var(--line-2); background: var(--parchment);
-  color: var(--soil-3); cursor: pointer; font-family: 'Inter', sans-serif;
+  font-family: 'Caveat', cursive; font-size: 13px;
+  padding: 2px 12px; border-radius: 10px;
+  border: 1.5px solid var(--rule-2); background: var(--page);
+  color: var(--ink-3); cursor: pointer;
   transition: all .12s;
 }
-.wk-btn:hover { border-color: var(--moss); color: var(--moss); background: var(--moss-lt); }
-.rc.in-week .wk-btn { background: var(--moss); color: #fff; border-color: var(--moss); }
+.wk-btn:hover { border-color: var(--aged-green); color: var(--aged-green); background: var(--aged-green-lt); }
+.rc.in-week .wk-btn { background: var(--aged-green); color: #fff; border-color: var(--aged-green); }
 
 /* FILTER CHIPS */
 .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.25rem; }
 .chip {
-  font-size: 12px; padding: 4px 13px; border-radius: 20px;
-  border: 1px solid var(--line-2); background: var(--parchment-2);
-  color: var(--soil-3); cursor: pointer; font-family: 'Inter', sans-serif;
-  transition: all .12s;
+  font-family: 'Caveat', cursive; font-size: 14px;
+  padding: 2px 14px; border-radius: 20px;
+  border: 1.5px solid var(--rule-2); background: var(--page-3);
+  color: var(--ink-3); cursor: pointer; transition: all .12s;
 }
-.chip.active { background: var(--moss); color: var(--parchment); border-color: var(--moss); }
-.chip:hover:not(.active) { border-color: var(--moss-mid); color: var(--moss); }
+.chip.active { background: var(--ink-2); color: var(--page); border-color: var(--ink); }
+.chip:hover:not(.active) { border-color: var(--ink-3); color: var(--ink); }
 
 /* INGREDIENT TABLE */
 .ing-table { width: 100%; border-collapse: collapse; }
 .ing-table th {
-  text-align: left; font-size: 11px; letter-spacing: .07em;
-  text-transform: uppercase; color: var(--soil-3); font-family: 'Inter', sans-serif;
-  padding: 8px 12px; border-bottom: 1px solid var(--line); font-weight: 600;
+  text-align: left; font-size: 11px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-3);
+  font-family: 'Crimson Text', serif; font-style: italic;
+  padding: 8px 12px; border-bottom: 1.5px solid var(--rule-2);
 }
-.ing-table td { padding: 8px 12px; font-size: 14px; border-bottom: 1px solid var(--parchment-3); }
+.ing-table td { padding: 8px 12px; font-size: 15px; border-bottom: 1px solid var(--page-4); font-family: 'Caveat', cursive; font-size: 16px; }
 .ing-table tr:last-child td { border-bottom: none; }
-.ing-table tr:hover td { background: var(--parchment-2); }
+.ing-table tr:hover td { background: var(--page-3); }
 .cat-b {
-  font-size: 11px; padding: 2px 8px; border-radius: 10px;
-  background: var(--parchment-2); color: var(--soil-3); border: 1px solid var(--line);
+  font-size: 12px; padding: 1px 9px; border-radius: 10px;
+  background: var(--page-3); color: var(--ink-3);
+  border: 1px solid var(--rule); font-family: 'Crimson Text', serif; font-style: italic;
 }
 
 /* SHOPPING LIST */
-.shop-sec { margin-bottom: 1.5rem; }
+.shop-sec { margin-bottom: 1.75rem; }
 .shop-sec-title {
-  font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--moss); font-weight: 600; padding: 0 0 6px;
-  border-bottom: 1px solid var(--line); margin-bottom: 4px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'IM Fell English', serif;
+  font-size: 13px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-3); padding: 0 0 5px;
+  border-bottom: 1.5px solid var(--rule); margin-bottom: 4px;
 }
 .sl-header { display: grid; grid-template-columns: 24px 1fr 95px 95px 120px; gap: 0 8px; padding: 3px 10px 5px; }
-.sl-header span { font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: var(--soil-4); font-weight: 600; font-family: 'Inter', sans-serif; }
-.si { display: grid; grid-template-columns: 24px 1fr 95px 95px 120px; gap: 0 8px; align-items: center; padding: 7px 10px; border-radius: var(--r); cursor: pointer; transition: background .1s; }
-.si:hover { background: var(--parchment-2); }
+.sl-header span { font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-4); font-family: 'Crimson Text', serif; font-style: italic; }
+.si { display: grid; grid-template-columns: 24px 1fr 95px 95px 120px; gap: 0 8px; align-items: center; padding: 6px 10px; border-radius: var(--r); cursor: pointer; transition: background .1s; }
+.si:hover { background: var(--page-3); }
 .si.ck { opacity: .4; }
 .si.ck .si-name { text-decoration: line-through; }
-.si-chk { width: 17px; height: 17px; border-radius: 4px; border: 1.5px solid var(--line-2); background: transparent; display: flex; align-items: center; justify-content: center; transition: all .1s; }
-.si-chk.tk { background: var(--moss); border-color: var(--moss); }
-.si-name { font-size: 14px; }
-.si-metric { font-size: 13px; font-weight: 600; color: var(--moss); font-variant-numeric: tabular-nums; }
-.si-cups { font-size: 13px; color: var(--soil-3); font-variant-numeric: tabular-nums; }
-.si-src { font-size: 11px; color: var(--soil-4); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.si-chk { width: 16px; height: 16px; border-radius: 2px; border: 1.5px solid var(--rule-2); background: transparent; display: flex; align-items: center; justify-content: center; transition: all .1s; }
+.si-chk.tk { background: var(--aged-green); border-color: var(--aged-green); }
+.si-name { font-size: 16px; font-family: 'Caveat', cursive; }
+.si-metric { font-size: 14px; font-weight: 600; color: var(--aged-green); font-variant-numeric: tabular-nums; font-family: 'Caveat', cursive; }
+.si-cups { font-size: 14px; color: var(--ink-3); font-variant-numeric: tabular-nums; font-family: 'Caveat', cursive; }
+.si-src { font-size: 12px; color: var(--ink-4); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Crimson Text', serif; font-style: italic; }
 
 /* MODAL */
-.mb { display: none; position: fixed; inset: 0; background: rgba(46,40,28,.55); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
+.mb { display: none; position: fixed; inset: 0; background: rgba(20,10,0,.6); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
 .mb.open { display: flex; }
-.modal { background: var(--parchment); border-radius: var(--r-lg); box-shadow: var(--sh-lg); width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; overflow-x: visible; border: 1px solid var(--line); }
-.mh { padding: 1.25rem 1.25rem 0; display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 1rem; margin-bottom: 0; }
-.mh h2 { font-family: 'Lora', serif; font-size: 19px; font-style: italic; color: var(--moss); }
-.mbody { padding: 1rem 1.25rem; }
-.mfoot { padding: 0 1.25rem 1.25rem; display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid var(--line); padding-top: 1rem; margin-top: 0; }
-.xbtn { background: none; border: none; cursor: pointer; color: var(--soil-3); font-size: 20px; line-height: 1; padding: 2px; }
-.xbtn:hover { color: var(--soil); }
+.modal {
+  background: var(--page);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-lg);
+  width: 100%; max-width: 560px; max-height: 90vh;
+  overflow-y: auto; overflow-x: visible;
+  border: 1.5px solid var(--rule);
+  background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(160,130,80,.1) 27px, rgba(160,130,80,.1) 28px);
+  background-position: 0 68px;
+}
+.mh {
+  padding: 1.25rem 1.25rem 1rem;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  border-bottom: 1.5px solid var(--rule); background: var(--page-3);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+}
+.mh h2 { font-family: 'IM Fell English', serif; font-size: 20px; font-style: italic; color: var(--ink); }
+.mbody { padding: 1rem 1.25rem; background: transparent; }
+.mfoot { padding: 1rem 1.25rem; display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid var(--rule); background: var(--page-3); border-radius: 0 0 var(--r-lg) var(--r-lg); }
+.xbtn { background: none; border: none; cursor: pointer; color: var(--ink-3); font-size: 22px; line-height: 1; padding: 2px; font-family: serif; }
+.xbtn:hover { color: var(--ink); }
 
 /* FORM */
-.fr { margin-bottom: 1rem; }
+.fr { margin-bottom: 1.1rem; }
 .fr label {
-  display: block; font-size: 11px; letter-spacing: .06em;
-  text-transform: uppercase; color: var(--soil-3);
-  margin-bottom: 5px; font-weight: 600; font-family: 'Inter', sans-serif;
+  display: block; font-size: 11px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink-3);
+  margin-bottom: 4px; font-family: 'Crimson Text', serif; font-style: italic; font-weight: 600;
 }
 .fr input,.fr select,.fr textarea { width: 100%; }
 .fr textarea { min-height: 70px; resize: vertical; }
 .fg { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.fhint { font-size: 12px; color: var(--soil-4); margin-top: 4px; }
+.fhint { font-size: 13px; color: var(--ink-4); margin-top: 4px; font-style: italic; }
 
-/* ING EDITOR ROWS */
-.ie { border: 1px solid var(--line); border-radius: var(--r); overflow: visible; margin-bottom: 10px; }
-.ie-wrap { border-bottom: 1px solid var(--parchment-3); }
+/* ING EDITOR ROWS — look like ledger entries */
+.ie { border: 1.5px solid var(--rule); border-radius: var(--r); overflow: visible; margin-bottom: 10px; background: var(--page); }
+.ie-wrap { border-bottom: 1px solid var(--page-4); }
 .ie-wrap:last-child { border-bottom: none; }
-.row-hint { font-size: 11px; color: var(--moss-3); padding: 1px 10px 4px; font-style: italic; min-height: 4px; }
+.row-hint { font-size: 12px; color: var(--aged-green); padding: 1px 10px 3px; font-style: italic; min-height: 4px; font-family: 'Crimson Text', serif; }
 .ie-row { display: flex; align-items: center; }
-.ie-row input,.ie-row select { border: none; border-radius: 0; border-right: 1px solid var(--parchment-3); padding: 7px 10px; font-size: 13px; background: var(--parchment); color: var(--soil); }
-.ie-row input:focus,.ie-row select:focus { background: var(--moss-lt); outline: none; }
+.ie-row input,.ie-row select { border: none; border-right: 1px solid var(--page-4); padding: 7px 10px; font-size: 15px; background: transparent; color: var(--ink); border-radius: 0; border-bottom: none; }
+.ie-row input:focus,.ie-row select:focus { background: #fdf8ee; outline: none; border-bottom: none; }
 .c-qty { width: 80px; flex-shrink: 0; }
 .c-unit { width: 90px; flex-shrink: 0; }
 .c-name { flex: 1; }
 .c-note { width: 130px; flex-shrink: 0; }
 .c-del { width: 34px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-right: none !important; }
-.c-del button { background: none; border: none; cursor: pointer; color: var(--soil-4); font-size: 16px; padding: 4px; }
-.c-del button:hover { color: var(--red); }
-.ie-head { background: var(--parchment-2); }
-.ie-head span { font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--soil-3); padding: 5px 10px; display: block; font-weight: 600; font-family: 'Inter', sans-serif; }
-
+.c-del button { background: none; border: none; cursor: pointer; color: var(--ink-4); font-size: 18px; padding: 4px; }
+.c-del button:hover { color: var(--red-ink); }
+.ie-head { background: var(--page-3); }
+.ie-head span { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); padding: 5px 10px; display: block; font-family: 'Crimson Text', serif; font-style: italic; }
 
 /* AUTOCOMPLETE */
 .ac-wrap { position: relative; flex: 1; }
-.ac-list { position: fixed; background: var(--parchment); border: 1px solid var(--line-2); border-radius: var(--r); z-index: 9999; max-height: 160px; overflow-y: auto; box-shadow: var(--sh-lg); min-width: 200px; }
-.ac-item { padding: 6px 10px; font-size: 13px; cursor: pointer; color: var(--soil); font-family: 'Inter', sans-serif; }
-.ac-item:hover, .ac-item.ac-sel { background: var(--moss-lt); color: var(--moss); }
+.ac-list { position: fixed; background: var(--page); border: 1.5px solid var(--rule-2); border-radius: var(--r); z-index: 9999; max-height: 160px; overflow-y: auto; box-shadow: var(--sh-lg); min-width: 200px; }
+.ac-item { padding: 6px 12px; font-size: 16px; cursor: pointer; color: var(--ink); font-family: 'Caveat', cursive; border-bottom: 1px solid var(--page-4); }
+.ac-item:last-child { border-bottom: none; }
+.ac-item:hover, .ac-item.ac-sel { background: var(--page-3); color: var(--ink); }
 
 /* WEEK LAYOUT */
 .wk-layout { display: grid; grid-template-columns: 1fr 270px; gap: 1.25rem; align-items: start; }
 @media(max-width:680px){ .wk-layout { grid-template-columns: 1fr; } }
-.wk-ri { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; border: 1px solid var(--line); border-radius: var(--r); background: var(--parchment); font-size: 14px; margin-bottom: 6px; }
-.wk-ri-meta { font-size: 12px; color: var(--soil-3); margin-top: 2px; }
+.wk-ri { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; border: 1px solid var(--rule); border-radius: var(--r); background: var(--page); font-size: 16px; margin-bottom: 6px; font-family: 'Caveat', cursive; box-shadow: 1px 1px 3px rgba(30,15,0,.08); }
+.wk-ri-meta { font-size: 13px; color: var(--ink-3); margin-top: 2px; font-style: italic; font-family: 'Crimson Text', serif; }
+
+/* LISTS GRID */
+.lists-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap: 12px; margin-top: .5rem; }
+.list-card {
+  background: var(--page); border: 1px solid var(--rule); border-radius: var(--r-lg);
+  padding: 1rem; cursor: pointer; transition: box-shadow .15s, transform .15s;
+  box-shadow: var(--sh); position: relative;
+  background-image: repeating-linear-gradient(transparent, transparent 23px, rgba(100,140,100,.1) 23px, rgba(100,140,100,.1) 24px);
+  background-position: 0 10px;
+}
+.list-card:hover { box-shadow: var(--sh-lg); transform: translateY(-1px) rotate(0.2deg); }
+.list-card-name { font-family: 'Caveat', cursive; font-size: 18px; color: var(--ink); margin-bottom: 4px; }
+.list-card-meta { font-family: 'Crimson Text', serif; font-style: italic; font-size: 13px; color: var(--ink-4); }
+.list-card-actions { margin-top: 10px; display: flex; gap: 6px; justify-content: flex-end; }
+.list-empty { text-align: center; padding: 3rem 1rem; color: var(--ink-4); font-family: 'Crimson Text', serif; font-style: italic; font-size: 16px; }
 
 /* MISC */
-hr { border: none; border-top: 1px solid var(--line); margin: 1rem 0; }
-.empty { text-align: center; padding: 3rem 1rem; color: var(--soil-4); font-size: 14px; }
-a { color: var(--moss); }
+hr { border: none; border-top: 1px solid var(--rule); margin: 1rem 0; }
+.empty { text-align: center; padding: 3rem 1rem; color: var(--ink-4); font-size: 16px; font-style: italic; font-family: 'Crimson Text', serif; }
+a { color: var(--aged-green); }
 </style>
 </head>
 <body>
 
 <header>
-  <!-- Sketch leaves left -->
-  <svg style="position:absolute;left:0;top:0;height:58px;width:130px;pointer-events:none;opacity:0.55;" viewBox="0 0 130 58" xmlns="http://www.w3.org/2000/svg">
+  <!-- Botanical ink sketches flanking the logo -->
+  <svg style="position:absolute;left:8px;top:50%;transform:translateY(-50%);height:50px;width:110px;pointer-events:none;opacity:0.35;" viewBox="0 0 110 50" xmlns="http://www.w3.org/2000/svg">
     <g fill="none" stroke="#a8d5a2" stroke-linecap="round" stroke-linejoin="round">
-      <path stroke-width="1.2" d="M 6 56 C 14 38 40 16 70 6 C 50 26 28 46 6 56 Z"/>
-      <path stroke-width="0.6" d="M 6 56 C 34 36 58 18 70 6" opacity="0.8"/>
-      <path stroke-width="0.5" d="M 20 48 C 34 38 46 28 56 18" opacity="0.6"/>
-      <path stroke-width="0.5" d="M 34 42 C 44 34 52 26 58 18" opacity="0.5"/>
-      <path stroke-width="1.1" d="M 2 42 C 12 24 36 10 58 4 C 40 18 18 34 2 42 Z"/>
-      <path stroke-width="0.55" d="M 2 42 C 24 24 44 12 58 4" opacity="0.7"/>
-      <path stroke-width="0.5" d="M 14 35 C 26 26 38 18 48 12" opacity="0.55"/>
-      <path stroke-width="1.0" d="M 0 28 C 10 16 26 7 44 2 C 28 12 12 22 0 28 Z"/>
-      <path stroke-width="0.5" d="M 0 28 C 16 16 30 8 44 2" opacity="0.65"/>
-      <path stroke-width="0.7" d="M 0 56 C 6 40 14 26 24 14" opacity="0.5"/>
+      <!-- Herb sprig left -->
+      <path stroke-width="1" d="M 55 48 C 52 38 48 28 44 18"/>
+      <path stroke-width="0.8" d="M 44 18 C 38 12 30 10 26 14 C 34 16 42 20 44 18"/>
+      <path stroke-width="0.8" d="M 48 30 C 42 26 34 26 30 30 C 36 30 44 32 48 30"/>
+      <path stroke-width="0.8" d="M 50 22 C 56 16 58 8 54 4 C 52 10 50 18 50 22"/>
+      <!-- Small leaves -->
+      <path stroke-width="0.7" d="M 46 36 C 40 32 36 34 38 38 C 40 36 44 36 46 36"/>
+      <path stroke-width="0.7" d="M 52 26 C 58 22 62 24 60 28 C 58 26 54 26 52 26"/>
+      <!-- Root lines -->
+      <path stroke-width="0.6" d="M 55 48 C 50 46 46 48 44 50" opacity="0.7"/>
+      <path stroke-width="0.6" d="M 55 48 C 58 46 62 48 64 50" opacity="0.7"/>
     </g>
   </svg>
-  <span class="logo" style="position:relative;z-index:1;">Ingredigo</span>
-  <!-- Sketch leaves right -->
-  <svg style="position:absolute;right:0;top:0;height:58px;width:130px;pointer-events:none;opacity:0.55;" viewBox="0 0 130 58" xmlns="http://www.w3.org/2000/svg">
+  <div style="text-align:center;position:relative;z-index:1;">
+    <span class="logo">Ingredigo</span>
+    <span class="logo-ornament">~ a compendium of recipes ~</span>
+  </div>
+  <svg style="position:absolute;right:8px;top:50%;transform:translateY(-50%);height:50px;width:110px;pointer-events:none;opacity:0.35;" viewBox="0 0 110 50" xmlns="http://www.w3.org/2000/svg">
     <g fill="none" stroke="#a8d5a2" stroke-linecap="round" stroke-linejoin="round">
-      <path stroke-width="1.2" d="M 124 56 C 116 38 90 16 60 6 C 80 26 102 46 124 56 Z"/>
-      <path stroke-width="0.6" d="M 124 56 C 96 36 72 18 60 6" opacity="0.8"/>
-      <path stroke-width="0.5" d="M 110 48 C 96 38 84 28 74 18" opacity="0.6"/>
-      <path stroke-width="0.5" d="M 96 42 C 86 34 78 26 72 18" opacity="0.5"/>
-      <path stroke-width="1.1" d="M 128 42 C 118 24 94 10 72 4 C 90 18 112 34 128 42 Z"/>
-      <path stroke-width="0.55" d="M 128 42 C 106 24 86 12 72 4" opacity="0.7"/>
-      <path stroke-width="0.5" d="M 116 35 C 104 26 92 18 82 12" opacity="0.55"/>
-      <path stroke-width="1.0" d="M 130 28 C 120 16 104 7 86 2 C 102 12 118 22 130 28 Z"/>
-      <path stroke-width="0.5" d="M 130 28 C 114 16 100 8 86 2" opacity="0.65"/>
-      <path stroke-width="0.7" d="M 130 56 C 124 40 116 26 106 14" opacity="0.5"/>
+      <!-- Herb sprig right (mirrored) -->
+      <path stroke-width="1" d="M 55 48 C 58 38 62 28 66 18"/>
+      <path stroke-width="0.8" d="M 66 18 C 72 12 80 10 84 14 C 76 16 68 20 66 18"/>
+      <path stroke-width="0.8" d="M 62 30 C 68 26 76 26 80 30 C 74 30 66 32 62 30"/>
+      <path stroke-width="0.8" d="M 60 22 C 54 16 52 8 56 4 C 58 10 60 18 60 22"/>
+      <path stroke-width="0.7" d="M 64 36 C 70 32 74 34 72 38 C 70 36 66 36 64 36"/>
+      <path stroke-width="0.7" d="M 58 26 C 52 22 48 24 50 28 C 52 26 56 26 58 26"/>
+      <path stroke-width="0.6" d="M 55 48 C 60 46 64 48 66 50" opacity="0.7"/>
+      <path stroke-width="0.6" d="M 55 48 C 52 46 48 48 46 50" opacity="0.7"/>
     </g>
   </svg>
 </header>
@@ -327,21 +403,21 @@ a { color: var(--moss); }
 <div id="grocery-fab" style="display:none;position:fixed;bottom:78px;right:1.5rem;z-index:100;">
   <button onclick="showPage('week')" style="
     display:flex;align-items:center;gap:10px;
-    background:var(--moss);color:var(--parchment);
-    border:none;border-radius:28px;
-    padding:12px 22px 12px 18px;
-    font-family:'Lora',serif;font-size:15px;font-style:italic;
-    cursor:pointer;
-    box-shadow:0 4px 16px rgba(46,85,55,.45),0 2px 6px rgba(46,85,55,.3);
+    background:var(--aged-green);color:var(--page);
+    border:2px solid var(--ink);border-radius:4px;
+    padding:10px 22px 10px 16px;
+    font-family:'IM Fell English',serif;font-size:16px;font-style:italic;
+    cursor:pointer;letter-spacing:.03em;
+    box-shadow:3px 4px 12px rgba(20,50,20,.35),1px 2px 4px rgba(20,50,20,.2);
     transition:transform .15s,box-shadow .15s;
-  " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(46,85,55,.5),0 3px 8px rgba(46,85,55,.35)';"
-     onmouseout="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(46,85,55,.45),0 2px 6px rgba(46,85,55,.3)';">
+  " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='4px 6px 16px rgba(20,50,20,.4),2px 3px 6px rgba(20,50,20,.25)';"
+     onmouseout="this.style.transform='';this.style.boxShadow='3px 4px 12px rgba(20,50,20,.35),1px 2px 4px rgba(20,50,20,.2)';">
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M3 3h1.5l2.1 8.4a1 1 0 0 0 1 .6h6.3a1 1 0 0 0 1-.75L16 7H5"/>
       <circle cx="7.5" cy="15" r="1"/><circle cx="13.5" cy="15" r="1"/>
     </svg>
-    Grocery List
-    <span id="wk-badge" style="background:rgba(255,255,255,.25);color:var(--parchment);font-family:'Inter',sans-serif;font-style:normal;font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;"></span>
+    Grocery List <span id="fab-list-name" style="font-style:normal;font-size:12px;opacity:0.8;font-family:'Caveat',cursive;"></span>
+    <span id="wk-badge" style="background:rgba(255,255,255,.15);color:var(--page);font-family:'Crimson Text',serif;font-style:italic;font-size:13px;padding:0 6px;border-radius:2px;border:1px solid rgba(255,255,255,.2);"></span>
   </button>
 </div>
 
@@ -377,23 +453,46 @@ a { color: var(--moss); }
 
   <!-- GROCERY LIST -->
   <div class="page" id="page-week">
-    <div class="toolbar">
-      <button class="btn btn-ghost btn-sm" onclick="showPage('recipes')" style="gap:5px;">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2L4 7l5 5"/></svg>
-        Back
-      </button>
-      <span class="toolbar-title" style="font-size:20px;">Grocery List</span>
-      <button class="btn btn-sm" onclick="clearWeek()">Clear</button>
-      <button class="btn btn-green btn-sm" onclick="copyList()">Copy list</button>
+
+    <!-- Lists overview — shown when no list is active -->
+    <div id="lists-overview">
+      <div class="toolbar">
+        <button class="btn btn-ghost btn-sm" onclick="showPage('recipes')" style="gap:5px;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2L4 7l5 5"/></svg>
+          Back
+        </button>
+        <span class="toolbar-title" style="font-size:20px;">My Lists</span>
+        <button class="btn btn-green btn-sm" onclick="newList()">+ New list</button>
+      </div>
+      <div id="lists-grid"></div>
     </div>
-    <div class="wk-layout">
-      <div id="wk-main"></div>
-      <div class="card" style="padding:1rem;">
-        <div style="font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--soil-3);font-weight:600;margin-bottom:8px;">Add to list</div>
-        <input type="search" id="wksearch" placeholder="Search recipes…" oninput="renderWkPicker()" style="width:100%;margin-bottom:8px;font-size:13px;">
-        <div id="wkpicker" style="max-height:440px;overflow-y:auto;"></div>
+
+    <!-- Active list — shown when a list is open -->
+    <div id="list-active" style="display:none;">
+      <div class="toolbar">
+        <button class="btn btn-ghost btn-sm" onclick="closeActiveList()" style="gap:5px;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2L4 7l5 5"/></svg>
+          All lists
+        </button>
+        <span class="toolbar-title" style="font-size:20px;" id="active-list-name">—</span>
+        <button class="btn btn-sm btn-ghost" onclick="renameActiveList()">Rename</button>
+        <button class="btn btn-sm" onclick="copyList()">Copy</button>
+        <button class="btn btn-green btn-sm" onclick="saveActiveList()">Save list</button>
+      </div>
+      <div id="list-unsaved-bar" style="display:none;padding:8px 12px;background:var(--aged-green-lt);border:1px solid var(--rule);border-radius:var(--r);margin-bottom:1rem;font-size:13px;font-family:'Crimson Text',serif;font-style:italic;color:var(--ink-2);display:flex;align-items:center;justify-content:space-between;">
+        <span>Unsaved changes</span>
+        <button class="btn btn-sm btn-green" onclick="saveActiveList()">Save</button>
+      </div>
+      <div class="wk-layout">
+        <div id="wk-main"></div>
+        <div class="card" style="padding:1rem;">
+          <div style="font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:8px;font-family:'Crimson Text',serif;font-style:italic;">Add recipes</div>
+          <input type="search" id="wksearch" placeholder="Search recipes…" oninput="renderWkPicker()" style="width:100%;margin-bottom:8px;font-size:13px;">
+          <div id="wkpicker" style="max-height:440px;overflow-y:auto;"></div>
+        </div>
       </div>
     </div>
+
   </div>
 
 </main>
@@ -513,14 +612,16 @@ async function sbDelete(table, id){
 // ═══════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════
-// weekIds and checked stay local (session preferences, not shared)
 function ldLocal(k,d){ try{ return JSON.parse(localStorage.getItem(k))??d; }catch{ return d; } }
 function svLocal(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
 
 let ings = [];
 let recipes = [];
-let weekIds = ldLocal('mep_week',[]);
-let checked = ldLocal('mep_chk',[]);
+let groceryLists = [];        // all saved lists from Supabase
+let activeList = null;        // the currently open list object {id,name,recipe_ids,checked_items}
+let weekIds = [];             // recipe ids in current active list
+let checked = [];             // checked items in current active list
+let listDirty = false;        // unsaved changes flag
 
 let editRid = null, editIid = null;
 let typeFilter = '';
@@ -531,7 +632,7 @@ function setLoading(msg){
     if(!el){
       el = document.createElement('div');
       el.id = 'loading-overlay';
-      el.style.cssText = 'position:fixed;inset:0;background:rgba(244,239,230,.88);z-index:999;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--moss);font-family:Lora,Georgia,serif;font-style:italic;letter-spacing:.05em;';
+      el.style.cssText = 'position:fixed;inset:0;background:rgba(242,232,213,.92);z-index:999;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--ink-3);font-family:IM Fell English,serif;font-style:italic;letter-spacing:.06em;';
       document.body.appendChild(el);
     }
     el.textContent = msg;
@@ -544,13 +645,14 @@ function setLoading(msg){
 async function loadAll(){
   setLoading('Loading Ingredigo…');
   try {
-    const [fetchedIngs, fetchedRecs] = await Promise.all([
+    const [fetchedIngs, fetchedRecs, fetchedLists] = await Promise.all([
       sbGet('ingredients','order=name.asc'),
-      sbGet('recipes','order=name.asc')
+      sbGet('recipes','order=name.asc'),
+      sbGet('grocery_lists','order=updated_at.desc')
     ]);
     ings = fetchedIngs;
     recipes = fetchedRecs.map(r=>({...r, ingredients: r.ingredients||[]}));
-    // Seed ingredients if database is empty
+    groceryLists = fetchedLists.map(l=>({...l, recipe_ids:l.recipe_ids||[], checked_items:l.checked_items||[]}));
     if(ings.length === 0){
       const seedData = SEED.map((s,i)=>({id:'i'+i,name:s.n,unit:s.u,cat:s.c}));
       await sbUpsert('ingredients', seedData);
@@ -578,7 +680,7 @@ function showPage(n){
   if(tabEl) tabEl.classList.add('active');
   if(n==='recipes') renderRecipes();
   if(n==='ingredients') renderIngs();
-  if(n==='week'){ renderWk(); renderWkPicker(); }
+  if(n==='week'){ showWeekPage(); }
 }
 
 
@@ -590,8 +692,9 @@ function oM(n,d){
   if(n==='redit'&&d){ editRid=d.id; document.getElementById('rm-title').textContent='Edit Recipe'; document.getElementById('r-del-btn').style.display='inline-flex'; populateRForm(d); }
   if(n==='inew'){ editIid=null; document.getElementById('im-title').textContent='New Ingredient'; document.getElementById('i-del-btn').style.display='none'; document.getElementById('if-name').value=''; document.getElementById('if-unit').value='g'; document.getElementById('if-cat').value='Pantry'; }
   if(n==='iedit'&&d){ editIid=d.id; document.getElementById('im-title').textContent='Edit Ingredient'; document.getElementById('i-del-btn').style.display='inline-flex'; document.getElementById('if-name').value=d.name; document.getElementById('if-unit').value=d.unit; document.getElementById('if-cat').value=d.cat; }
-  const key = n.replace('rnew','recipe').replace('redit','recipe').replace('inew','ing').replace('iedit','ing');
-  document.getElementById('m-'+key).classList.add('open');
+  const key = n.replace('rnew','recipe').replace('redit','recipe').replace('inew','ing').replace('iedit','ing').replace('namelist','namelist');
+  const el = document.getElementById('m-'+key);
+  if(el){ el.classList.add('open'); if(n==='namelist') setTimeout(()=>document.getElementById('namelist-input').focus(),50); }
 }
 function cM(n){ document.getElementById('m-'+n).classList.remove('open'); }
 
@@ -826,36 +929,228 @@ async function delIng(){
 }
 
 // ═══════════════════════════════════════
-// WEEK
+// LISTS
 // ═══════════════════════════════════════
+
+// Open the grocery list page — show overview or active list
+function showWeekPage(){
+  if(activeList) showActiveList(); else showListsOverview();
+}
+
+function showListsOverview(){
+  document.getElementById('lists-overview').style.display='block';
+  document.getElementById('list-active').style.display='none';
+  renderListsGrid();
+}
+
+function showActiveList(){
+  document.getElementById('lists-overview').style.display='none';
+  document.getElementById('list-active').style.display='block';
+  document.getElementById('active-list-name').textContent=activeList.name;
+  renderWk(); renderWkPicker(); updUnsavedBar();
+}
+
+function renderListsGrid(){
+  const grid=document.getElementById('lists-grid');
+  if(!groceryLists.length){
+    grid.innerHTML='<div class="list-empty">No lists yet — create one to begin</div>'; return;
+  }
+  grid.innerHTML='<div class="lists-grid">'+groceryLists.map(l=>{
+    const recipeCount=l.recipe_ids.length;
+    const checkedCount=l.checked_items.length;
+    return `<div class="list-card" onclick="openList('${l.id}')">
+      <div class="list-card-name">${esc(l.name)}</div>
+      <div class="list-card-meta">${recipeCount} recipe${recipeCount!==1?'s':''} · ${checkedCount} item${checkedCount!==1?'s':''} checked</div>
+      <div class="list-card-actions">
+        <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();deleteList('${l.id}')">Delete</button>
+        <button class="btn btn-sm btn-green" onclick="event.stopPropagation();openList('${l.id}')">Open →</button>
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+// New list — prompt for name then create
+let nameListCallback = null;
+function newList(){
+  document.getElementById('namelist-title').textContent='New List';
+  document.getElementById('namelist-input').value='';
+  nameListCallback = async (name) => {
+    const list = {id:'l'+Date.now(), name, recipe_ids:[], checked_items:[], updated_at: new Date().toISOString()};
+    setLoading('Creating list…');
+    try{ await sbUpsert('grocery_lists', list); }catch(e){ setLoading(null); alert('Error: '+e.message); return; }
+    groceryLists.unshift(list);
+    setLoading(null);
+    activeList=list; weekIds=[]; checked=[]; listDirty=false;
+    updBadge(); showActiveList();
+  };
+  oM('namelist');
+}
+
+function confirmNameList(){
+  const name=document.getElementById('namelist-input').value.trim();
+  if(!name) return;
+  cM('namelist');
+  if(nameListCallback) nameListCallback(name);
+}
+
+function openList(id){
+  if(listDirty && activeList){
+    if(!confirm('You have unsaved changes. Discard them?')) return;
+  }
+  const list = groceryLists.find(l=>l.id===id);
+  if(!list) return;
+  activeList=list;
+  weekIds=[...list.recipe_ids];
+  checked=[...list.checked_items];
+  listDirty=false;
+  updBadge(); showActiveList();
+}
+
+function closeActiveList(){
+  if(listDirty && !confirm('Unsaved changes will be lost. Continue?')) return;
+  activeList=null; weekIds=[]; checked=[]; listDirty=false;
+  updBadge(); showListsOverview();
+}
+
+async function saveActiveList(){
+  if(!activeList) return;
+  activeList.recipe_ids=[...weekIds];
+  activeList.checked_items=[...checked];
+  activeList.updated_at=new Date().toISOString();
+  setLoading('Saving…');
+  try{ await sbUpsert('grocery_lists', activeList); }catch(e){ setLoading(null); alert('Error: '+e.message); return; }
+  // Update local cache
+  const idx=groceryLists.findIndex(l=>l.id===activeList.id);
+  if(idx>-1) groceryLists[idx]={...activeList};
+  listDirty=false;
+  setLoading(null); updUnsavedBar();
+  // Brief feedback
+  const btn=document.querySelector('#list-active .btn-green');
+  if(btn){ const orig=btn.textContent; btn.textContent='Saved ✓'; setTimeout(()=>btn.textContent=orig,1500); }
+}
+
+function renameActiveList(){
+  if(!activeList) return;
+  document.getElementById('namelist-title').textContent='Rename List';
+  document.getElementById('namelist-input').value=activeList.name;
+  nameListCallback = async (name) => {
+    activeList.name=name;
+    document.getElementById('active-list-name').textContent=name;
+    const idx=groceryLists.findIndex(l=>l.id===activeList.id);
+    if(idx>-1) groceryLists[idx].name=name;
+    await saveActiveList();
+  };
+  oM('namelist');
+}
+
+async function deleteList(id){
+  if(!confirm('Delete this list?')) return;
+  setLoading('Deleting…');
+  try{ await sbDelete('grocery_lists',id); }catch(e){ setLoading(null); alert('Error: '+e.message); return; }
+  groceryLists=groceryLists.filter(l=>l.id!==id);
+  if(activeList?.id===id){ activeList=null; weekIds=[]; checked=[]; listDirty=false; }
+  setLoading(null); updBadge(); renderListsGrid();
+}
+
+function updUnsavedBar(){
+  const bar=document.getElementById('list-unsaved-bar');
+  if(bar) bar.style.display=listDirty?'flex':'none';
+}
+
+function markDirty(){
+  listDirty=true; updUnsavedBar();
+}
+
 function clearWeekFromRecipes(){
   if(!weekIds.length) return;
-  weekIds=[]; checked=[];
-  svLocal('mep_week',weekIds); svLocal('mep_chk',checked);
-  renderRecipes(); // calls updBadge internally
+  weekIds=[]; checked=[]; markDirty();
+  renderRecipes();
   if(document.getElementById('page-week').classList.contains('active')){ renderWk(); renderWkPicker(); }
 }
+
 function toggleWk(id){
+  // If no active list, prompt to create or pick one first
+  if(!activeList){
+    pendingRecipeId = id;
+    showListPicker();
+    return;
+  }
   weekIds.includes(id)?weekIds=weekIds.filter(x=>x!==id):weekIds.push(id);
-  svLocal('mep_week',weekIds); updBadge(); renderRecipes();
+  markDirty(); updBadge(); renderRecipes();
   if(document.getElementById('page-week').classList.contains('active')){ renderWk(); renderWkPicker(); }
 }
+
+// Pending recipe to add once a list is chosen
+let pendingRecipeId = null;
+
+function showListPicker(){
+  const modal = document.getElementById('m-listpicker');
+  // Populate existing lists
+  const container = document.getElementById('listpicker-existing');
+  if(groceryLists.length){
+    container.style.display='block';
+    container.innerHTML='<div style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-style:italic;font-family:Crimson Text,serif;margin-bottom:8px;">Add to existing list</div>'+
+      groceryLists.map(l=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border:1px solid var(--rule);border-radius:var(--r);margin-bottom:6px;background:var(--page);cursor:pointer;" onclick="pickListForRecipe('${l.id}')">
+        <div>
+          <div style="font-family:Caveat,cursive;font-size:16px;">${esc(l.name)}</div>
+          <div style="font-size:12px;color:var(--ink-4);font-style:italic;font-family:Crimson Text,serif;">${l.recipe_ids.length} recipe${l.recipe_ids.length!==1?'s':''}</div>
+        </div>
+        <button class="btn btn-sm btn-green" onclick="event.stopPropagation();pickListForRecipe('${l.id}')">Add →</button>
+      </div>`).join('');
+  } else {
+    container.style.display='none';
+  }
+  modal.classList.add('open');
+}
+
+function pickListForRecipe(listId){
+  cM('listpicker');
+  openList(listId);
+  if(pendingRecipeId && !weekIds.includes(pendingRecipeId)){
+    weekIds.push(pendingRecipeId);
+    markDirty(); updBadge(); renderRecipes();
+  }
+  pendingRecipeId=null;
+  showPage('week');
+}
+
+function newListForRecipe(){
+  cM('listpicker');
+  const recipeId = pendingRecipeId;
+  pendingRecipeId = null;
+  document.getElementById('namelist-title').textContent='New List';
+  document.getElementById('namelist-input').value='';
+  nameListCallback = async (name) => {
+    const list = {id:'l'+Date.now(), name, recipe_ids:[], checked_items:[], updated_at: new Date().toISOString()};
+    setLoading('Creating list…');
+    try{ await sbUpsert('grocery_lists', list); }catch(e){ setLoading(null); alert('Error: '+e.message); return; }
+    groceryLists.unshift(list);
+    setLoading(null);
+    activeList=list; weekIds=[]; checked=[]; listDirty=false;
+    if(recipeId){ weekIds.push(recipeId); markDirty(); }
+    updBadge(); renderRecipes(); showPage('week');
+  };
+  oM('namelist');
+}
+
 function clearWeek(){
   if(!weekIds.length) return;
-  if(!confirm('Remove all recipes from this list?')) return;
-  weekIds=[]; checked=[]; svLocal('mep_week',weekIds); svLocal('mep_chk',checked);
+  weekIds=[]; checked=[]; markDirty();
   renderWk(); renderWkPicker(); renderRecipes();
 }
+
 function updBadge(){
-  const fab = document.getElementById('grocery-fab');
-  const badge = document.getElementById('wk-badge');
-  if(weekIds.length){
-    fab.style.display = 'block';
-    badge.textContent = weekIds.length;
+  const fab=document.getElementById('grocery-fab');
+  const badge=document.getElementById('wk-badge');
+  const nameEl=document.getElementById('fab-list-name');
+  if(activeList){
+    fab.style.display='block';
+    badge.textContent=weekIds.length+' recipes';
+    if(nameEl) nameEl.textContent='· '+activeList.name;
   } else {
-    fab.style.display = 'none';
-    badge.textContent = '';
-    // If on grocery list page with nothing selected, go back to recipes
+    fab.style.display='none';
+    badge.textContent='';
+    if(nameEl) nameEl.textContent='';
     if(document.getElementById('page-week').classList.contains('active')) showPage('recipes');
   }
   const cb=document.getElementById('r-clear-week-btn');
@@ -864,30 +1159,28 @@ function updBadge(){
 
 function renderWk(){
   const el=document.getElementById('wk-main');
-  if(!weekIds.length){ el.innerHTML='<div class="empty" style="padding:4rem 1rem;"><div style="font-size:32px;margin-bottom:12px;">🛒</div><div style="font-size:16px;font-style:italic;color:var(--ink-3);">Select recipes to build your list</div><div style="font-size:13px;color:var(--ink-4);margin-top:6px;">Search and add recipes using the panel on the right</div></div>'; return; }
+  if(!weekIds.length){ el.innerHTML='<div class="empty" style="padding:3rem 1rem;"><div style="font-size:32px;margin-bottom:12px;">🛒</div><div style="font-size:16px;font-style:italic;color:var(--ink-3);">Add recipes using the panel on the right</div></div>'; return; }
   const wkRecs=weekIds.map(id=>recipes.find(r=>r.id===id)).filter(Boolean);
 
-  // Recipe list
-  let html='<div style="font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--soil-3);font-weight:600;margin-bottom:8px;">Selected recipes</div>';
+  let html='<div style="font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:8px;font-family:Crimson Text,serif;font-style:italic;">Selected recipes</div>';
   html+=wkRecs.map(r=>`<div class="wk-ri"><div><div>${esc(r.name)}</div><div class="wk-ri-meta">${[r.type,r.cuisine,r.servings?r.servings+' servings':''].filter(Boolean).join(' · ')}</div></div><button class="btn btn-sm btn-ghost" onclick="toggleWk('${r.id}')">Remove</button></div>`).join('');
 
-  // Consolidated list
   const cons=consolidate(wkRecs);
   const byCat={};
   cons.forEach(item=>{ const c=catOf(item.name); (byCat[c]=byCat[c]||[]).push(item); });
   const CAT_ORDER=['Produce','Meat & Fish','Dairy & Eggs','Bakery','Pantry','Spices & Herbs','Condiments','Frozen','Beverages','Other'];
   const sortedCats=[...CAT_ORDER.filter(c=>byCat[c]),...Object.keys(byCat).filter(c=>!CAT_ORDER.includes(c))];
 
-  html+='<div style="font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:1.25rem 0 6px;">Shopping list</div>';
+  html+='<div style="font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:1.25rem 0 6px;font-family:Crimson Text,serif;font-style:italic;">Shopping list</div>';
   html+=sortedCats.map(cat=>`
     <div class="shop-sec">
       <div class="shop-sec-title">${esc(cat)}</div>
       <div class="sl-header"><span></span><span>Ingredient</span><span>Metric</span><span>Cups / vol</span><span>Recipe</span></div>
       ${byCat[cat].map(item=>{
         const ck=checked.includes(item.name);
-        const cups = item._ml!==null ? mlToCooking(item._ml) : '';
-        const metricStr = item.isCount ? '' : (item.dq2 ? item.dq+' ('+item.dq2+')' : item.dq);
-        const nameStr = item.isCount ? (item.dq && item.dq!=='—' ? item.dq+' × '+item.name : item.name) : item.name;
+        const cups=item._ml!==null?mlToCooking(item._ml):'';
+        const metricStr=item.isCount?'':(item.dq2?item.dq+' ('+item.dq2+')':item.dq);
+        const nameStr=item.isCount?(item.dq&&item.dq!=='—'?item.dq+' × '+item.name:item.name):item.name;
         return `<div class="si ${ck?'ck':''}" onclick="toggleChk('${esc(item.name)}')">
           <div class="si-chk ${ck?'tk':''}">${ck?'<svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 3.5,6.5 9,1" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}</div>
           <span class="si-name">${esc(nameStr)}</span>
@@ -900,7 +1193,7 @@ function renderWk(){
   el.innerHTML=html;
 }
 
-function toggleChk(name){ checked.includes(name)?checked=checked.filter(x=>x!==name):checked.push(name); svLocal('mep_chk',checked); renderWk(); }
+function toggleChk(name){ checked.includes(name)?checked=checked.filter(x=>x!==name):checked.push(name); markDirty(); renderWk(); }
 function catOf(name){ return ings.find(i=>i.name.toLowerCase()===name.toLowerCase())?.cat||'Other'; }
 
 function renderWkPicker(){
@@ -909,23 +1202,24 @@ function renderWkPicker(){
   if(q) list=list.filter(r=>r.name.toLowerCase().includes(q)||(r.type||'').toLowerCase().includes(q));
   document.getElementById('wkpicker').innerHTML=list.map(r=>{
     const iw=weekIds.includes(r.id);
-    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 2px;border-bottom:1px solid var(--paper-3);">
-      <div><div style="font-size:13px;${iw?'color:var(--green);font-weight:600;':''}">${esc(r.name)}</div>${r.type?`<div style="font-size:11px;color:var(--ink-4)">${esc(r.type)}</div>`:''}</div>
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 2px;border-bottom:1px solid var(--page-4);">
+      <div><div style="font-size:15px;font-family:Caveat,cursive;${iw?'color:var(--aged-green);font-weight:600;':''}">${esc(r.name)}</div>${r.type?`<div style="font-size:12px;color:var(--ink-4);font-style:italic;">${esc(r.type)}</div>`:''}</div>
       <button class="btn btn-sm ${iw?'btn-green':'btn-ghost'}" onclick="toggleWk('${r.id}')">${iw?'✓':'+'}</button>
     </div>`;
-  }).join('')||'<p style="font-size:13px;color:var(--ink-4);padding:8px 0">No recipes found</p>';
+  }).join('')||'<p style="font-size:14px;color:var(--ink-4);padding:8px 0;font-style:italic;">No recipes found</p>';
 }
 
 function copyList(){
   const wkRecs=weekIds.map(id=>recipes.find(r=>r.id===id)).filter(Boolean);
   const items=consolidate(wkRecs);
   if(!items.length) return;
+  const header=activeList?activeList.name+' — Grocery List\n'+'—'.repeat(40)+'\n':'';
   const lines=items.map(i=>{
     const metric=i.dq2?i.dq+' ('+i.dq2+')':i.dq;
     const cups=i._ml!==null?mlToCooking(i._ml):'';
     return i.name.padEnd(28)+metric.padEnd(14)+(cups?cups.padEnd(12):'')+i.sources.join(', ');
   });
-  navigator.clipboard.writeText(lines.join('\n')).then(()=>alert('Copied!')).catch(()=>{});
+  navigator.clipboard.writeText(header+lines.join('\n')).then(()=>alert('Copied!')).catch(()=>{});
 }
 
 // ═══════════════════════════════════════
@@ -1028,7 +1322,32 @@ function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
 // ═══════════════════════════════════════
 loadAll();
 </script>
-<!-- Grass runner footer -->
+<!-- MODAL: Pick or create list when adding a recipe -->
+<div class="mb" id="m-listpicker" onclick="if(event.target===this)cM('listpicker')">
+  <div class="modal" style="max-width:400px;">
+    <div class="mh"><h2>Add to a list</h2><button class="xbtn" onclick="cM('listpicker')">×</button></div>
+    <div class="mbody">
+      <button class="btn btn-green" style="width:100%;justify-content:center;margin-bottom:1rem;font-size:15px;" onclick="newListForRecipe()">+ Create a new list</button>
+      <div id="listpicker-existing"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Name list -->
+<div class="mb" id="m-namelist" onclick="if(event.target===this)cM('namelist')">
+  <div class="modal" style="max-width:380px;">
+    <div class="mh"><h2 id="namelist-title">New List</h2><button class="xbtn" onclick="cM('namelist')">×</button></div>
+    <div class="mbody">
+      <div class="fr"><label>List name</label><input type="text" id="namelist-input" placeholder="e.g. Week of May 12, Party, Camping…" onkeydown="if(event.key==='Enter')confirmNameList()"></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn" onclick="cM('namelist')">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmNameList()">Create</button>
+    </div>
+  </div>
+</div>
+
+
 <div style="position:fixed;bottom:0;left:0;right:0;height:62px;pointer-events:none;z-index:30;overflow:hidden;">
   <svg width="100%" height="62" preserveAspectRatio="none" viewBox="0 0 1400 62" xmlns="http://www.w3.org/2000/svg">
     <g fill="none" stroke-linecap="round">
