@@ -397,6 +397,7 @@ a { color: var(--aged-green); }
 <nav class="tabs">
   <button class="tab active" id="tab-recipes" onclick="showPage('recipes')">Recipes</button>
   <button class="tab" id="tab-ingredients" onclick="showPage('ingredients')">Ingredients</button>
+  <button class="tab" id="tab-week" onclick="showPage('week')">Lists <span class="badge" id="lists-badge" style="display:none">0</span></button>
 </nav>
 
 <!-- Floating grocery list button — appears when recipes are selected -->
@@ -1069,15 +1070,16 @@ function clearWeekFromRecipes(){
 }
 
 function toggleWk(id){
-  // If no active list, prompt to create or pick one first
-  if(!activeList){
-    pendingRecipeId = id;
-    showListPicker();
+  // If recipe is already in active list, remove it directly
+  if(activeList && weekIds.includes(id)){
+    weekIds=weekIds.filter(x=>x!==id);
+    markDirty(); updBadge(); renderRecipes();
+    if(document.getElementById('page-week').classList.contains('active')){ renderWk(); renderWkPicker(); }
     return;
   }
-  weekIds.includes(id)?weekIds=weekIds.filter(x=>x!==id):weekIds.push(id);
-  markDirty(); updBadge(); renderRecipes();
-  if(document.getElementById('page-week').classList.contains('active')){ renderWk(); renderWkPicker(); }
+  // Always ask which list to add to
+  pendingRecipeId = id;
+  showListPicker();
 }
 
 // Pending recipe to add once a list is chosen
@@ -1085,20 +1087,25 @@ let pendingRecipeId = null;
 
 function showListPicker(){
   const modal = document.getElementById('m-listpicker');
-  // Populate existing lists
   const container = document.getElementById('listpicker-existing');
+  const recipe = recipes.find(r=>r.id===pendingRecipeId);
+  // Update modal title with recipe name
+  document.getElementById('listpicker-recipe-name').textContent = recipe ? '"'+recipe.name+'"' : 'recipe';
+
   if(groceryLists.length){
-    container.style.display='block';
-    container.innerHTML='<div style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-style:italic;font-family:Crimson Text,serif;margin-bottom:8px;">Add to existing list</div>'+
-      groceryLists.map(l=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border:1px solid var(--rule);border-radius:var(--r);margin-bottom:6px;background:var(--page);cursor:pointer;" onclick="pickListForRecipe('${l.id}')">
-        <div>
-          <div style="font-family:Caveat,cursive;font-size:16px;">${esc(l.name)}</div>
-          <div style="font-size:12px;color:var(--ink-4);font-style:italic;font-family:Crimson Text,serif;">${l.recipe_ids.length} recipe${l.recipe_ids.length!==1?'s':''}</div>
-        </div>
-        <button class="btn btn-sm btn-green" onclick="event.stopPropagation();pickListForRecipe('${l.id}')">Add →</button>
-      </div>`).join('');
+    container.innerHTML='<div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-style:italic;font-family:Crimson Text,serif;margin-bottom:8px;">Add to existing list</div>'+
+      groceryLists.map(l=>{
+        const isActive = activeList?.id===l.id;
+        return `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border:1px solid var(--rule);border-radius:var(--r);margin-bottom:6px;background:${isActive?'var(--aged-green-lt)':'var(--page)'};cursor:pointer;" onclick="pickListForRecipe('${l.id}')">
+          <div>
+            <div style="font-family:Caveat,cursive;font-size:16px;">${esc(l.name)}${isActive?' <span style="font-size:12px;color:var(--aged-green);font-style:italic;">(active)</span>':''}</div>
+            <div style="font-size:12px;color:var(--ink-4);font-style:italic;font-family:Crimson Text,serif;">${l.recipe_ids.length} recipe${l.recipe_ids.length!==1?'s':''}</div>
+          </div>
+          <button class="btn btn-sm btn-green" onclick="event.stopPropagation();pickListForRecipe('${l.id}')">Add →</button>
+        </div>`;
+      }).join('');
   } else {
-    container.style.display='none';
+    container.innerHTML='<p style="font-size:13px;color:var(--ink-4);font-style:italic;font-family:Crimson Text,serif;text-align:center;padding:.5rem 0;">No lists yet — create one below</p>';
   }
   modal.classList.add('open');
 }
@@ -1143,6 +1150,13 @@ function updBadge(){
   const fab=document.getElementById('grocery-fab');
   const badge=document.getElementById('wk-badge');
   const nameEl=document.getElementById('fab-list-name');
+  const listsBadge=document.getElementById('lists-badge');
+  // Lists tab badge — shows number of lists
+  if(listsBadge){
+    listsBadge.style.display=groceryLists.length?'inline':'none';
+    listsBadge.textContent=groceryLists.length;
+  }
+  // Floating button — only when a list is active
   if(activeList){
     fab.style.display='block';
     badge.textContent=weekIds.length+' recipes';
@@ -1151,7 +1165,6 @@ function updBadge(){
     fab.style.display='none';
     badge.textContent='';
     if(nameEl) nameEl.textContent='';
-    if(document.getElementById('page-week').classList.contains('active')) showPage('recipes');
   }
   const cb=document.getElementById('r-clear-week-btn');
   if(cb) cb.style.display=weekIds.length?'inline-flex':'none';
@@ -1325,7 +1338,7 @@ loadAll();
 <!-- MODAL: Pick or create list when adding a recipe -->
 <div class="mb" id="m-listpicker" onclick="if(event.target===this)cM('listpicker')">
   <div class="modal" style="max-width:400px;">
-    <div class="mh"><h2>Add to a list</h2><button class="xbtn" onclick="cM('listpicker')">×</button></div>
+    <div class="mh"><h2>Add <span id="listpicker-recipe-name" style="color:var(--aged-green);"></span> to…</h2><button class="xbtn" onclick="cM('listpicker')">×</button></div>
     <div class="mbody">
       <button class="btn btn-green" style="width:100%;justify-content:center;margin-bottom:1rem;font-size:15px;" onclick="newListForRecipe()">+ Create a new list</button>
       <div id="listpicker-existing"></div>
