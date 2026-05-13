@@ -466,7 +466,7 @@ a { color: var(--teal); }
   <div class="page active" id="page-recipes">
     <div class="toolbar">
       <span class="toolbar-title">Recipe Catalogue</span>
-      <input type="search" class="search-box" id="rsearch" placeholder="Search…" oninput="renderRecipes()">
+      <input type="search" class="search-box" id="rsearch" placeholder="Search recipes or ingredients…" oninput="renderRecipes()" style="width:260px;">
       <select id="recipe-sort-sel" onchange="recipeSort=this.value;renderRecipes()" style="font-size:12px;padding:6px 10px;border-color:var(--line-2);color:var(--teal);">
         <option value="name">A → Z</option>
         <option value="name-desc">Z → A</option>
@@ -491,7 +491,7 @@ a { color: var(--teal); }
     </div>
     <div class="card" style="overflow:hidden;">
       <table class="ing-table">
-        <thead><tr><th>Name</th><th>Default unit</th><th>Category</th><th style="width:80px"></th></tr></thead>
+        <thead><tr><th>Name</th><th>Metric unit</th><th>Cooking unit</th><th>Category</th><th style="width:80px"></th></tr></thead>
         <tbody id="itbody"></tbody>
       </table>
     </div>
@@ -585,12 +585,25 @@ a { color: var(--teal); }
     <div class="mh"><h2 id="im-title">New Ingredient</h2><button class="xbtn" onclick="cM('ing')">×</button></div>
     <div class="mbody">
       <div class="fr"><label>Name *</label><input type="text" id="if-name" placeholder="e.g. plain flour"></div>
-      <div class="fr"><label>Default unit</label>
-        <select id="if-unit">
-          <option value="g">g</option><option value="kg">kg</option><option value="oz">oz</option><option value="lb">lb</option>
-          <option value="ml">ml</option><option value="L">L</option><option value="tsp">tsp</option><option value="tbsp">tbsp</option>
-          <option value="cup">cup</option><option value="fl oz">fl oz</option><option value="pint">pint</option><option value=""></option>
-        </select>
+      <div class="fg">
+        <div class="fr"><label>Metric unit</label>
+          <select id="if-unit" onchange="updateRatioWrap()">
+            <option value="g">g</option><option value="kg">kg</option><option value="oz">oz</option><option value="lb">lb</option>
+            <option value="ml">ml</option><option value="L">L</option><option value=""></option>
+          </select>
+        </div>
+        <div class="fr"><label>Cooking unit</label>
+          <select id="if-unit-cooking" onchange="updateRatioWrap()">
+            <option value="">— none —</option>
+            <option value="cup">cup</option><option value="tbsp">tbsp</option><option value="tsp">tsp</option>
+            <option value="fl oz">fl oz</option><option value="pint">pint</option><option value="oz">oz</option><option value="lb">lb</option>
+          </select>
+        </div>
+      </div>
+      <div class="fr" id="if-ratio-wrap" style="display:none;">
+        <label>1 <span id="if-ratio-unit-label">cup</span> = <span style="color:var(--teal-40);font-weight:300;font-size:11px;">how many <span id="if-ratio-metric-label">g</span>?</span></label>
+        <input type="text" id="if-ratio" placeholder="e.g. 125" style="width:100px;" inputmode="decimal">
+        <div class="fhint" id="if-ratio-hint"></div>
       </div>
       <div class="fr"><label>Category</label>
         <select id="if-cat">
@@ -663,7 +676,11 @@ let ings = [];
 let recipes = [];
 let groceryLists = [];        // kept in background for future use
 let activeList = null;        // unused for now — single list mode
-let weekIds = ldLocal('mep_week',[]);
+// weekIds: array of {id, servings} objects
+let _savedWeek = ldLocal('mep_week',[]);
+let weekIds = Array.isArray(_savedWeek) && _savedWeek.length && typeof _savedWeek[0]==='string'
+  ? _savedWeek.map(id=>({id, servings: null}))  // migrate old format
+  : _savedWeek;
 let checked = ldLocal('mep_chk',[]);
 let listDirty = false;        // unused — kept for compatibility
 
@@ -737,8 +754,8 @@ function showPage(n){
 function oM(n,d){
   if(n==='rnew'){ editRid=null; document.getElementById('rm-title').textContent='New Recipe'; document.getElementById('r-del-btn').style.display='none'; clearRForm(); }
   if(n==='redit'&&d){ editRid=d.id; document.getElementById('rm-title').textContent='Edit Recipe'; document.getElementById('r-del-btn').style.display='inline-flex'; populateRForm(d); }
-  if(n==='inew'){ editIid=null; document.getElementById('im-title').textContent='New Ingredient'; document.getElementById('i-del-btn').style.display='none'; document.getElementById('if-name').value=''; document.getElementById('if-unit').value='g'; document.getElementById('if-cat').value='Pantry'; }
-  if(n==='iedit'&&d){ editIid=d.id; document.getElementById('im-title').textContent='Edit Ingredient'; document.getElementById('i-del-btn').style.display='inline-flex'; document.getElementById('if-name').value=d.name; document.getElementById('if-unit').value=d.unit; document.getElementById('if-cat').value=d.cat; }
+  if(n==='inew'){ editIid=null; document.getElementById('im-title').textContent='New Ingredient'; document.getElementById('i-del-btn').style.display='none'; document.getElementById('if-name').value=''; document.getElementById('if-unit').value='g'; document.getElementById('if-unit-cooking').value=''; document.getElementById('if-ratio').value=''; document.getElementById('if-cat').value='Pantry'; updateRatioWrap(); }
+  if(n==='iedit'&&d){ editIid=d.id; document.getElementById('im-title').textContent='Edit Ingredient'; document.getElementById('i-del-btn').style.display='inline-flex'; document.getElementById('if-name').value=d.name; document.getElementById('if-unit').value=d.unit||'g'; document.getElementById('if-unit-cooking').value=d.unit_cooking||''; document.getElementById('if-ratio').value=d.unit_cooking_ratio||''; document.getElementById('if-cat').value=d.cat; updateRatioWrap(); }
   const key = n.replace('rnew','recipe').replace('redit','recipe').replace('inew','ing').replace('iedit','ing').replace('namelist','namelist');
   const el = document.getElementById('m-'+key);
   if(el){ el.classList.add('open'); if(n==='namelist') setTimeout(()=>document.getElementById('namelist-input').focus(),50); }
@@ -768,7 +785,13 @@ function renderRecipes(){
   if(summary&&activeFilters.size){ summary.textContent=[...activeFilters].join(' + '); }
 
   let list=recipes;
-  if(q) list=list.filter(r=>r.name.toLowerCase().includes(q)||(r.cuisine||'').toLowerCase().includes(q)||(r.source||'').toLowerCase().includes(q)||((r.tags||[]).join(' ').toLowerCase().includes(q)));
+  if(q) list=list.filter(r=>
+    r.name.toLowerCase().includes(q)||
+    (r.cuisine||'').toLowerCase().includes(q)||
+    (r.source||'').toLowerCase().includes(q)||
+    (r.tags||[]).join(' ').toLowerCase().includes(q)||
+    (r.ingredients||[]).some(i=>i.name.toLowerCase().includes(q))
+  );
   if(activeFilters.size){
     const types=[...new Set(recipes.map(r=>r.type).filter(Boolean))];
     const allTags=[...new Set(recipes.flatMap(r=>r.tags||[]))];
@@ -789,7 +812,7 @@ function renderRecipes(){
   const g=document.getElementById('rgrid');
   if(!list.length){ g.innerHTML='<div class="empty" style="grid-column:1/-1">No recipes yet — click <strong>New Recipe</strong> to add one.</div>'; return; }
   g.innerHTML=list.map(r=>{
-    const iw=weekIds.includes(r.id);
+    const iw=weekIds.some(w=>w.id===r.id);
     const stars=r.rating ? '★'.repeat(r.rating)+'☆'.repeat(5-r.rating) : '';
     const tags=(r.tags||[]).map(t=>`<span class="rc-tag">${esc(t)}</span>`).join('');
     return `<div class="rc ${iw?'in-week':''}" onclick="oM('redit',getRec('${r.id}'))">
@@ -1029,7 +1052,7 @@ async function delRecipe(){
   setLoading('Deleting…');
   try{ await sbDelete('recipes',editRid); }catch(e){ setLoading(null); alert('Error: '+e.message); return; }
   recipes=recipes.filter(r=>r.id!==editRid);
-  weekIds=weekIds.filter(id=>id!==editRid);
+  weekIds=weekIds.filter(w=>w.id!==editRid);
   svLocal('mep_week',weekIds);
   setLoading(null);
   cM('recipe'); renderRecipes();
@@ -1052,14 +1075,70 @@ function renderIngs(){
   list=[...list].sort((a,b)=>a.name.localeCompare(b.name));
   const tb=document.getElementById('itbody');
   if(!list.length){ tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--ink-4)">No ingredients found</td></tr>'; return; }
-  tb.innerHTML=list.map(i=>`<tr><td>${esc(i.name)}</td><td>${esc(i.unit||'—')}</td><td><span class="cat-b">${esc(i.cat||'—')}</span></td><td style="text-align:right"><button class="btn btn-sm btn-ghost" onclick="oM('iedit',getIng('${i.id}'))">Edit</button></td></tr>`).join('');
+  tb.innerHTML=list.map(i=>`<tr><td>${esc(i.name)}</td><td>${esc(i.unit||'—')}</td><td style="font-size:12px;color:var(--gold);">${i.unit_cooking?esc(i.unit_cooking)+(i.unit_cooking_ratio?' = '+i.unit_cooking_ratio+esc(i.unit||''):''):'—'}</td><td><span class="cat-b">${esc(i.cat||'—')}</span></td><td style="text-align:right"><button class="btn btn-sm btn-ghost" onclick="oM('iedit',getIng('${i.id}'))">Edit</button></td></tr>`).join('');
 }
 function getIng(id){ return ings.find(i=>i.id===id); }
+function getIngByName(name){ return ings.find(i=>i.name.toLowerCase()===name.toLowerCase().trim()); }
+
+// ── DUAL UNIT HELPERS ──────────────────────────────────────────────────────
+// Known common ratios (fallback when ingredient has no ratio set)
+const KNOWN_RATIOS = {
+  // volume ingredients: 1 cup = Xml
+  'cup-ml': 250, 'cup-L': 0.25,
+  'tbsp-ml': 15, 'tsp-ml': 5,
+  'fl oz-ml': 30, 'pint-ml': 473,
+  // weight ingredients: 1 cup flour ~125g, sugar ~200g etc — these need ingredient-specific ratios
+  'oz-g': 28.35, 'lb-g': 453.6, 'oz-kg': 0.02835, 'lb-kg': 0.4536,
+};
+
+// Convert a value from one unit to another using ingredient's stored ratio or known conversions
+function convertUnit(val, fromUnit, toUnit, ingRatio){
+  if(!val || fromUnit === toUnit) return val;
+  if(!fromUnit || !toUnit) return null;
+  // Use ingredient-specific ratio if available (e.g. 1 cup flour = 125g)
+  if(ingRatio){
+    const metricUnits = ['g','kg','ml','L'];
+    const cookingUnits = ['cup','tbsp','tsp','fl oz','pint','oz','lb'];
+    const fromMetric = metricUnits.includes(fromUnit);
+    const toMetric   = metricUnits.includes(toUnit);
+    if(fromMetric && cookingUnits.includes(toUnit)) return val / ingRatio;
+    if(cookingUnits.includes(fromUnit) && toMetric)  return val * ingRatio;
+  }
+  // Fallback: convert via base units
+  const fb = toBase(String(val), fromUnit);
+  if(!fb) return null;
+  const tb = toBase('1', toUnit);
+  if(!tb || fb.t !== tb.t) return null;
+  return fb.v / tb.v;
+}
+
+function fmtNum(n){ if(n===null||n===undefined||isNaN(n)) return ''; const r=Math.round(n*100)/100; return r % 1 === 0 ? String(r) : r.toFixed(2).replace(/\.?0+$/,''); }
+
+// Show/hide ratio field in ingredient modal
+function updateRatioWrap(){
+  const uc = document.getElementById('if-unit-cooking').value;
+  const um = document.getElementById('if-unit').value;
+  const wrap = document.getElementById('if-ratio-wrap');
+  if(!uc || !wrap) return;
+  wrap.style.display = uc ? 'block' : 'none';
+  document.getElementById('if-ratio-unit-label').textContent = uc || '';
+  document.getElementById('if-ratio-metric-label').textContent = um || 'metric unit';
+  // Suggest known ratio
+  const key = uc+'-'+um;
+  const hint = document.getElementById('if-ratio-hint');
+  if(KNOWN_RATIOS[key]){
+    hint.textContent = 'Suggested: '+KNOWN_RATIOS[key]+' (e.g. 1 '+uc+' = '+KNOWN_RATIOS[key]+' '+um+')';
+  } else {
+    hint.textContent = 'Enter how many '+um+' are in 1 '+uc;
+  }
+}
 async function saveIng(){
   const name=document.getElementById('if-name').value.trim().toLowerCase();
   if(!name){ alert('Name is required.'); return; }
   if(ings.find(i=>i.name.toLowerCase()===name&&i.id!==editIid)){ alert('Ingredient already exists.'); return; }
-  const obj={id:editIid||('i'+Date.now()),name,unit:document.getElementById('if-unit').value,cat:document.getElementById('if-cat').value};
+  const unitCooking=document.getElementById('if-unit-cooking').value;
+  const ratioRaw=parseFloat(document.getElementById('if-ratio').value)||null;
+  const obj={id:editIid||('i'+Date.now()),name,unit:document.getElementById('if-unit').value,cat:document.getElementById('if-cat').value,unit_cooking:unitCooking||null,unit_cooking_ratio:unitCooking&&ratioRaw?ratioRaw:null};
   setLoading('Saving…');
   try{ await sbUpsert('ingredients',obj); }catch(e){ setLoading(null); alert('Error: '+e.message); return; }
   if(editIid){ const i=ings.findIndex(x=>x.id===editIid); ings[i]=obj; }
@@ -1088,17 +1167,66 @@ function clearWeekFromRecipes(){
   if(document.getElementById('page-week').classList.contains('active')){ renderWk(); renderWkPicker(); }
 }
 
+let _pendingServId = null;
+let _pendingServCount = 1;
+
 function toggleWk(id){
-  if(weekIds.includes(id)){
-    weekIds=weekIds.filter(x=>x!==id);
+  if(weekIds.some(w=>w.id===id)){
+    // Already added — remove directly
+    weekIds=weekIds.filter(x=>x.id!==id);
+    finalisedItems=null; finaliseMode=false;
+    svLocal('mep_week',weekIds); svLocal('mep_chk',checked);
+    const finBtn=document.getElementById('finalise-btn');
+    if(finBtn){ finBtn.textContent='Finalise'; finBtn.style.background=''; finBtn.style.color='var(--gold)'; finBtn.style.borderColor='var(--gold)'; }
+    updBadge(); renderRecipes();
+    if(document.getElementById('page-week').classList.contains('active')){ renderWk(); renderWkPicker(); }
   } else {
-    weekIds.push(id);
-    showToast('Added to list');
+    // Show servings selector before adding
+    openServingsModal(id);
   }
+}
+
+function openServingsModal(id){
+  const recipe = recipes.find(r=>r.id===id);
+  if(!recipe) return;
+  _pendingServId = id;
+  const defaultServ = parseInt(recipe.servings)||1;
+  _pendingServCount = defaultServ;
+  document.getElementById('serv-title').textContent = recipe.name;
+  document.getElementById('serv-subtitle').textContent =
+    recipe.servings ? 'Recipe makes '+recipe.servings+' servings' : 'Recipe has no default serving size';
+  updateServDisplay();
+  document.getElementById('m-servings').classList.add('open');
+}
+
+function stepServings(delta){
+  _pendingServCount = Math.max(1, _pendingServCount + delta);
+  updateServDisplay();
+}
+
+function updateServDisplay(){
+  const recipe = recipes.find(r=>r.id===_pendingServId);
+  const defaultServ = parseInt(recipe?.servings)||1;
+  document.getElementById('serv-display').textContent = _pendingServCount;
+  const mult = _pendingServCount / defaultServ;
+  const multStr = n => parseFloat(n.toFixed(2)).toString();
+  const note = mult===1 ? 'Original quantities' : (mult>1 ? '× '+multStr(mult)+' quantities' : '÷ '+multStr(1/mult)+' quantities');
+  document.getElementById('serv-multiplier-note').textContent = note;
+}
+
+function confirmServings(){
+  if(!_pendingServId) return;
+  cM('servings');
+  const recipe = recipes.find(r=>r.id===_pendingServId);
+  const defaultServ = parseInt(recipe?.servings)||1;
+  const mult = _pendingServCount / defaultServ;
+  weekIds.push({id:_pendingServId, servings:_pendingServCount, mult});
+  _pendingServId=null;
   finalisedItems=null; finaliseMode=false;
-  svLocal('mep_week',weekIds); svLocal('mep_chk',checked); // persist locally
+  svLocal('mep_week',weekIds); svLocal('mep_chk',checked);
   const finBtn=document.getElementById('finalise-btn');
   if(finBtn){ finBtn.textContent='Finalise'; finBtn.style.background=''; finBtn.style.color='var(--gold)'; finBtn.style.borderColor='var(--gold)'; }
+  showToast('Added to list');
   updBadge(); renderRecipes();
   if(document.getElementById('page-week').classList.contains('active')){ renderWk(); renderWkPicker(); }
 }
@@ -1142,7 +1270,7 @@ function toggleFabPanel(){
 function renderFabPanel(){
   const el=document.getElementById('fab-panel-content');
   if(!el||!activeList) return;
-  const wkRecs=weekIds.map(id=>recipes.find(r=>r.id===id)).filter(Boolean);
+  const wkRecs=weekIds.map(w=>{ const r=recipes.find(r=>r.id===w.id); return r?{...r,_servings:w.servings}:null; }).filter(Boolean);
   if(!wkRecs.length){ el.innerHTML='<p style="font-size:13px;color:var(--ink-4);font-style:italic;font-family:Crimson Text,serif;padding:.5rem 0;">No recipes added yet</p>'; return; }
   el.innerHTML=wkRecs.map(r=>`
     <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--rule);">
@@ -1168,7 +1296,7 @@ function toggleFinalise(){
   if(btn){ btn.textContent=finaliseMode?'Done ✓':'Finalise'; btn.style.background=finaliseMode?'var(--teal)':''; btn.style.color=finaliseMode?'var(--bg)':'var(--gold)'; btn.style.borderColor=finaliseMode?'var(--teal)':'var(--gold)'; }
   if(finaliseMode && !finalisedItems){
     // Seed from consolidated list on first enter
-    const wkRecs=weekIds.map(id=>recipes.find(r=>r.id===id)).filter(Boolean);
+    const wkRecs=weekIds.map(w=>{ const r=recipes.find(r=>r.id===w.id); return r?{...r,_servings:w.servings}:null; }).filter(Boolean);
     const cons=consolidate(wkRecs);
     finalisedItems=cons.map(item=>{
       let qty=item.dq;
@@ -1188,23 +1316,46 @@ function toggleFinalise(){
   renderWk();
 }
 
-function finQtyStep(idx, delta){
+function syncFin(idx, changed, val){
   if(!finalisedItems||!finalisedItems[idx]) return;
-  const item=finalisedItems[idx];
-  // Parse current qty as number
-  const cur=parseFloat(item.qty)||0;
-  const next=Math.max(0, Math.round((cur+delta)*10)/10);
-  item.qty=next===0?'0':String(next);
-  // Update metric display
-  item.metric=item.qty+(item.unit?' '+item.unit:'');
-  saveFinalisedItems();
-  renderWk();
+  const item = finalisedItems[idx];
+  const ing = getIngByName(item.name);
+  const hasDual = ing && ing.unit_cooking && ing.unit_cooking_ratio;
+  const n = parseFloat(val);
+  if(changed === 'metric'){
+    item.qty = val;
+    item.qty_metric = val;
+    if(hasDual && !isNaN(n)){
+      const cv = fmtNum(convertUnit(n, ing.unit, ing.unit_cooking, ing.unit_cooking_ratio));
+      item.qty_cooking = cv;
+      const el = document.getElementById('fin-c-'+idx);
+      if(el) el.value = cv;
+    }
+  } else {
+    item.qty_cooking = val;
+    if(hasDual && !isNaN(n)){
+      const mv = fmtNum(convertUnit(n, ing.unit_cooking, ing.unit, ing.unit_cooking_ratio));
+      item.qty = mv;
+      item.qty_metric = mv;
+      const el = document.getElementById('fin-m-'+idx);
+      if(el) el.value = mv;
+    }
+  }
 }
 
-function finQtyEdit(idx, val){
+function finStep(idx, col, delta){
   if(!finalisedItems||!finalisedItems[idx]) return;
-  finalisedItems[idx].qty=val;
-  finalisedItems[idx].metric=val+(finalisedItems[idx].unit?' '+finalisedItems[idx].unit:'');
+  const item = finalisedItems[idx];
+  const ing = getIngByName(item.name);
+  const isMetric = col === 'metric';
+  const currentVal = isMetric
+    ? (parseFloat(item.qty_metric !== undefined ? item.qty_metric : item.qty)||0)
+    : (parseFloat(item.qty_cooking)||0);
+  const newVal = Math.max(0, Math.round((currentVal + delta)*100)/100);
+  const elId = isMetric ? 'fin-m-'+idx : 'fin-c-'+idx;
+  const el = document.getElementById(elId);
+  if(el){ el.value = fmtNum(newVal); syncFin(idx, col, String(newVal)); }
+  saveFinalisedItems();
 }
 
 function finDelete(idx){
@@ -1229,27 +1380,38 @@ function renderFinaliseView(byCat, sortedCats){
   if(!finalisedItems||!finalisedItems.length){
     return '<div class="empty">All items removed — <button class="btn btn-sm" onclick="resetFinalise()">Reset list</button></div>';
   }
-  // Group finalised items by category
   const finByCat={};
   finalisedItems.forEach((item,idx)=>{ const c=item.cat||'Other'; (finByCat[c]=finByCat[c]||[]).push({...item,_idx:idx}); });
   const CAT_ORDER=['Produce','Meat & Fish','Dairy & Eggs','Bakery','Pantry','Spices & Herbs','Condiments','Frozen','Beverages','Other'];
   const cats=[...CAT_ORDER.filter(c=>finByCat[c]),...Object.keys(finByCat).filter(c=>!CAT_ORDER.includes(c))];
-  let html='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;"><span style="font-size:12px;color:var(--teal-40);font-style:italic;font-family:Cormorant Garamond,serif;">Adjust quantities, then save</span><button class="btn btn-sm btn-ghost" onclick="resetFinalise()">Reset to generated</button></div>';
+  let html='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;"><span style="font-size:12px;color:var(--teal-40);font-style:italic;font-family:Cormorant Garamond,serif;">Adjust quantities — editing either unit updates the other</span><button class="btn btn-sm btn-ghost" onclick="resetFinalise()">Reset to generated</button></div>';
   html+=cats.map(cat=>`
     <div class="shop-sec">
       <div class="shop-sec-title">${esc(cat)}</div>
-      ${finByCat[cat].map(item=>`
-        <div class="fin-item">
+      <div style="display:grid;grid-template-columns:28px 1fr 130px 130px 28px;gap:0 8px;padding:3px 10px 5px;"><span></span><span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:500;">Ingredient</span><span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:500;">Metric</span><span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:500;">Cup / vol</span><span></span></div>
+      ${finByCat[cat].map(item=>{
+        const ing = getIngByName(item.name);
+        const hasDual = ing && ing.unit_cooking && ing.unit_cooking_ratio;
+        const metricVal = item.qty_metric !== undefined ? item.qty_metric : (item.isCount ? '' : item.qty);
+        const cookVal = item.qty_cooking !== undefined ? item.qty_cooking : (hasDual ? fmtNum(convertUnit(parseFloat(item.qty)||0, item.unit||ing?.unit||'', ing.unit_cooking, ing.unit_cooking_ratio)) : (item.cups||''));
+        const metricUnit = item.unit || (ing?.unit||'');
+        const cookUnit = ing?.unit_cooking || '';
+        return `<div style="display:grid;grid-template-columns:28px 1fr 130px 130px 28px;gap:0 8px;align-items:center;padding:6px 10px;border-radius:var(--r);border-bottom:1px solid var(--line);">
           <button class="fin-del" onclick="finDelete(${item._idx})" title="Remove">×</button>
           <span style="font-size:14px;font-weight:300;">${esc(item.name)}</span>
-          <input class="fin-qty-input" type="text" value="${esc(item.qty)}" onchange="finQtyEdit(${item._idx},this.value)" onblur="saveFinalisedItems()">
-          <span style="font-size:13px;color:var(--teal-40);font-style:italic;">${esc(item.unit||'')}</span>
-          <span style="font-size:11px;color:var(--gold);font-style:italic;font-family:Cormorant Garamond,serif;">${esc(item.sources.join(', '))}</span>
-          <div class="fin-stepper">
-            <button onclick="finQtyStep(${item._idx},1)" title="+1">+</button>
-            <button onclick="finQtyStep(${item._idx},-1)" title="-1">−</button>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <input class="fin-qty-input" type="text" id="fin-m-${item._idx}" value="${esc(metricVal)}" style="width:65px;" oninput="syncFin(${item._idx},'metric',this.value)" onblur="saveFinalisedItems()">
+            <span style="font-size:12px;color:var(--teal-40);">${esc(metricUnit)}</span>
+            <div class="fin-stepper"><button onclick="finStep(${item._idx},'metric',1)">+</button><button onclick="finStep(${item._idx},'metric',-1)">−</button></div>
           </div>
-        </div>`).join('')}
+          <div style="display:flex;align-items:center;gap:4px;">
+            <input class="fin-qty-input" type="text" id="fin-c-${item._idx}" value="${esc(cookVal)}" style="width:65px;${!hasDual&&!item.cups?'color:var(--teal-40);':''}" oninput="syncFin(${item._idx},'cook',this.value)" onblur="saveFinalisedItems()" ${!hasDual&&!item._ml?'placeholder="—"':''}>
+            <span style="font-size:12px;color:var(--teal-40);">${esc(cookUnit)}</span>
+            <div class="fin-stepper"><button onclick="finStep(${item._idx},'cook',1)">+</button><button onclick="finStep(${item._idx},'cook',-1)">−</button></div>
+          </div>
+          <span></span>
+        </div>`;
+      }).join('')}
     </div>`).join('');
   return html;
 }
@@ -1257,10 +1419,10 @@ function renderFinaliseView(byCat, sortedCats){
 function renderWk(){
   const el=document.getElementById('wk-main');
   if(!weekIds.length){ el.innerHTML='<div class="empty" style="padding:3rem 1rem;"><div style="font-size:32px;margin-bottom:12px;">🛒</div><div style="font-size:16px;font-style:italic;color:var(--ink-3);">Add recipes using the panel on the right</div></div>'; return; }
-  const wkRecs=weekIds.map(id=>recipes.find(r=>r.id===id)).filter(Boolean);
+  const wkRecs=weekIds.map(w=>{ const r=recipes.find(r=>r.id===w.id); return r?{...r,_servings:w.servings}:null; }).filter(Boolean);
 
   let html='<div style="font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:8px;font-family:Crimson Text,serif;font-style:italic;">Selected recipes</div>';
-  html+=wkRecs.map(r=>`<div class="wk-ri"><div><div>${esc(r.name)}</div><div class="wk-ri-meta">${[r.type,r.cuisine,r.servings?r.servings+' servings':''].filter(Boolean).join(' · ')}</div></div><button class="btn btn-sm btn-ghost" onclick="toggleWk('${r.id}')">Remove</button></div>`).join('');
+  html+=wkRecs.map(r=>`<div class="wk-ri"><div><div>${esc(r.name)}</div><div class="wk-ri-meta">${[r.type,r.cuisine,r._servings?r._servings+' servings':r.servings?r.servings+' servings (default)':''].filter(Boolean).join(' · ')}</div></div><button class="btn btn-sm btn-ghost" onclick="toggleWk('${r.id}')">Remove</button></div>`).join('');
 
   const cons=consolidate(wkRecs);
   const byCat={};
@@ -1326,7 +1488,7 @@ function renderWkPicker(){
   let list=[...recipes].sort((a,b)=>a.name.localeCompare(b.name));
   if(q) list=list.filter(r=>r.name.toLowerCase().includes(q)||(r.type||'').toLowerCase().includes(q));
   document.getElementById('wkpicker').innerHTML=list.map(r=>{
-    const iw=weekIds.includes(r.id);
+    const iw=weekIds.some(w=>w.id===r.id);
     return `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 2px;border-bottom:1px solid var(--page-4);">
       <div><div style="font-size:15px;font-family:Caveat,cursive;${iw?'color:var(--aged-green);font-weight:600;':''}">${esc(r.name)}</div>${r.type?`<div style="font-size:12px;color:var(--ink-4);font-style:italic;">${esc(r.type)}</div>`:''}</div>
       <button class="btn btn-sm ${iw?'btn-green':'btn-ghost'}" onclick="toggleWk('${r.id}')">${iw?'✓':'+'}</button>
@@ -1335,7 +1497,7 @@ function renderWkPicker(){
 }
 
 function copyList(){
-  const wkRecs=weekIds.map(id=>recipes.find(r=>r.id===id)).filter(Boolean);
+  const wkRecs=weekIds.map(w=>{ const r=recipes.find(r=>r.id===w.id); return r?{...r,_servings:w.servings}:null; }).filter(Boolean);
   const items=consolidate(wkRecs);
   if(!items.length) return;
   const header=activeList?activeList.name+' — Grocery List\n'+'—'.repeat(40)+'\n':'';
@@ -1394,23 +1556,34 @@ function fmtDisplay(base,t,ou){ const f=fmtVal(base,t,ou); return f.secondary?f.
 function consolidate(recs){
   const map=new Map();
   recs.forEach(rec=>{
+    // _servings is the requested servings count; rec.servings is the default
+    const defaultServ = parseInt(rec.servings)||1;
+    const requestedServ = (rec._servings != null) ? rec._servings : defaultServ;
+    const mult = requestedServ / defaultServ;
+
     (rec.ingredients||[]).forEach(ing=>{
       const key=ing.name.trim().toLowerCase();
       const hasUnit = ing.unit && ing.unit.trim() !== '';
-      const b = hasUnit ? toBase(ing.qty, ing.unit) : null;
-      const isCount = !hasUnit; // no unit = countable (1 tomato, 3 eggs)
-      const countVal = isCount ? (parseFloat(ing.qty)||0) : 0;
+      // Apply multiplier to quantity
+      const origNum = parseFloat(ing.qty)||0;
+      const scaledNum = origNum * mult;
+      const scaledQty = ing.qty ? String(Math.round(scaledNum * 1000) / 1000) : ing.qty;
+      const b = hasUnit ? toBase(scaledQty, ing.unit) : null;
+      const isCount = !hasUnit;
+      const countVal = isCount ? scaledNum : 0;
 
       if(!map.has(key)){
         const fmt = b ? fmtVal(b.v, b.t, ing.unit) : null;
+        // For display: use scaled qty
+        const scaledDisplay = fmt ? fmt.primary : (scaledQty || '—');
         map.set(key, {
           name: key,
           _b: b?.v ?? null,
           _t: b?.t ?? null,
           _u: ing.unit,
-          _count: isCount ? countVal : null, // for countable items
+          _count: isCount ? countVal : null,
           isCount,
-          dq: fmt ? fmt.primary : (ing.qty || '—'),
+          dq: scaledDisplay,
           dq2: fmt?.secondary || null,
           _ml: (b && b.t==='vol') ? b.v : null,
           sources: [rec.name]
@@ -1471,4 +1644,27 @@ function resetApp(){
 // ═══════════════════════════════════════
 loadAll();
 </script>
+<!-- MODAL: Servings selector -->
+<div class="mb" id="m-servings" onclick="if(event.target===this)cM('servings')">
+  <div class="modal" style="max-width:340px;">
+    <div class="mh"><h2 id="serv-title">How many servings?</h2><button class="xbtn" onclick="cM('servings')">×</button></div>
+    <div class="mbody">
+      <p style="font-size:13px;color:var(--teal-40);font-style:italic;font-family:'Cormorant Garamond',serif;margin-bottom:1rem;" id="serv-subtitle"></p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:16px;padding:.5rem 0;">
+        <button onclick="stepServings(-1)" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line-2);background:var(--bg);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--teal);transition:all .15s;" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='var(--line-2)'">−</button>
+        <div style="text-align:center;min-width:80px;">
+          <div id="serv-display" style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600;color:var(--teal);line-height:1;">4</div>
+          <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-top:2px;">servings</div>
+        </div>
+        <button onclick="stepServings(1)" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line-2);background:var(--bg);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--teal);transition:all .15s;" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='var(--line-2)'">+</button>
+      </div>
+      <p id="serv-multiplier-note" style="font-size:12px;color:var(--teal-40);text-align:center;margin-top:.75rem;font-style:italic;font-family:'Cormorant Garamond',serif;"></p>
+    </div>
+    <div class="mfoot">
+      <button class="btn" onclick="cM('servings')">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmServings()">Add to list</button>
+    </div>
+  </div>
+</div>
+
 </body>
