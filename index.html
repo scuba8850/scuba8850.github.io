@@ -46,17 +46,11 @@ header {
   background: var(--teal);
   color: var(--bg);
   height: 68px;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem;
   position: sticky; top: 0; z-index: 50;
   border-bottom: 1px solid rgba(168,145,80,.4);
 }
-header::before, header::after {
-  content: ''; position: absolute; top: 0; bottom: 0; width: 1px;
-  background: linear-gradient(to bottom, transparent, var(--gold-light), transparent);
-  opacity: .4;
-}
-header::before { left: 2.5rem; }
-header::after  { right: 2.5rem; }
+header::before, header::after { content: none; }
 .logo {
   font-family: 'Cormorant SC', serif;
   font-size: 22px; font-weight: 600;
@@ -94,7 +88,7 @@ header::after  { right: 2.5rem; }
 }
 
 /* MAIN */
-main { max-width: 960px; margin: 0 auto; padding: 2rem 1.25rem 7rem; }
+main { max-width: 960px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
 .page { display: none; }
 .page.active { display: block; }
 
@@ -164,12 +158,26 @@ input:focus,select:focus,textarea:focus {
 .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap: 16px; }
 .rc {
   background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
+  border: 1px solid rgba(168,145,80,.18);
+  border-radius: 8px 7px 9px 8px / 7px 9px 8px 9px; /* slightly irregular corners */
   padding: 1.25rem;
   cursor: pointer;
-  transition: box-shadow .2s, transform .2s, border-color .2s;
+  transition: box-shadow .25s, transform .25s, border-color .2s;
   position: relative;
+  /* Layered shadow for floating physical feel */
+  box-shadow:
+    -1px 2px 2px rgba(10,65,71,.07),
+    -2px 4px 8px rgba(10,65,71,.08),
+    -3px 6px 14px rgba(10,65,71,.06),
+    1px -1px 0 rgba(255,255,255,.8) inset;
+}
+/* Subtle texture overlay — gives paper feel */
+.rc::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(160deg, rgba(255,255,255,.6) 0%, transparent 60%);
+  pointer-events: none;
 }
 .rc::after {
   content: '';
@@ -177,11 +185,26 @@ input:focus,select:focus,textarea:focus {
   height: 2px;
   background: linear-gradient(to right, transparent, var(--gold), transparent);
   opacity: 0; transition: opacity .2s;
-  border-radius: 0 0 var(--r-lg) var(--r-lg);
+  border-radius: 0 0 8px 8px;
 }
-.rc:hover { box-shadow: var(--sh-lg); transform: translateY(-2px); border-color: var(--teal-15); }
+.rc:hover {
+  box-shadow:
+    -2px 4px 6px rgba(10,65,71,.09),
+    -4px 8px 18px rgba(10,65,71,.11),
+    -6px 14px 32px rgba(10,65,71,.08),
+    1px -1px 0 rgba(255,255,255,.8) inset;
+  transform: translate(2px, -3px) rotate(0.2deg);
+  border-color: rgba(168,145,80,.35);
+}
 .rc:hover::after { opacity: 1; }
-.rc.in-week { border-color: var(--teal-40); background: rgba(10,65,71,.04); }
+.rc.in-week {
+  border-color: rgba(10,65,71,.3);
+  background: rgba(10,65,71,.03);
+  box-shadow:
+    -1px 2px 3px rgba(10,65,71,.09),
+    -2px 4px 10px rgba(10,65,71,.11),
+    1px -1px 0 rgba(255,255,255,.6) inset;
+}
 .rc.in-week::after { opacity: .6; }
 .rc-name {
   font-family: 'Cormorant Garamond', serif;
@@ -336,6 +359,35 @@ input:focus,select:focus,textarea:focus {
 #fab-handle { background: var(--teal) !important; border-top: 1px solid rgba(168,145,80,.4) !important; }
 #fab-panel { background: var(--bg) !important; border-top: 1px solid var(--line) !important; }
 
+/* TAGS */
+.rc-tags { display:flex; gap:5px; flex-wrap:wrap; margin:5px 0 2px; }
+.rc-tag { font-size:10px; letter-spacing:.08em; text-transform:uppercase; font-weight:500; padding:2px 8px; border-radius:2px; background:var(--teal-08); color:var(--teal-40); border:1px solid var(--teal-15); cursor:default; }
+.rc-tag.active-filter { background:var(--teal); color:var(--bg); border-color:var(--teal); }
+.tag-input-wrap { display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding:6px 8px; border:1px solid var(--line-2); border-radius:var(--r); background:var(--white); min-height:40px; cursor:text; }
+.tag-pill { display:inline-flex; align-items:center; gap:4px; background:var(--teal-08); color:var(--teal); border:1px solid var(--teal-15); border-radius:2px; padding:2px 8px; font-size:12px; letter-spacing:.06em; }
+.tag-pill button { background:none; border:none; cursor:pointer; color:var(--teal-40); font-size:14px; line-height:1; padding:0 0 0 2px; }
+.tag-pill button:hover { color:var(--red); }
+.tag-ghost-input { border:none; outline:none; font-family:'Jost',sans-serif; font-size:13px; color:var(--teal); background:transparent; min-width:80px; flex:1; }
+
+/* RATING */
+.rating-stars { display:flex; gap:3px; }
+.star { font-size:18px; cursor:pointer; color:var(--line-2); transition:color .15s; user-select:none; }
+.star.filled { color:var(--gold); }
+.star:hover { color:var(--gold-light); }
+.rc-rating { font-size:12px; color:var(--gold); letter-spacing:.04em; }
+
+/* FINALISE */
+.fin-item { display:grid; grid-template-columns:28px auto 80px 80px 1fr 36px; gap:0 8px; align-items:center; padding:7px 10px; border-radius:var(--r); border-bottom:1px solid var(--line); }
+.fin-item:last-child { border-bottom:none; }
+.fin-item:hover { background:var(--teal-08); }
+.fin-qty-input { width:64px; font-size:14px; text-align:center; padding:4px 6px; border:1px solid var(--line-2); border-radius:var(--r); font-family:'Jost',sans-serif; background:var(--white); color:var(--teal); }
+.fin-qty-input:focus { border-color:var(--teal-40); outline:none; }
+.fin-stepper { display:flex; flex-direction:column; gap:1px; }
+.fin-stepper button { background:var(--bg); border:1px solid var(--line-2); border-radius:var(--r); width:22px; height:18px; font-size:11px; cursor:pointer; color:var(--teal); line-height:1; display:flex; align-items:center; justify-content:center; transition:background .12s; }
+.fin-stepper button:hover { background:var(--teal-08); border-color:var(--teal-40); }
+.fin-del { background:none; border:none; cursor:pointer; color:var(--teal-40); font-size:16px; padding:2px; transition:color .15s; }
+.fin-del:hover { color:var(--red); }
+
 /* MISC */
 hr { border: none; border-top: 1px solid var(--line); margin: 1.25rem 0; }
 .empty { text-align: center; padding: 3rem 1rem; color: var(--teal-40); font-size: 15px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px; }
@@ -345,31 +397,36 @@ a { color: var(--teal); }
 <body>
 
 <header>
-  <!-- Gold rule ornaments -->
-  <svg style="position:absolute;left:3rem;top:50%;transform:translateY(-50%);pointer-events:none;" width="60" height="20" viewBox="0 0 60 20">
-    <line x1="0" y1="10" x2="50" y2="10" stroke="#A89150" stroke-width="0.5" opacity="0.6"/>
-    <line x1="0" y1="7" x2="35" y2="7" stroke="#A89150" stroke-width="0.5" opacity="0.3"/>
-    <polygon points="54,10 60,8 60,12" fill="#A89150" opacity="0.5"/>
+  <!-- Left ornament -->
+  <svg style="opacity:.35;flex-shrink:0;" width="50" height="20" viewBox="0 0 50 20" fill="none">
+    <line x1="0" y1="10" x2="42" y2="10" stroke="#A89150" stroke-width="0.6"/>
+    <line x1="0" y1="7" x2="28" y2="7" stroke="#A89150" stroke-width="0.4" opacity="0.6"/>
+    <polygon points="46,10 50,8 50,12" fill="#A89150"/>
   </svg>
-  <div style="text-align:center;position:relative;z-index:1;">
+  <!-- Centre: logo -->
+  <div style="text-align:center;flex:1;">
     <span class="logo">Ingredigo</span>
     <span class="logo-ornament">a compendium of recipes</span>
   </div>
-  <svg style="position:absolute;right:3rem;top:50%;transform:translateY(-50%);pointer-events:none;" width="60" height="20" viewBox="0 0 60 20">
-    <line x1="10" y1="10" x2="60" y2="10" stroke="#A89150" stroke-width="0.5" opacity="0.6"/>
-    <line x1="25" y1="7" x2="60" y2="7" stroke="#A89150" stroke-width="0.5" opacity="0.3"/>
-    <polygon points="6,10 0,8 0,12" fill="#A89150" opacity="0.5"/>
-  </svg>
+  <!-- Right ornament + reset -->
+  <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
+    <svg style="opacity:.35;" width="50" height="20" viewBox="0 0 50 20" fill="none">
+      <line x1="8" y1="10" x2="50" y2="10" stroke="#A89150" stroke-width="0.6"/>
+      <line x1="22" y1="7" x2="50" y2="7" stroke="#A89150" stroke-width="0.4" opacity="0.6"/>
+      <polygon points="4,10 0,8 0,12" fill="#A89150"/>
+    </svg>
+    <button onclick="resetApp()" style="background:none;border:1px solid rgba(168,145,80,.3);border-radius:3px;color:rgba(242,232,211,.55);font-family:'Jost',sans-serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;cursor:pointer;transition:all .2s;white-space:nowrap;" onmouseover="this.style.borderColor='rgba(168,145,80,.7)';this.style.color='rgba(242,232,211,.9)'" onmouseout="this.style.borderColor='rgba(168,145,80,.3)';this.style.color='rgba(242,232,211,.55)'">Reset</button>
+  </div>
 </header>
 
 <nav class="tabs">
   <button class="tab active" id="tab-recipes" onclick="showPage('recipes')">Recipes</button>
   <button class="tab" id="tab-ingredients" onclick="showPage('ingredients')">Ingredients</button>
-  <button class="tab" id="tab-week" onclick="showPage('week')">Lists <span class="badge" id="lists-badge" style="display:none">0</span></button>
+  <button class="tab" id="tab-week" onclick="showPage('week')">List <span class="badge" id="wk-badge-tab" style="display:none">0</span></button>
 </nav>
 
 <!-- Slide-up active list panel — replaces floating button -->
-<div id="grocery-fab" style="display:none;position:fixed;bottom:62px;left:0;right:0;z-index:90;">
+<div id="grocery-fab" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:90;">
   <!-- Pull handle / collapsed state -->
   <div id="fab-handle" onclick="toggleFabPanel()" style="
     display:flex;align-items:center;justify-content:space-between;
@@ -385,7 +442,6 @@ a { color: var(--teal); }
         <path d="M3 3h1.5l2.1 8.4a1 1 0 0 0 1 .6h6.3a1 1 0 0 0 1-.75L16 7H5"/>
         <circle cx="7.5" cy="15" r="1"/><circle cx="13.5" cy="15" r="1"/>
       </svg>
-      <span id="fab-list-name">—</span>
       <span id="wk-badge" style="background:rgba(168,145,80,.25);font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.06em;padding:2px 10px;border-radius:2px;border:1px solid rgba(168,145,80,.3);"></span>
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
@@ -409,10 +465,17 @@ a { color: var(--teal); }
     <div class="toolbar">
       <span class="toolbar-title">Recipe Catalogue</span>
       <input type="search" class="search-box" id="rsearch" placeholder="Search…" oninput="renderRecipes()">
+      <select id="recipe-sort-sel" onchange="recipeSort=this.value;renderRecipes()" style="font-size:12px;padding:6px 10px;border-color:var(--line-2);color:var(--teal);">
+        <option value="name">A → Z</option>
+        <option value="name-desc">Z → A</option>
+        <option value="rating-desc">Rating ↓</option>
+        <option value="rating-asc">Rating ↑</option>
+      </select>
       <button class="btn btn-sm btn-ghost" id="r-clear-week-btn" onclick="clearWeekFromRecipes()" style="display:none;">Clear selections</button>
       <button class="btn btn-primary" onclick="oM('rnew')">+ New Recipe</button>
     </div>
     <div class="filter-bar" id="rfilters"></div>
+    <div id="rfilter-clear" style="display:none;margin-bottom:.75rem;"><button class="btn btn-sm btn-ghost" style="font-size:11px;color:var(--gold);" onclick="clearFilters()">✕ Clear filters</button><span id="rfilter-summary" style="font-size:12px;color:var(--teal-40);font-style:italic;margin-left:8px;"></span></div>
     <div class="recipe-grid" id="rgrid"></div>
   </div>
 
@@ -434,46 +497,24 @@ a { color: var(--teal); }
 
   <!-- GROCERY LIST -->
   <div class="page" id="page-week">
-
-    <!-- Lists overview — shown when no list is active -->
-    <div id="lists-overview">
-      <div class="toolbar">
-        <button class="btn btn-ghost btn-sm" onclick="showPage('recipes')" style="gap:5px;">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2L4 7l5 5"/></svg>
-          Back
-        </button>
-        <span class="toolbar-title" style="font-size:20px;">My Lists</span>
-        <button class="btn btn-green btn-sm" onclick="newList()">+ New list</button>
-      </div>
-      <div id="lists-grid"></div>
+    <div class="toolbar">
+      <button class="btn btn-ghost btn-sm" onclick="showPage('recipes')" style="gap:5px;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2L4 7l5 5"/></svg>
+        Back
+      </button>
+      <span class="toolbar-title" style="font-size:20px;">Grocery List</span>
+      <button class="btn btn-sm" onclick="copyList()">Copy</button>
+      <button class="btn btn-sm" id="finalise-btn" onclick="toggleFinalise()" style="border-color:var(--gold);color:var(--gold);">Finalise</button>
+      <button class="btn btn-sm btn-ghost" onclick="clearWeek()">Clear</button>
     </div>
-
-    <!-- Active list — shown when a list is open -->
-    <div id="list-active" style="display:none;">
-      <div class="toolbar">
-        <button class="btn btn-ghost btn-sm" onclick="closeActiveList()" style="gap:5px;">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2L4 7l5 5"/></svg>
-          All lists
-        </button>
-        <span class="toolbar-title" style="font-size:20px;" id="active-list-name">—</span>
-        <button class="btn btn-sm btn-ghost" onclick="renameActiveList()">Rename</button>
-        <button class="btn btn-sm" onclick="copyList()">Copy</button>
-        <button class="btn btn-green btn-sm" onclick="saveActiveList()">Save list</button>
-      </div>
-      <div id="list-unsaved-bar" style="display:none;padding:8px 12px;background:var(--aged-green-lt);border:1px solid var(--rule);border-radius:var(--r);margin-bottom:1rem;font-size:13px;font-family:'Crimson Text',serif;font-style:italic;color:var(--ink-2);display:flex;align-items:center;justify-content:space-between;">
-        <span>Unsaved changes</span>
-        <button class="btn btn-sm btn-green" onclick="saveActiveList()">Save</button>
-      </div>
-      <div class="wk-layout">
-        <div id="wk-main"></div>
-        <div class="card" style="padding:1rem;">
-          <div style="font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:8px;font-family:'Crimson Text',serif;font-style:italic;">Add recipes</div>
-          <input type="search" id="wksearch" placeholder="Search recipes…" oninput="renderWkPicker()" style="width:100%;margin-bottom:8px;font-size:13px;">
-          <div id="wkpicker" style="max-height:440px;overflow-y:auto;"></div>
-        </div>
+    <div class="wk-layout">
+      <div id="wk-main"></div>
+      <div class="card" style="padding:1rem;">
+        <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:10px;">Add recipes</div>
+        <input type="search" id="wksearch" placeholder="Search recipes…" oninput="renderWkPicker()" style="width:100%;margin-bottom:8px;font-size:13px;">
+        <div id="wkpicker" style="max-height:440px;overflow-y:auto;"></div>
       </div>
     </div>
-
   </div>
 
 </main>
@@ -492,6 +533,25 @@ a { color: var(--teal); }
         </div>
         <div class="fr"><label>Cuisine</label><input type="text" id="rf-cuisine" placeholder="e.g. Italian, Thai"></div>
         <div class="fr"><label>Servings</label><input type="text" id="rf-servings" placeholder="e.g. 4" style="width:90px;"></div>
+      </div>
+      <div class="fg" style="margin-top:.25rem;">
+        <div class="fr">
+          <label>Tags <span style="font-weight:300;text-transform:none;letter-spacing:0;font-size:11px;color:var(--teal-40);">— press Enter or comma to add</span></label>
+          <div class="tag-input-wrap" id="tag-input-wrap" onclick="document.getElementById('tag-ghost').focus()">
+            <input id="tag-ghost" class="tag-ghost-input" type="text" placeholder="e.g. quick, pasta, winter…" onkeydown="handleTagKey(event)" oninput="this.style.width=((this.value.length+2)*8)+'px'" onblur="setTimeout(hideTagSuggestions,150)">
+          </div>
+        </div>
+        <div class="fr">
+          <label>Rating</label>
+          <div class="rating-stars" id="rf-rating-stars">
+            <span class="star" data-v="1" onclick="setRating(1)">★</span>
+            <span class="star" data-v="2" onclick="setRating(2)">★</span>
+            <span class="star" data-v="3" onclick="setRating(3)">★</span>
+            <span class="star" data-v="4" onclick="setRating(4)">★</span>
+            <span class="star" data-v="5" onclick="setRating(5)">★</span>
+          </div>
+          <div id="rf-rating-label" style="font-size:12px;color:var(--gold);margin-top:4px;font-style:italic;font-family:'Cormorant Garamond',serif;height:16px;"></div>
+        </div>
       </div>
       <hr>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
@@ -527,7 +587,7 @@ a { color: var(--teal); }
         <select id="if-unit">
           <option value="g">g</option><option value="kg">kg</option><option value="oz">oz</option><option value="lb">lb</option>
           <option value="ml">ml</option><option value="L">L</option><option value="tsp">tsp</option><option value="tbsp">tbsp</option>
-          <option value="cup">cup</option><option value="fl oz">fl oz</option><option value="pint">pint</option><option value="">— no unit —</option>
+          <option value="cup">cup</option><option value="fl oz">fl oz</option><option value="pint">pint</option><option value=""></option>
         </select>
       </div>
       <div class="fr"><label>Category</label>
@@ -595,17 +655,23 @@ async function sbDelete(table, id){
 // ═══════════════════════════════════════
 function ldLocal(k,d){ try{ return JSON.parse(localStorage.getItem(k))??d; }catch{ return d; } }
 function svLocal(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
+// Persist weekIds and checked locally (simple single list)
 
 let ings = [];
 let recipes = [];
-let groceryLists = [];        // all saved lists from Supabase
-let activeList = null;        // the currently open list object {id,name,recipe_ids,checked_items}
-let weekIds = [];             // recipe ids in current active list
-let checked = [];             // checked items in current active list
-let listDirty = false;        // unsaved changes flag
+let groceryLists = [];        // kept in background for future use
+let activeList = null;        // unused for now — single list mode
+let weekIds = ldLocal('mep_week',[]);
+let checked = ldLocal('mep_chk',[]);
+let listDirty = false;        // unused — kept for compatibility
 
 let editRid = null, editIid = null;
-let typeFilter = '';
+let activeFilters = new Set(); // holds both type and tag filter values
+let recipeSort = 'name'; // 'name' | 'rating-desc' | 'rating-asc'
+let currentRating = null;
+let currentTags = [];
+let finaliseMode = false;
+let finalisedItems = null; // overrides consolidated list when set
 
 function setLoading(msg){
   let el = document.getElementById('loading-overlay');
@@ -626,14 +692,12 @@ function setLoading(msg){
 async function loadAll(){
   setLoading('Loading Ingredigo…');
   try {
-    const [fetchedIngs, fetchedRecs, fetchedLists] = await Promise.all([
+    const [fetchedIngs, fetchedRecs] = await Promise.all([
       sbGet('ingredients','order=name.asc'),
-      sbGet('recipes','order=name.asc'),
-      sbGet('grocery_lists','order=updated_at.desc')
+      sbGet('recipes','order=name.asc')
     ]);
     ings = fetchedIngs;
-    recipes = fetchedRecs.map(r=>({...r, ingredients: r.ingredients||[]}));
-    groceryLists = fetchedLists.map(l=>({...l, recipe_ids:l.recipe_ids||[], checked_items:l.checked_items||[]}));
+    recipes = fetchedRecs.map(r=>({...r, ingredients: r.ingredients||[], tags: r.tags||[], rating: r.rating||null}));
     if(ings.length === 0){
       const seedData = SEED.map((s,i)=>({id:'i'+i,name:s.n,unit:s.u,cat:s.c}));
       await sbUpsert('ingredients', seedData);
@@ -687,20 +751,48 @@ function cM(n){ document.getElementById('m-'+n).classList.remove('open'); }
 function renderRecipes(){
   const q=(document.getElementById('rsearch').value||'').toLowerCase();
   const types=[...new Set(recipes.map(r=>r.type).filter(Boolean))].sort();
+  const allTags=[...new Set(recipes.flatMap(r=>r.tags||[]))].sort();
+
+  // Unified multi-select filter chips — types then tags, no divider needed
   document.getElementById('rfilters').innerHTML=
-    ['', ...types].map(t=>`<button class="chip ${typeFilter===t?'active':''}" onclick="setTF('${t}')">${t||'All'}</button>`).join('');
+    types.map(t=>`<button class="chip ${activeFilters.has(t)?'active':''}" onclick="toggleFilter('${esc(t)}')">${esc(t)}</button>`).join('')+
+    (allTags.length&&types.length?'<span style="width:1px;background:var(--line-2);margin:2px 6px;align-self:stretch;display:inline-block;opacity:.4;"></span>':'')+
+    allTags.map(t=>`<button class="chip ${activeFilters.has(t)?'active':''}" onclick="toggleFilter('${esc(t)}')">${esc(t)}</button>`).join('');
+
+  // Show/hide clear bar
+  const clearBar=document.getElementById('rfilter-clear');
+  const summary=document.getElementById('rfilter-summary');
+  if(clearBar){ clearBar.style.display=activeFilters.size?'block':'none'; }
+  if(summary&&activeFilters.size){ summary.textContent=[...activeFilters].join(' + '); }
 
   let list=recipes;
-  if(q) list=list.filter(r=>r.name.toLowerCase().includes(q)||(r.cuisine||'').toLowerCase().includes(q)||(r.source||'').toLowerCase().includes(q));
-  if(typeFilter) list=list.filter(r=>r.type===typeFilter);
-  list=[...list].sort((a,b)=>a.name.localeCompare(b.name));
+  if(q) list=list.filter(r=>r.name.toLowerCase().includes(q)||(r.cuisine||'').toLowerCase().includes(q)||(r.source||'').toLowerCase().includes(q)||((r.tags||[]).join(' ').toLowerCase().includes(q)));
+  if(activeFilters.size){
+    const types=[...new Set(recipes.map(r=>r.type).filter(Boolean))];
+    const allTags=[...new Set(recipes.flatMap(r=>r.tags||[]))];
+    const activeTypes=[...activeFilters].filter(f=>types.includes(f));
+    const activeTags=[...activeFilters].filter(f=>allTags.includes(f));
+    // OR within types, OR within tags, AND between the two groups
+    list=list.filter(r=>{
+      const typeMatch = activeTypes.length===0 || activeTypes.includes(r.type);
+      const tagMatch  = activeTags.length===0  || activeTags.some(t=>(r.tags||[]).includes(t));
+      return typeMatch && tagMatch;
+    });
+  }
+  if(recipeSort==='name-desc') list=[...list].sort((a,b)=>b.name.localeCompare(a.name));
+  else if(recipeSort==='rating-desc') list=[...list].sort((a,b)=>(b.rating||0)-(a.rating||0)||a.name.localeCompare(b.name));
+  else if(recipeSort==='rating-asc') list=[...list].sort((a,b)=>(a.rating||0)-(b.rating||0)||a.name.localeCompare(b.name));
+  else list=[...list].sort((a,b)=>a.name.localeCompare(b.name));
 
   const g=document.getElementById('rgrid');
   if(!list.length){ g.innerHTML='<div class="empty" style="grid-column:1/-1">No recipes yet — click <strong>New Recipe</strong> to add one.</div>'; return; }
   g.innerHTML=list.map(r=>{
     const iw=weekIds.includes(r.id);
+    const stars=r.rating ? '★'.repeat(r.rating)+'☆'.repeat(5-r.rating) : '';
+    const tags=(r.tags||[]).map(t=>`<span class="rc-tag">${esc(t)}</span>`).join('');
     return `<div class="rc ${iw?'in-week':''}" onclick="oM('redit',getRec('${r.id}'))">
-      <div class="rc-name">${esc(r.name)}</div>
+      <div class="rc-name">${esc(r.name)}${stars?` <span style="font-size:11px;color:var(--gold);letter-spacing:1px;">${stars}</span>`:''}</div>
+      ${tags?`<div class="rc-tags">${tags}</div>`:''}
       <div class="rc-meta">${[r.type,r.cuisine,r.source].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('')}</div>
       <div class="rc-footer">
         <span class="ic">${r.ingredients.length} ingredient${r.ingredients.length!==1?'s':''}</span>
@@ -710,7 +802,8 @@ function renderRecipes(){
   }).join('');
   updBadge();
 }
-function setTF(t){ typeFilter=t; renderRecipes(); }
+function toggleFilter(f){ activeFilters.has(f)?activeFilters.delete(f):activeFilters.add(f); renderRecipes(); }
+function clearFilters(){ activeFilters.clear(); renderRecipes(); }
 function getRec(id){ return recipes.find(r=>r.id===id); }
 
 // ═══════════════════════════════════════
@@ -720,6 +813,8 @@ function clearRForm(){
   ['rf-name','rf-src','rf-cuisine','rf-servings'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('rf-type').value='';
   document.getElementById('irows').innerHTML='';
+  currentTags=[]; currentRating=null;
+  renderTagPills(); renderStars();
 }
 function populateRForm(r){
   document.getElementById('rf-name').value=r.name||'';
@@ -729,6 +824,70 @@ function populateRForm(r){
   document.getElementById('rf-servings').value=r.servings||'';
   document.getElementById('irows').innerHTML='';
   (r.ingredients||[]).forEach(i=>addRow(i));
+  currentTags=[...(r.tags||[])]; currentRating=r.rating||null;
+  renderTagPills(); renderStars();
+}
+
+// ── TAGS ──
+function handleTagKey(e){
+  if(e.key==='Enter'||e.key===','){ e.preventDefault(); commitTag(e.target.value); hideTagSuggestions(); }
+  else if(e.key==='Backspace'&&!e.target.value.length&&currentTags.length){ currentTags.pop(); renderTagPills(); }
+  else if(e.key==='Escape'){ hideTagSuggestions(); }
+  else { setTimeout(showTagSuggestions, 50); }
+}
+function commitTag(val){
+  const tag=val.trim().toLowerCase().replace(/,/g,'');
+  if(tag&&!currentTags.includes(tag)){ currentTags.push(tag); }
+  document.getElementById('tag-ghost').value='';
+  renderTagPills(); hideTagSuggestions();
+}
+function removeTag(t){ currentTags=currentTags.filter(x=>x!==t); renderTagPills(); }
+function showTagSuggestions(){
+  const ghost=document.getElementById('tag-ghost');
+  if(!ghost) return;
+  const q=ghost.value.trim().toLowerCase();
+  if(!q){ hideTagSuggestions(); return; }
+  const allTags=[...new Set(recipes.flatMap(r=>r.tags||[]))].filter(t=>!currentTags.includes(t));
+  const matches=allTags.filter(t=>t.includes(q)).slice(0,6);
+  if(!matches.length){ hideTagSuggestions(); return; }
+  let el=document.getElementById('tag-suggestions');
+  if(!el){
+    el=document.createElement('div');
+    el.id='tag-suggestions';
+    el.style.cssText='position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--line-2);border-top:none;border-radius:0 0 var(--r) var(--r);z-index:9999;box-shadow:var(--sh-lg);';
+    const wrap=document.getElementById('tag-input-wrap');
+    wrap.style.position='relative';
+    wrap.appendChild(el);
+  }
+  el.innerHTML=matches.map(t=>`<div style="padding:6px 12px;font-size:13px;cursor:pointer;color:var(--teal);border-bottom:1px solid var(--line);" onmousedown="event.preventDefault();commitTag('${esc(t)}')" onmouseover="this.style.background='var(--teal-08)'" onmouseout="this.style.background=''">${esc(t)}</div>`).join('');
+  el.style.display='block';
+}
+function hideTagSuggestions(){
+  const el=document.getElementById('tag-suggestions');
+  if(el) el.style.display='none';
+}
+function renderTagPills(){
+  const wrap=document.getElementById('tag-input-wrap');
+  const ghost=document.getElementById('tag-ghost');
+  // Remove existing pills
+  wrap.querySelectorAll('.tag-pill').forEach(el=>el.remove());
+  currentTags.forEach(t=>{
+    const pill=document.createElement('span');
+    pill.className='tag-pill';
+    pill.innerHTML=`${esc(t)}<button type="button" onclick="removeTag('${esc(t)}')" tabindex="-1">×</button>`;
+    wrap.insertBefore(pill, ghost);
+  });
+  ghost.placeholder=currentTags.length?'':'e.g. quick, pasta, winter…';
+}
+
+// ── RATING ──
+const RATING_LABELS=['','One star','Two stars','Three stars','Four stars','Five stars'];
+function setRating(v){ currentRating=currentRating===v?null:v; renderStars(); }
+function renderStars(){
+  document.querySelectorAll('#rf-rating-stars .star').forEach(s=>{
+    s.classList.toggle('filled', currentRating && parseInt(s.dataset.v)<=currentRating);
+  });
+  document.getElementById('rf-rating-label').textContent=currentRating?RATING_LABELS[currentRating]:'';
 }
 function addRow(d){
   const wrap=document.createElement('div');
@@ -737,7 +896,7 @@ function addRow(d){
   div.className='ie-row';
   const unitVal = d?.unit||'';
   const unitOpts = ['','g','kg','oz','lb','ml','L','tsp','tbsp','cup','fl oz','pint'];
-  const unitOptions = unitOpts.map(u => `<option value="${u}" ${unitVal===u?'selected':''}>${u||'— none —'}</option>`).join('');
+  const unitOptions = unitOpts.map(u => `<option value="${u}" ${unitVal===u?'selected':''}>${u||''}</option>`).join('');
   div.innerHTML=`
     <input class="c-qty" type="text" inputmode="decimal" placeholder="qty" value="${esc(d?.qty||'')}" data-f="qty">
     <select class="c-unit" data-f="unit">${unitOptions}</select>
@@ -847,9 +1006,13 @@ async function saveRecipe(){
     }
   });
   if(newIngs.length){ try{ await sbUpsert('ingredients',newIngs); }catch(e){ alert('Error saving ingredients: '+e.message); return; } }
+  // Commit any half-typed tag
+  const ghostVal=document.getElementById('tag-ghost').value.trim();
+  if(ghostVal) commitTag(ghostVal);
   const rec={id:editRid||('r'+Date.now()),name,source:document.getElementById('rf-src').value.trim(),
     type:document.getElementById('rf-type').value,cuisine:document.getElementById('rf-cuisine').value.trim(),
-    servings:document.getElementById('rf-servings').value.trim(),ingredients:ingList};
+    servings:document.getElementById('rf-servings').value.trim(),ingredients:ingList,
+    tags:currentTags, rating:currentRating};
   setLoading('Saving recipe…');
   try{
     await sbUpsert('recipes',rec);
@@ -910,254 +1073,55 @@ async function delIng(){
 }
 
 // ═══════════════════════════════════════
-// LISTS
+// GROCERY LIST
 // ═══════════════════════════════════════
 
-// Open the grocery list page — show overview or active list
-function showWeekPage(){
-  if(activeList) showActiveList(); else showListsOverview();
-}
-
-function showListsOverview(){
-  document.getElementById('lists-overview').style.display='block';
-  document.getElementById('list-active').style.display='none';
-  renderListsGrid();
-}
-
-function showActiveList(){
-  document.getElementById('lists-overview').style.display='none';
-  document.getElementById('list-active').style.display='block';
-  document.getElementById('active-list-name').textContent=activeList.name;
-  renderWk(); renderWkPicker(); updUnsavedBar();
-}
-
-function renderListsGrid(){
-  const grid=document.getElementById('lists-grid');
-  if(!groceryLists.length){
-    grid.innerHTML='<div class="list-empty">No lists yet — create one to begin</div>'; return;
-  }
-  grid.innerHTML='<div class="lists-grid">'+groceryLists.map(l=>{
-    const recipeCount=l.recipe_ids.length;
-    const checkedCount=l.checked_items.length;
-    return `<div class="list-card" onclick="openList('${l.id}')">
-      <div class="list-card-name">${esc(l.name)}</div>
-      <div class="list-card-meta">${recipeCount} recipe${recipeCount!==1?'s':''} · ${checkedCount} item${checkedCount!==1?'s':''} checked</div>
-      <div class="list-card-actions">
-        <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();deleteList('${l.id}')">Delete</button>
-        <button class="btn btn-sm btn-green" onclick="event.stopPropagation();openList('${l.id}')">Open →</button>
-      </div>
-    </div>`;
-  }).join('')+'</div>';
-}
-
-// New list — prompt for name then create
-let nameListCallback = null;
-function newList(){
-  document.getElementById('namelist-title').textContent='New List';
-  document.getElementById('namelist-input').value='';
-  nameListCallback = async (name) => {
-    const list = {id:'l'+Date.now(), name, recipe_ids:[], checked_items:[], updated_at: new Date().toISOString()};
-    setLoading('Creating list…');
-    try{ await sbUpsert('grocery_lists', list); }catch(e){ setLoading(null); alert('Error: '+e.message); return; }
-    groceryLists.unshift(list);
-    setLoading(null);
-    activeList=list; weekIds=[]; checked=[]; listDirty=false;
-    updBadge(); showActiveList();
-  };
-  oM('namelist');
-}
-
-function confirmNameList(){
-  const name=document.getElementById('namelist-input').value.trim();
-  if(!name) return;
-  cM('namelist');
-  if(nameListCallback) nameListCallback(name);
-}
-
-function openList(id){
-  if(listDirty && activeList){
-    if(!confirm('You have unsaved changes. Discard them?')) return;
-  }
-  const list = groceryLists.find(l=>l.id===id);
-  if(!list) return;
-  activeList=list;
-  weekIds=[...list.recipe_ids];
-  checked=[...list.checked_items];
-  listDirty=false;
-  updBadge(); showActiveList();
-}
-
-function closeActiveList(){
-  if(listDirty && !confirm('Unsaved changes will be lost. Continue?')) return;
-  activeList=null; weekIds=[]; checked=[]; listDirty=false;
-  updBadge(); showListsOverview();
-}
-
-async function saveActiveList(){
-  if(!activeList) return;
-  activeList.recipe_ids=[...weekIds];
-  activeList.checked_items=[...checked];
-  activeList.updated_at=new Date().toISOString();
-  setLoading('Saving…');
-  try{ await sbUpsert('grocery_lists', activeList); }catch(e){ setLoading(null); alert('Error: '+e.message); return; }
-  // Update local cache
-  const idx=groceryLists.findIndex(l=>l.id===activeList.id);
-  if(idx>-1) groceryLists[idx]={...activeList};
-  listDirty=false;
-  setLoading(null); updUnsavedBar();
-  // Brief feedback
-  const btn=document.querySelector('#list-active .btn-green');
-  if(btn){ const orig=btn.textContent; btn.textContent='Saved ✓'; setTimeout(()=>btn.textContent=orig,1500); }
-}
-
-function renameActiveList(){
-  if(!activeList) return;
-  document.getElementById('namelist-title').textContent='Rename List';
-  document.getElementById('namelist-input').value=activeList.name;
-  nameListCallback = async (name) => {
-    activeList.name=name;
-    document.getElementById('active-list-name').textContent=name;
-    const idx=groceryLists.findIndex(l=>l.id===activeList.id);
-    if(idx>-1) groceryLists[idx].name=name;
-    await saveActiveList();
-  };
-  oM('namelist');
-}
-
-async function deleteList(id){
-  if(!confirm('Delete this list?')) return;
-  setLoading('Deleting…');
-  try{ await sbDelete('grocery_lists',id); }catch(e){ setLoading(null); alert('Error: '+e.message); return; }
-  groceryLists=groceryLists.filter(l=>l.id!==id);
-  if(activeList?.id===id){ activeList=null; weekIds=[]; checked=[]; listDirty=false; }
-  setLoading(null); updBadge(); renderListsGrid();
-}
-
-function updUnsavedBar(){
-  const bar=document.getElementById('list-unsaved-bar');
-  if(bar) bar.style.display=listDirty?'flex':'none';
-}
-
-function markDirty(){
-  listDirty=true; updUnsavedBar();
-}
+function showWeekPage(){ renderWk(); renderWkPicker(); }
 
 function clearWeekFromRecipes(){
   if(!weekIds.length) return;
-  weekIds=[]; checked=[]; markDirty();
+  weekIds=[]; checked=[]; finalisedItems=null; finaliseMode=false;
+  svLocal('mep_week',weekIds); svLocal('mep_chk',checked);
   renderRecipes();
   if(document.getElementById('page-week').classList.contains('active')){ renderWk(); renderWkPicker(); }
 }
 
 function toggleWk(id){
-  // If recipe is already in active list, remove it directly
-  if(activeList && weekIds.includes(id)){
+  if(weekIds.includes(id)){
     weekIds=weekIds.filter(x=>x!==id);
-    markDirty(); updBadge(); renderRecipes();
-    if(document.getElementById('page-week').classList.contains('active')){ renderWk(); renderWkPicker(); }
-    return;
-  }
-  // Always ask which list to add to
-  pendingRecipeId = id;
-  showListPicker();
-}
-
-// Pending recipe to add once a list is chosen
-let pendingRecipeId = null;
-
-function showListPicker(){
-  const modal = document.getElementById('m-listpicker');
-  const container = document.getElementById('listpicker-existing');
-  const recipe = recipes.find(r=>r.id===pendingRecipeId);
-  // Update modal title with recipe name
-  document.getElementById('listpicker-recipe-name').textContent = recipe ? '"'+recipe.name+'"' : 'recipe';
-
-  if(groceryLists.length){
-    container.innerHTML='<div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-style:italic;font-family:Crimson Text,serif;margin-bottom:8px;">Add to existing list</div>'+
-      groceryLists.map(l=>{
-        const isActive = activeList?.id===l.id;
-        return `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border:1px solid var(--rule);border-radius:var(--r);margin-bottom:6px;background:${isActive?'var(--aged-green-lt)':'var(--page)'};cursor:pointer;" onclick="pickListForRecipe('${l.id}')">
-          <div>
-            <div style="font-family:Caveat,cursive;font-size:16px;">${esc(l.name)}${isActive?' <span style="font-size:12px;color:var(--aged-green);font-style:italic;">(active)</span>':''}</div>
-            <div style="font-size:12px;color:var(--ink-4);font-style:italic;font-family:Crimson Text,serif;">${l.recipe_ids.length} recipe${l.recipe_ids.length!==1?'s':''}</div>
-          </div>
-          <button class="btn btn-sm btn-green" onclick="event.stopPropagation();pickListForRecipe('${l.id}')">Add →</button>
-        </div>`;
-      }).join('');
   } else {
-    container.innerHTML='<p style="font-size:13px;color:var(--ink-4);font-style:italic;font-family:Crimson Text,serif;text-align:center;padding:.5rem 0;">No lists yet — create one below</p>';
+    weekIds.push(id);
+    showToast('Added to list');
   }
-  modal.classList.add('open');
-}
-
-async function pickListForRecipe(listId){
-  cM('listpicker');
-  const list = groceryLists.find(l=>l.id===listId);
-  if(!list) return;
-  // Load the list state without navigating
-  activeList=list;
-  weekIds=[...list.recipe_ids];
-  checked=[...list.checked_items];
-  listDirty=false;
-  // Add the recipe if not already there
-  if(pendingRecipeId && !weekIds.includes(pendingRecipeId)){
-    weekIds.push(pendingRecipeId);
-    activeList.recipe_ids=[...weekIds];
-    activeList.updated_at=new Date().toISOString();
-    try{ await sbUpsert('grocery_lists', activeList); const idx=groceryLists.findIndex(l=>l.id===activeList.id); if(idx>-1) groceryLists[idx]={...activeList}; }
-    catch(e){ alert('Error saving: '+e.message); }
-  }
-  pendingRecipeId=null;
-  listDirty=false;
+  finalisedItems=null; finaliseMode=false;
+  svLocal('mep_week',weekIds); svLocal('mep_chk',checked); // persist locally
+  const finBtn=document.getElementById('finalise-btn');
+  if(finBtn){ finBtn.textContent='Finalise'; finBtn.style.background=''; finBtn.style.color='var(--gold)'; finBtn.style.borderColor='var(--gold)'; }
   updBadge(); renderRecipes();
-  // Brief toast confirmation
-  showToast('Added to "'+list.name+'"');
-}
-
-function newListForRecipe(){
-  cM('listpicker');
-  const recipeId = pendingRecipeId;
-  pendingRecipeId = null;
-  document.getElementById('namelist-title').textContent='New List';
-  document.getElementById('namelist-input').value='';
-  nameListCallback = async (name) => {
-    const recipeIds = recipeId ? [recipeId] : [];
-    const list = {id:'l'+Date.now(), name, recipe_ids:recipeIds, checked_items:[], updated_at: new Date().toISOString()};
-    setLoading('Creating list…');
-    try{ await sbUpsert('grocery_lists', list); }catch(e){ setLoading(null); alert('Error: '+e.message); return; }
-    groceryLists.unshift(list);
-    activeList=list; weekIds=[...recipeIds]; checked=[]; listDirty=false;
-    setLoading(null);
-    updBadge(); renderRecipes();
-    showToast('Created "'+name+'"'+(recipeId?' & recipe added':''));
-  };
-  oM('namelist');
+  if(document.getElementById('page-week').classList.contains('active')){ renderWk(); renderWkPicker(); }
 }
 
 function clearWeek(){
   if(!weekIds.length) return;
-  weekIds=[]; checked=[]; markDirty();
+  weekIds=[]; checked=[]; finalisedItems=null; finaliseMode=false;
+  const finBtn=document.getElementById('finalise-btn');
+  if(finBtn){ finBtn.textContent='Finalise'; finBtn.style.background=''; finBtn.style.color='var(--gold)'; finBtn.style.borderColor='var(--gold)'; }
   renderWk(); renderWkPicker(); renderRecipes();
 }
 
 function updBadge(){
   const fab=document.getElementById('grocery-fab');
   const badge=document.getElementById('wk-badge');
-  const nameEl=document.getElementById('fab-list-name');
-  const listsBadge=document.getElementById('lists-badge');
-  if(listsBadge){
-    listsBadge.style.display=groceryLists.length?'inline':'none';
-    listsBadge.textContent=groceryLists.length;
-  }
-  if(activeList){
-    fab.style.display='block';
+  const tabBadge=document.getElementById('wk-badge-tab');
+  if(weekIds.length){
+    if(fab) fab.style.display='block';
     if(badge) badge.textContent=weekIds.length+' recipe'+(weekIds.length!==1?'s':'');
-    if(nameEl) nameEl.textContent=activeList.name;
+    if(tabBadge){ tabBadge.style.display='inline'; tabBadge.textContent=weekIds.length; }
     renderFabPanel();
   } else {
-    fab.style.display='none';
+    if(fab) fab.style.display='none';
     if(badge) badge.textContent='';
-    if(nameEl) nameEl.textContent='—';
+    if(tabBadge) tabBadge.style.display='none';
   }
   const cb=document.getElementById('r-clear-week-btn');
   if(cb) cb.style.display=weekIds.length?'inline-flex':'none';
@@ -1194,6 +1158,100 @@ function showToast(msg){
   toastTimer=setTimeout(()=>el.style.display='none', 2200);
 }
 
+// ── FINALISE ──────────────────────────────────────────────────────────────
+function toggleFinalise(){
+  if(!weekIds.length){ alert('Add some recipes first.'); return; }
+  finaliseMode=!finaliseMode;
+  const btn=document.getElementById('finalise-btn');
+  if(btn){ btn.textContent=finaliseMode?'Done ✓':'Finalise'; btn.style.background=finaliseMode?'var(--teal)':''; btn.style.color=finaliseMode?'var(--bg)':'var(--gold)'; btn.style.borderColor=finaliseMode?'var(--teal)':'var(--gold)'; }
+  if(finaliseMode && !finalisedItems){
+    // Seed from consolidated list on first enter
+    const wkRecs=weekIds.map(id=>recipes.find(r=>r.id===id)).filter(Boolean);
+    const cons=consolidate(wkRecs);
+    finalisedItems=cons.map(item=>{
+      let qty=item.dq;
+      if(item.isCount){
+        const n=parseFloat(item.dq);
+        qty=isNaN(n)?item.dq:String(Math.ceil(n)); // round up for whole items
+      }
+      return {
+        name:item.name, qty, unit:item.isCount?'':(item._u||''), cups:item._ml?mlToCooking(item._ml):'',
+        metric:item.isCount?'':(item.dq2?item.dq+' ('+item.dq2+')':item.dq),
+        isCount:item.isCount, sources:item.sources, cat:catOf(item.name), _ml:item._ml
+      };
+    });
+    // Save to list
+    if(activeList){ activeList.finalised_items=finalisedItems; activeList.updated_at=new Date().toISOString(); sbUpsert('grocery_lists',activeList).catch(()=>{}); }
+  }
+  renderWk();
+}
+
+function finQtyStep(idx, delta){
+  if(!finalisedItems||!finalisedItems[idx]) return;
+  const item=finalisedItems[idx];
+  // Parse current qty as number
+  const cur=parseFloat(item.qty)||0;
+  const next=Math.max(0, Math.round((cur+delta)*10)/10);
+  item.qty=next===0?'0':String(next);
+  // Update metric display
+  item.metric=item.qty+(item.unit?' '+item.unit:'');
+  saveFinalisedItems();
+  renderWk();
+}
+
+function finQtyEdit(idx, val){
+  if(!finalisedItems||!finalisedItems[idx]) return;
+  finalisedItems[idx].qty=val;
+  finalisedItems[idx].metric=val+(finalisedItems[idx].unit?' '+finalisedItems[idx].unit:'');
+}
+
+function finDelete(idx){
+  if(!finalisedItems) return;
+  finalisedItems.splice(idx,1);
+  saveFinalisedItems(); renderWk();
+}
+
+function saveFinalisedItems(){
+  if(activeList){ activeList.finalised_items=finalisedItems; activeList.updated_at=new Date().toISOString(); sbUpsert('grocery_lists',activeList).catch(()=>{}); markDirty(); }
+}
+
+function resetFinalise(){
+  finalisedItems=null; finaliseMode=false;
+  const btn=document.getElementById('finalise-btn');
+  if(btn){ btn.textContent='Finalise ✦'; btn.style.background=''; btn.style.color='var(--gold)'; }
+  if(activeList){ activeList.finalised_items=null; sbUpsert('grocery_lists',activeList).catch(()=>{}); }
+  renderWk();
+}
+
+function renderFinaliseView(byCat, sortedCats){
+  if(!finalisedItems||!finalisedItems.length){
+    return '<div class="empty">All items removed — <button class="btn btn-sm" onclick="resetFinalise()">Reset list</button></div>';
+  }
+  // Group finalised items by category
+  const finByCat={};
+  finalisedItems.forEach((item,idx)=>{ const c=item.cat||'Other'; (finByCat[c]=finByCat[c]||[]).push({...item,_idx:idx}); });
+  const CAT_ORDER=['Produce','Meat & Fish','Dairy & Eggs','Bakery','Pantry','Spices & Herbs','Condiments','Frozen','Beverages','Other'];
+  const cats=[...CAT_ORDER.filter(c=>finByCat[c]),...Object.keys(finByCat).filter(c=>!CAT_ORDER.includes(c))];
+  let html='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;"><span style="font-size:12px;color:var(--teal-40);font-style:italic;font-family:Cormorant Garamond,serif;">Adjust quantities, then save</span><button class="btn btn-sm btn-ghost" onclick="resetFinalise()">Reset to generated</button></div>';
+  html+=cats.map(cat=>`
+    <div class="shop-sec">
+      <div class="shop-sec-title">${esc(cat)}</div>
+      ${finByCat[cat].map(item=>`
+        <div class="fin-item">
+          <button class="fin-del" onclick="finDelete(${item._idx})" title="Remove">×</button>
+          <span style="font-size:14px;font-weight:300;">${esc(item.name)}</span>
+          <input class="fin-qty-input" type="text" value="${esc(item.qty)}" onchange="finQtyEdit(${item._idx},this.value)" onblur="saveFinalisedItems()">
+          <span style="font-size:13px;color:var(--teal-40);font-style:italic;">${esc(item.unit||'')}</span>
+          <span style="font-size:11px;color:var(--gold);font-style:italic;font-family:Cormorant Garamond,serif;">${esc(item.sources.join(', '))}</span>
+          <div class="fin-stepper">
+            <button onclick="finQtyStep(${item._idx},1)" title="+1">+</button>
+            <button onclick="finQtyStep(${item._idx},-1)" title="-1">−</button>
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+  return html;
+}
+
 function renderWk(){
   const el=document.getElementById('wk-main');
   if(!weekIds.length){ el.innerHTML='<div class="empty" style="padding:3rem 1rem;"><div style="font-size:32px;margin-bottom:12px;">🛒</div><div style="font-size:16px;font-style:italic;color:var(--ink-3);">Add recipes using the panel on the right</div></div>'; return; }
@@ -1208,29 +1266,57 @@ function renderWk(){
   const CAT_ORDER=['Produce','Meat & Fish','Dairy & Eggs','Bakery','Pantry','Spices & Herbs','Condiments','Frozen','Beverages','Other'];
   const sortedCats=[...CAT_ORDER.filter(c=>byCat[c]),...Object.keys(byCat).filter(c=>!CAT_ORDER.includes(c))];
 
-  html+='<div style="font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:1.25rem 0 6px;font-family:Crimson Text,serif;font-style:italic;">Shopping list</div>';
-  html+=sortedCats.map(cat=>`
-    <div class="shop-sec">
-      <div class="shop-sec-title">${esc(cat)}</div>
-      <div class="sl-header"><span></span><span>Ingredient</span><span>Metric</span><span>Cups / vol</span><span>Recipe</span></div>
-      ${byCat[cat].map(item=>{
-        const ck=checked.includes(item.name);
-        const cups=item._ml!==null?mlToCooking(item._ml):'';
-        const metricStr=item.isCount?'':(item.dq2?item.dq+' ('+item.dq2+')':item.dq);
-        const nameStr=item.isCount?(item.dq&&item.dq!=='—'?item.dq+' × '+item.name:item.name):item.name;
-        return `<div class="si ${ck?'ck':''}" onclick="toggleChk('${esc(item.name)}')">
-          <div class="si-chk ${ck?'tk':''}">${ck?'<svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 3.5,6.5 9,1" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}</div>
-          <span class="si-name">${esc(nameStr)}</span>
-          <span class="si-metric">${esc(metricStr)}</span>
-          <span class="si-cups">${esc(cups)}</span>
-          <span class="si-src">${esc(item.sources.join(', '))}</span>
-        </div>`;
-      }).join('')}
-    </div>`).join('');
+  // ── Shopping list section ──
+  if(finaliseMode){
+    html+=renderFinaliseView(byCat, sortedCats);
+  } else {
+    html+='<div style="font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--teal-40);font-weight:500;margin:1.25rem 0 6px;">Shopping list</div>';
+    // If we have a finalised list, show it in read mode
+    const displayItems = finalisedItems || null;
+    if(displayItems){
+      // Show finalised read-only view with check-off
+      const finByCat={};
+      displayItems.forEach(item=>{ const c=item.cat||catOf(item.name); (finByCat[c]=finByCat[c]||[]).push(item); });
+      const CAT_ORDER=['Produce','Meat & Fish','Dairy & Eggs','Bakery','Pantry','Spices & Herbs','Condiments','Frozen','Beverages','Other'];
+      const cats=[...CAT_ORDER.filter(c=>finByCat[c]),...Object.keys(finByCat).filter(c=>!CAT_ORDER.includes(c))];
+      html+=cats.map(cat=>`
+        <div class="shop-sec">
+          <div class="shop-sec-title">${esc(cat)}</div>
+          ${finByCat[cat].map(item=>{
+            const ck=checked.includes(item.name);
+            return `<div class="si ${ck?'ck':''}" onclick="toggleChk('${esc(item.name)}')" style="grid-template-columns:28px 1fr 120px 130px;">
+              <div class="si-chk ${ck?'tk':''}">${ck?'<svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 3.5,6.5 9,1" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}</div>
+              <span class="si-name">${esc(item.name)}</span>
+              <span class="si-metric">${esc(item.qty+(item.unit?' '+item.unit:''))}</span>
+              <span class="si-src">${esc(item.sources.join(', '))}</span>
+            </div>`;
+          }).join('')}
+        </div>`).join('');
+    } else {
+      html+=sortedCats.map(cat=>`
+        <div class="shop-sec">
+          <div class="shop-sec-title">${esc(cat)}</div>
+          <div class="sl-header"><span></span><span>Ingredient</span><span>Metric</span><span>Cups / vol</span><span>Recipe</span></div>
+          ${byCat[cat].map(item=>{
+            const ck=checked.includes(item.name);
+            const cups=item._ml!==null?mlToCooking(item._ml):'';
+            const metricStr=item.isCount?'':(item.dq2?item.dq+' ('+item.dq2+')':item.dq);
+            const nameStr=item.isCount?(item.dq&&item.dq!=='—'?item.dq+' × '+item.name:item.name):item.name;
+            return `<div class="si ${ck?'ck':''}" onclick="toggleChk('${esc(item.name)}')">
+              <div class="si-chk ${ck?'tk':''}">${ck?'<svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 3.5,6.5 9,1" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}</div>
+              <span class="si-name">${esc(nameStr)}</span>
+              <span class="si-metric">${esc(metricStr)}</span>
+              <span class="si-cups">${esc(cups)}</span>
+              <span class="si-src">${esc(item.sources.join(', '))}</span>
+            </div>`;
+          }).join('')}
+        </div>`).join('');
+    }
+  }
   el.innerHTML=html;
 }
 
-function toggleChk(name){ checked.includes(name)?checked=checked.filter(x=>x!==name):checked.push(name); markDirty(); renderWk(); }
+function toggleChk(name){ checked.includes(name)?checked=checked.filter(x=>x!==name):checked.push(name); svLocal('mep_chk',checked); renderWk(); }
 function catOf(name){ return ings.find(i=>i.name.toLowerCase()===name.toLowerCase())?.cat||'Other'; }
 
 function renderWkPicker(){
@@ -1354,63 +1440,33 @@ function consolidate(recs){
 // ═══════════════════════════════════════
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+function resetApp(){
+  // Clear all selections, filters, search, finalise state
+  weekIds=[]; checked=[]; finalisedItems=null; finaliseMode=false;
+  activeFilters.clear();
+  svLocal('mep_week',[]); svLocal('mep_chk',[]);
+  // Reset search and sort
+  const search=document.getElementById('rsearch');
+  if(search) search.value='';
+  const sort=document.getElementById('recipe-sort-sel');
+  if(sort){ sort.value='name'; recipeSort='name'; }
+  // Reset finalise button
+  const finBtn=document.getElementById('finalise-btn');
+  if(finBtn){ finBtn.textContent='Finalise'; finBtn.style.background=''; finBtn.style.color='var(--gold)'; finBtn.style.borderColor='var(--gold)'; }
+  // Reset fab panel
+  fabOpen=false;
+  const panel=document.getElementById('fab-panel');
+  const chev=document.getElementById('fab-chevron');
+  if(panel) panel.style.display='none';
+  if(chev) chev.style.transform='';
+  // Navigate to recipes tab and re-render
+  showPage('recipes');
+  showToast('App reset');
+}
+
 // ═══════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════
 loadAll();
 </script>
-<!-- MODAL: Pick or create list when adding a recipe -->
-<div class="mb" id="m-listpicker" onclick="if(event.target===this)cM('listpicker')">
-  <div class="modal" style="max-width:400px;">
-    <div class="mh"><h2>Add <span id="listpicker-recipe-name" style="color:var(--aged-green);"></span> to…</h2><button class="xbtn" onclick="cM('listpicker')">×</button></div>
-    <div class="mbody">
-      <button class="btn btn-green" style="width:100%;justify-content:center;margin-bottom:1rem;font-size:15px;" onclick="newListForRecipe()">+ Create a new list</button>
-      <div id="listpicker-existing"></div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: Name list -->
-<div class="mb" id="m-namelist" onclick="if(event.target===this)cM('namelist')">
-  <div class="modal" style="max-width:380px;">
-    <div class="mh"><h2 id="namelist-title">New List</h2><button class="xbtn" onclick="cM('namelist')">×</button></div>
-    <div class="mbody">
-      <div class="fr"><label>List name</label><input type="text" id="namelist-input" placeholder="e.g. Week of May 12, Party, Camping…" onkeydown="if(event.key==='Enter')confirmNameList()"></div>
-    </div>
-    <div class="mfoot">
-      <button class="btn" onclick="cM('namelist')">Cancel</button>
-      <button class="btn btn-primary" onclick="confirmNameList()">Create</button>
-    </div>
-  </div>
-</div>
-
-
-<div style="position:fixed;bottom:0;left:0;right:0;height:62px;pointer-events:none;z-index:30;overflow:hidden;">
-  <svg width="100%" height="62" preserveAspectRatio="none" viewBox="0 0 1400 62" xmlns="http://www.w3.org/2000/svg">
-    <g fill="none" stroke-linecap="round">
-      <!-- back layer - lighter, shorter -->
-      <g stroke="#8ab394" stroke-width="0.9" opacity="0.5">
-        <path d="M10 62 C10 52 11 42 9 32"/><path d="M24 62 C25 50 27 38 30 26"/><path d="M40 62 C40 52 41 42 39 32"/><path d="M56 62 C57 50 59 38 62 26"/><path d="M72 62 C72 52 73 42 71 32"/><path d="M88 62 C89 50 91 38 94 26"/><path d="M106 62 C106 52 107 42 105 32"/><path d="M124 62 C125 50 127 38 130 26"/><path d="M142 62 C142 52 143 42 141 32"/><path d="M160 62 C161 50 163 38 166 26"/><path d="M180 62 C180 52 181 42 179 32"/><path d="M200 62 C201 50 203 38 206 26"/><path d="M222 62 C222 52 223 42 221 32"/><path d="M244 62 C245 50 247 38 250 26"/><path d="M266 62 C266 52 267 42 265 32"/><path d="M290 62 C291 50 293 38 296 26"/><path d="M314 62 C314 52 315 42 313 32"/><path d="M338 62 C339 50 341 38 344 26"/><path d="M364 62 C364 52 365 42 363 32"/><path d="M390 62 C391 50 393 38 396 26"/><path d="M416 62 C416 52 417 42 415 32"/><path d="M444 62 C445 50 447 38 450 26"/><path d="M472 62 C472 52 473 42 471 32"/><path d="M500 62 C501 50 503 38 506 26"/><path d="M530 62 C530 52 531 42 529 32"/><path d="M560 62 C561 50 563 38 566 26"/><path d="M590 62 C590 52 591 42 589 32"/><path d="M622 62 C623 50 625 38 628 26"/><path d="M654 62 C654 52 655 42 653 32"/><path d="M686 62 C687 50 689 38 692 26"/><path d="M720 62 C720 52 721 42 719 32"/><path d="M754 62 C755 50 757 38 760 26"/><path d="M788 62 C788 52 789 42 787 32"/><path d="M824 62 C825 50 827 38 830 26"/><path d="M860 62 C860 52 861 42 859 32"/><path d="M896 62 C897 50 899 38 902 26"/><path d="M934 62 C934 52 935 42 933 32"/><path d="M970 62 C971 50 973 38 976 26"/><path d="M1008 62 C1008 52 1009 42 1007 32"/><path d="M1046 62 C1047 50 1049 38 1052 26"/><path d="M1084 62 C1084 52 1085 42 1083 32"/><path d="M1124 62 C1125 50 1127 38 1130 26"/><path d="M1164 62 C1164 52 1165 42 1163 32"/><path d="M1204 62 C1205 50 1207 38 1210 26"/><path d="M1246 62 C1246 52 1247 42 1245 32"/><path d="M1288 62 C1289 50 1291 38 1294 26"/><path d="M1330 62 C1330 52 1331 42 1329 32"/><path d="M1372 62 C1373 50 1375 38 1378 26"/>
-      </g>
-      <!-- front layer - darker, taller, slightly curved -->
-      <g stroke="#4a7a52" stroke-width="1.1">
-        <path d="M4 62 C3 50 4 38 2 22"/><path d="M18 62 C19 48 22 34 26 18"/><path d="M34 62 C33 50 34 36 37 20"/><path d="M50 62 C51 48 54 32 58 16"/><path d="M66 62 C65 50 66 36 70 20"/><path d="M82 62 C83 48 86 32 91 16"/><path d="M100 62 C99 50 100 36 103 20"/><path d="M118 62 C119 48 122 32 127 16"/><path d="M138 62 C137 50 138 36 141 20"/><path d="M158 62 C159 48 162 32 167 16"/><path d="M178 62 C177 50 178 36 182 20"/><path d="M200 62 C201 48 204 34 209 18"/><path d="M222 62 C221 50 222 36 225 20"/><path d="M246 62 C247 48 250 32 255 16"/><path d="M270 62 C269 50 270 36 274 20"/><path d="M296 62 C297 48 300 32 305 16"/><path d="M322 62 C321 50 322 36 326 20"/><path d="M348 62 C349 48 352 34 357 18"/><path d="M376 62 C375 50 376 36 379 20"/><path d="M404 62 C405 48 408 32 413 16"/><path d="M432 62 C431 50 432 36 436 20"/><path d="M462 62 C463 48 466 32 471 16"/><path d="M492 62 C491 50 492 36 496 20"/><path d="M522 62 C523 48 526 34 531 18"/><path d="M554 62 C553 50 554 36 557 20"/><path d="M586 62 C587 48 590 32 595 16"/><path d="M618 62 C617 50 618 36 622 20"/><path d="M652 62 C653 48 656 32 661 16"/><path d="M686 62 C685 50 686 36 690 20"/><path d="M720 62 C721 48 724 34 729 18"/><path d="M756 62 C755 50 756 36 759 20"/><path d="M792 62 C793 48 796 32 801 16"/><path d="M828 62 C827 50 828 36 832 20"/><path d="M866 62 C867 48 870 32 875 16"/><path d="M904 62 C903 50 904 36 908 20"/><path d="M942 62 C943 48 946 34 951 18"/><path d="M982 62 C981 50 982 36 985 20"/><path d="M1022 62 C1023 48 1026 32 1031 16"/><path d="M1062 62 C1061 50 1062 36 1066 20"/><path d="M1104 62 C1105 48 1108 32 1113 16"/><path d="M1146 62 C1145 50 1146 36 1150 20"/><path d="M1188 62 C1189 48 1192 34 1197 18"/><path d="M1232 62 C1231 50 1232 36 1235 20"/><path d="M1276 62 C1277 48 1280 32 1285 16"/><path d="M1320 62 C1319 50 1320 36 1324 20"/><path d="M1364 62 C1365 48 1368 32 1373 16"/>
-      </g>
-      <!-- tiny wildflower dots -->
-      <circle cx="58" cy="17" r="2.2" fill="#6a9b6a" stroke="none" opacity="0.7"/>
-      <circle cx="58" cy="17" r="1" fill="#d4f0c8" stroke="none"/>
-      <circle cx="255" cy="15" r="2.2" fill="#5a8a62" stroke="none" opacity="0.7"/>
-      <circle cx="255" cy="15" r="1" fill="#d4f0c8" stroke="none"/>
-      <circle cx="471" cy="15" r="2.2" fill="#6a9b6a" stroke="none" opacity="0.7"/>
-      <circle cx="471" cy="15" r="1" fill="#d4f0c8" stroke="none"/>
-      <circle cx="801" cy="14" r="2.2" fill="#5a8a62" stroke="none" opacity="0.7"/>
-      <circle cx="801" cy="14" r="1" fill="#d4f0c8" stroke="none"/>
-      <circle cx="1031" cy="14" r="2.2" fill="#6a9b6a" stroke="none" opacity="0.7"/>
-      <circle cx="1031" cy="14" r="1" fill="#d4f0c8" stroke="none"/>
-      <circle cx="1285" cy="14" r="2.2" fill="#5a8a62" stroke="none" opacity="0.7"/>
-      <circle cx="1285" cy="14" r="1" fill="#d4f0c8" stroke="none"/>
-    </g>
-  </svg>
-</div>
-
 </body>
