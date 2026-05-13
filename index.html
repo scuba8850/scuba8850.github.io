@@ -47,8 +47,10 @@ header {
   color: var(--bg);
   height: 68px;
   display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem;
-  position: sticky; top: 0; z-index: 50;
+  position: sticky; top: 0; z-index: 100;
   border-bottom: 1px solid rgba(168,145,80,.4);
+  isolation: isolate;
+  will-change: transform;
 }
 header::before, header::after { content: none; }
 .logo {
@@ -69,7 +71,7 @@ header::before, header::after { content: none; }
   background: var(--bg);
   border-bottom: 1px solid var(--line-2);
   display: flex; padding: 0 1.5rem;
-  position: sticky; top: 68px; z-index: 40;
+  position: sticky; top: 68px; z-index: 99;
 }
 .tab {
   padding: 0 1.25rem; height: 46px;
@@ -155,7 +157,7 @@ input:focus,select:focus,textarea:focus {
 }
 
 /* RECIPE GRID */
-.recipe-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap: 16px; }
+.recipe-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap: 16px; isolation: isolate; }
 .rc {
   background: var(--white);
   border: 1px solid rgba(168,145,80,.18);
