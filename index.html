@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -9,84 +10,84 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --teal:        #0A4147;
-  --teal-80:     rgba(10,65,71,.80);
-  --teal-40:     rgba(10,65,71,.40);
-  --teal-15:     rgba(10,65,71,.15);
-  --teal-08:     rgba(10,65,71,.08);
-  --teal-light:  #0d5560;
-  --gold:        #A89150;
-  --gold-light:  #c4aa72;
-  --gold-pale:   #e8dfc0;
-  --bg:          #F2E8D3;
-  --bg-2:        #ede0c4;
-  --bg-3:        #e4d5b0;
-  --white:       #faf7f0;
-  --line:        rgba(168,145,80,.3);
-  --line-2:      rgba(168,145,80,.5);
-  --red:         #7a2828;
-  --red-lt:      #f8f0f0;
-  --r: 2px; --r-lg: 4px;
-  --sh:    0 1px 6px rgba(10,65,71,.10), 0 1px 2px rgba(10,65,71,.06);
-  --sh-lg: 0 6px 24px rgba(10,65,71,.14), 0 2px 8px rgba(10,65,71,.08);
+--teal:        #0A4147;
+--teal-80:     rgba(10,65,71,.80);
+--teal-40:     rgba(10,65,71,.40);
+--teal-15:     rgba(10,65,71,.15);
+--teal-08:     rgba(10,65,71,.08);
+--teal-light:  #0d5560;
+--gold:        #A89150;
+--gold-light:  #c4aa72;
+--gold-pale:   #e8dfc0;
+--bg:          #F2E8D3;
+--bg-2:        #ede0c4;
+--bg-3:        #e4d5b0;
+--white:       #faf7f0;
+--line:        rgba(168,145,80,.3);
+--line-2:      rgba(168,145,80,.5);
+--red:         #7a2828;
+--red-lt:      #f8f0f0;
+--r: 2px; --r-lg: 4px;
+--sh:    0 1px 6px rgba(10,65,71,.10), 0 1px 2px rgba(10,65,71,.06);
+--sh-lg: 0 6px 24px rgba(10,65,71,.14), 0 2px 8px rgba(10,65,71,.08);
 }
 
 body {
-  font-family: 'Jost', sans-serif;
-  background: var(--bg);
-  color: var(--teal);
-  font-size: 15px;
-  line-height: 1.6;
-  font-weight: 300;
-  min-height: 100vh;
+font-family: 'Jost', sans-serif;
+background: var(--bg);
+color: var(--teal);
+font-size: 15px;
+line-height: 1.6;
+font-weight: 300;
+min-height: 100vh;
 }
 
 /* HEADER */
 header {
-  background: var(--teal);
-  color: var(--bg);
-  height: 68px;
-  display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem;
-  position: sticky; top: 0; z-index: 100;
-  border-bottom: 1px solid rgba(168,145,80,.4);
-  isolation: isolate;
-  will-change: transform;
+background: var(--teal);
+color: var(--bg);
+height: 68px;
+display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem;
+position: sticky; top: 0; z-index: 100;
+border-bottom: 1px solid rgba(168,145,80,.4);
+isolation: isolate;
+will-change: transform;
 }
 header::before, header::after { content: none; }
 .logo {
-  font-family: 'Cormorant SC', serif;
-  font-size: 22px; font-weight: 600;
-  letter-spacing: .35em; text-transform: uppercase;
-  color: var(--bg);
+font-family: 'Cormorant SC', serif;
+font-size: 22px; font-weight: 600;
+letter-spacing: .35em; text-transform: uppercase;
+color: var(--bg);
 }
 .logo-ornament {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic; font-size: 11px;
-  color: var(--gold-light); letter-spacing: .2em;
-  text-align: center; display: block; margin-top: 2px;
+font-family: 'Cormorant Garamond', serif;
+font-style: italic; font-size: 11px;
+color: var(--gold-light); letter-spacing: .2em;
+text-align: center; display: block; margin-top: 2px;
 }
 
 /* TABS */
 .tabs {
-  background: var(--bg);
-  border-bottom: 1px solid var(--line-2);
-  display: flex; padding: 0 1.5rem;
-  position: sticky; top: 68px; z-index: 99;
+background: var(--bg);
+border-bottom: 1px solid var(--line-2);
+display: flex; padding: 0 1.5rem;
+position: sticky; top: 68px; z-index: 99;
 }
 .tab {
-  padding: 0 1.25rem; height: 46px;
-  font-family: 'Jost', sans-serif;
-  font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 500;
-  border: none; background: none; color: var(--teal-40);
-  cursor: pointer; border-bottom: 1.5px solid transparent;
-  margin-bottom: -1px; transition: color .2s;
-  display: flex; align-items: center; gap: 8px;
+padding: 0 1.25rem; height: 46px;
+font-family: 'Jost', sans-serif;
+font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 500;
+border: none; background: none; color: var(--teal-40);
+cursor: pointer; border-bottom: 1.5px solid transparent;
+margin-bottom: -1px; transition: color .2s;
+display: flex; align-items: center; gap: 8px;
 }
 .tab:hover { color: var(--teal); }
 .tab.active { color: var(--teal); border-bottom-color: var(--gold); }
 .badge {
-  font-size: 10px; background: var(--teal); color: var(--bg);
-  border-radius: 10px; padding: 1px 7px; font-weight: 400; letter-spacing: .04em;
+font-size: 10px; background: var(--teal); color: var(--bg);
+border-radius: 10px; padding: 1px 7px; font-weight: 400; letter-spacing: .04em;
 }
 
 /* MAIN */
@@ -97,44 +98,44 @@ main { max-width: 960px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
 /* TOOLBAR */
 .toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 1.75rem; flex-wrap: wrap; }
 .toolbar-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 28px; font-style: italic; font-weight: 300;
-  color: var(--teal); flex: 1; letter-spacing: .02em;
+font-family: 'Cormorant Garamond', serif;
+font-size: 28px; font-style: italic; font-weight: 300;
+color: var(--teal); flex: 1; letter-spacing: .02em;
 }
 
 /* GOLD RULE */
 .gold-rule {
-  display: flex; align-items: center; gap: 12px;
-  margin: .5rem 0 1.5rem; color: var(--gold);
+display: flex; align-items: center; gap: 12px;
+margin: .5rem 0 1.5rem; color: var(--gold);
 }
 .gold-rule::before, .gold-rule::after {
-  content: ''; flex: 1; height: 1px; background: var(--line-2);
+content: ''; flex: 1; height: 1px; background: var(--line-2);
 }
 .gold-rule span { font-size: 10px; letter-spacing: .15em; text-transform: uppercase; font-weight: 500; white-space: nowrap; }
 
 /* INPUTS */
 input[type=text],input[type=search],input[type=password],select,textarea {
-  font-family: 'Jost', sans-serif; font-size: 14px; font-weight: 300;
-  background: var(--white); color: var(--teal);
-  border: 1px solid var(--line-2); border-radius: var(--r);
-  padding: 8px 12px; outline: none;
-  transition: border-color .2s, box-shadow .2s;
+font-family: 'Jost', sans-serif; font-size: 14px; font-weight: 300;
+background: var(--white); color: var(--teal);
+border: 1px solid var(--line-2); border-radius: var(--r);
+padding: 8px 12px; outline: none;
+transition: border-color .2s, box-shadow .2s;
 }
 input:focus,select:focus,textarea:focus {
-  border-color: var(--teal-40);
-  box-shadow: 0 0 0 3px var(--teal-08);
+border-color: var(--teal-40);
+box-shadow: 0 0 0 3px var(--teal-08);
 }
 .search-box { width: 220px; }
 
 /* BUTTONS */
 .btn {
-  font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 500;
-  letter-spacing: .1em; text-transform: uppercase;
-  padding: 8px 20px; border-radius: var(--r);
-  border: 1px solid var(--line-2);
-  background: transparent; color: var(--teal);
-  cursor: pointer; transition: all .2s;
-  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 500;
+letter-spacing: .1em; text-transform: uppercase;
+padding: 8px 20px; border-radius: var(--r);
+border: 1px solid var(--line-2);
+background: transparent; color: var(--teal);
+cursor: pointer; transition: all .2s;
+display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
 }
 .btn:hover { background: var(--teal-08); border-color: var(--teal-40); }
 .btn:disabled { opacity: .4; cursor: not-allowed; }
@@ -150,80 +151,79 @@ input:focus,select:focus,textarea:focus {
 
 /* CARD */
 .card {
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  box-shadow: var(--sh);
+background: var(--white);
+border: 1px solid var(--line);
+border-radius: var(--r-lg);
+box-shadow: var(--sh);
 }
 
 /* RECIPE GRID */
 .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap: 16px; isolation: isolate; }
 .rc {
-  background: var(--white);
-  border: 1px solid rgba(168,145,80,.18);
-  border-radius: 8px 7px 9px 8px / 7px 9px 8px 9px; /* slightly irregular corners */
-  padding: 1.25rem;
-  cursor: pointer;
-  transition: box-shadow .25s, transform .25s, border-color .2s;
-  position: relative;
-  /* Layered shadow for floating physical feel */
-  box-shadow:
-    -1px 2px 2px rgba(10,65,71,.07),
-    -2px 4px 8px rgba(10,65,71,.08),
-    -3px 6px 14px rgba(10,65,71,.06),
-    1px -1px 0 rgba(255,255,255,.8) inset;
+background: var(--white);
+border: 1px solid rgba(168,145,80,.18);
+border-radius: 8px 7px 9px 8px / 7px 9px 8px 9px;
+padding: 1.25rem;
+cursor: pointer;
+transition: box-shadow .25s, transform .25s, border-color .2s;
+position: relative;
+display: flex; flex-direction: column;
+box-shadow:
+  -1px 2px 2px rgba(10,65,71,.07),
+  -2px 4px 8px rgba(10,65,71,.08),
+  -3px 6px 14px rgba(10,65,71,.06),
+  1px -1px 0 rgba(255,255,255,.8) inset;
 }
-/* Subtle texture overlay — gives paper feel */
 .rc::before {
-  content: '';
-  position: absolute; inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(160deg, rgba(255,255,255,.6) 0%, transparent 60%);
-  pointer-events: none;
+content: '';
+position: absolute; inset: 0;
+border-radius: inherit;
+background: linear-gradient(160deg, rgba(255,255,255,.6) 0%, transparent 60%);
+pointer-events: none;
 }
 .rc::after {
-  content: '';
-  position: absolute; bottom: 0; left: 1.25rem; right: 1.25rem;
-  height: 2px;
-  background: linear-gradient(to right, transparent, var(--gold), transparent);
-  opacity: 0; transition: opacity .2s;
-  border-radius: 0 0 8px 8px;
+content: '';
+position: absolute; bottom: 0; left: 1.25rem; right: 1.25rem;
+height: 2px;
+background: linear-gradient(to right, transparent, var(--gold), transparent);
+opacity: 0; transition: opacity .2s;
+border-radius: 0 0 8px 8px;
 }
 .rc:hover {
-  box-shadow:
-    -2px 4px 6px rgba(10,65,71,.09),
-    -4px 8px 18px rgba(10,65,71,.11),
-    -6px 14px 32px rgba(10,65,71,.08),
-    1px -1px 0 rgba(255,255,255,.8) inset;
-  transform: translate(2px, -3px) rotate(0.2deg);
-  border-color: rgba(168,145,80,.35);
+box-shadow:
+  -2px 4px 6px rgba(10,65,71,.09),
+  -4px 8px 18px rgba(10,65,71,.11),
+  -6px 14px 32px rgba(10,65,71,.08),
+  1px -1px 0 rgba(255,255,255,.8) inset;
+transform: translate(2px, -3px) rotate(0.2deg);
+border-color: rgba(168,145,80,.35);
 }
 .rc:hover::after { opacity: 1; }
 .rc.in-week {
-  border-color: rgba(10,65,71,.3);
-  background: rgba(10,65,71,.03);
-  box-shadow:
-    -1px 2px 3px rgba(10,65,71,.09),
-    -2px 4px 10px rgba(10,65,71,.11),
-    1px -1px 0 rgba(255,255,255,.6) inset;
+border-color: rgba(10,65,71,.3);
+background: rgba(10,65,71,.03);
+box-shadow:
+  -1px 2px 3px rgba(10,65,71,.09),
+  -2px 4px 10px rgba(10,65,71,.11),
+  1px -1px 0 rgba(255,255,255,.6) inset;
 }
 .rc.in-week::after { opacity: .6; }
 .rc-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 17px; font-weight: 600;
-  margin-bottom: 6px; line-height: 1.3; color: var(--teal);
+font-family: 'Cormorant Garamond', serif;
+font-size: 17px; font-weight: 600;
+margin-bottom: 6px; line-height: 1.3; color: var(--teal);
 }
 .rc-meta { font-size: 11px; color: var(--gold); display: flex; gap: 6px; flex-wrap: wrap; letter-spacing: .06em; text-transform: uppercase; font-weight: 400; }
 .rc-meta span { background: var(--bg); padding: 1px 8px; border-radius: 2px; border: 1px solid var(--line); }
 .rc.in-week .rc-meta span { background: rgba(10,65,71,.06); border-color: var(--teal-15); }
-.rc-footer { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; }
+.rc-footer { margin-top: auto; padding-top: 12px; display: flex; align-items: center; justify-content: space-between; }
 .ic { font-size: 11px; color: var(--teal-40); letter-spacing: .04em; }
 .wk-btn {
-  font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 500;
-  letter-spacing: .1em; text-transform: uppercase;
-  padding: 4px 12px; border-radius: var(--r);
-  border: 1px solid var(--line-2); background: transparent;
-  color: var(--teal-40); cursor: pointer; transition: all .2s;
+font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 500;
+letter-spacing: .1em; text-transform: uppercase;
+padding: 4px 12px; border-radius: var(--r);
+border: 1px solid var(--line-2); background: transparent;
+color: var(--teal-40); cursor: pointer; transition: all .2s;
 }
 .wk-btn:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-08); }
 .rc.in-week .wk-btn { background: var(--teal); color: var(--bg); border-color: var(--teal); }
@@ -231,11 +231,11 @@ input:focus,select:focus,textarea:focus {
 /* FILTER CHIPS */
 .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
 .chip {
-  font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 500;
-  letter-spacing: .1em; text-transform: uppercase;
-  padding: 4px 14px; border-radius: 2px;
-  border: 1px solid var(--line-2); background: transparent;
-  color: var(--teal-40); cursor: pointer; transition: all .2s;
+font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 500;
+letter-spacing: .1em; text-transform: uppercase;
+padding: 4px 14px; border-radius: 2px;
+border: 1px solid var(--line-2); background: transparent;
+color: var(--teal-40); cursor: pointer; transition: all .2s;
 }
 .chip.active { background: var(--teal); color: var(--bg); border-color: var(--teal); }
 .chip:hover:not(.active) { border-color: var(--teal-40); color: var(--teal); }
@@ -243,27 +243,27 @@ input:focus,select:focus,textarea:focus {
 /* INGREDIENT TABLE */
 .ing-table { width: 100%; border-collapse: collapse; }
 .ing-table th {
-  text-align: left; font-size: 10px; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--gold);
-  padding: 10px 16px; border-bottom: 1px solid var(--line-2); font-weight: 500;
-  font-family: 'Jost', sans-serif;
+text-align: left; font-size: 10px; letter-spacing: .12em;
+text-transform: uppercase; color: var(--gold);
+padding: 10px 16px; border-bottom: 1px solid var(--line-2); font-weight: 500;
+font-family: 'Jost', sans-serif;
 }
 .ing-table td { padding: 10px 16px; font-size: 14px; border-bottom: 1px solid var(--line); font-weight: 300; }
 .ing-table tr:last-child td { border-bottom: none; }
 .ing-table tr:hover td { background: var(--teal-08); }
 .cat-b {
-  font-size: 10px; padding: 2px 10px; border-radius: 2px;
-  background: var(--bg); color: var(--gold);
-  border: 1px solid var(--line); letter-spacing: .08em; text-transform: uppercase;
+font-size: 10px; padding: 2px 10px; border-radius: 2px;
+background: var(--bg); color: var(--gold);
+border: 1px solid var(--line); letter-spacing: .08em; text-transform: uppercase;
 }
 
 /* SHOPPING LIST */
 .shop-sec { margin-bottom: 2rem; }
 .shop-sec-title {
-  font-family: 'Cormorant SC', serif;
-  font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
-  color: var(--gold); padding: 0 0 8px;
-  border-bottom: 1px solid var(--line-2); margin-bottom: 6px;
+font-family: 'Cormorant SC', serif;
+font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+color: var(--gold); padding: 0 0 8px;
+border-bottom: 1px solid var(--line-2); margin-bottom: 6px;
 }
 .sl-header { display: grid; grid-template-columns: 28px 1fr 95px 95px 130px; gap: 0 10px; padding: 4px 12px 6px; }
 .sl-header span { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); font-weight: 500; }
@@ -272,9 +272,9 @@ input:focus,select:focus,textarea:focus {
 .si.ck { opacity: .38; }
 .si.ck .si-name { text-decoration: line-through; }
 .si-chk {
-  width: 16px; height: 16px; border-radius: 2px;
-  border: 1px solid var(--line-2); background: transparent;
-  display: flex; align-items: center; justify-content: center; transition: all .15s;
+width: 16px; height: 16px; border-radius: 2px;
+border: 1px solid var(--line-2); background: transparent;
+display: flex; align-items: center; justify-content: center; transition: all .15s;
 }
 .si-chk.tk { background: var(--teal); border-color: var(--teal); }
 .si-name { font-size: 14px; font-weight: 300; }
@@ -296,9 +296,9 @@ input:focus,select:focus,textarea:focus {
 /* FORM */
 .fr { margin-bottom: 1.1rem; }
 .fr label {
-  display: block; font-size: 10px; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--gold);
-  margin-bottom: 6px; font-weight: 500;
+display: block; font-size: 10px; letter-spacing: .12em;
+text-transform: uppercase; color: var(--gold);
+margin-bottom: 6px; font-weight: 500;
 }
 .fr input,.fr select,.fr textarea { width: 100%; }
 .fr textarea { min-height: 70px; resize: vertical; }
@@ -325,23 +325,77 @@ input:focus,select:focus,textarea:focus {
 
 /* AUTOCOMPLETE */
 .ac-wrap { position: relative; flex: 1; }
-.ac-list { position: fixed; background: var(--white); border: 1px solid var(--line-2); border-radius: var(--r); z-index: 9999; max-height: 180px; overflow-y: auto; box-shadow: var(--sh-lg); min-width: 200px; }
-.ac-item { padding: 8px 14px; font-size: 14px; cursor: pointer; color: var(--teal); border-bottom: 1px solid var(--line); font-weight: 300; letter-spacing: .01em; }
+.ac-list {
+  position: fixed;
+  background: var(--white);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r);
+  z-index: 9999;
+  max-height: 220px;
+  overflow-y: auto;
+  box-shadow: var(--sh-lg);
+  min-width: 200px;
+}
+.ac-item {
+  padding: 7px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--teal);
+  border-bottom: 1px solid var(--line);
+  font-weight: 300;
+  letter-spacing: .01em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
 .ac-item:last-child { border-bottom: none; }
 .ac-item:hover,.ac-item.ac-sel { background: var(--teal-08); color: var(--teal); }
+/* Badge showing source of suggestion */
+.ac-badge {
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ac-badge-mine {
+  background: var(--teal-08);
+  color: var(--teal-40);
+  border: 1px solid var(--teal-15);
+}
+.ac-badge-hint {
+  background: var(--gold-pale);
+  color: var(--gold);
+  border: 1px solid var(--line-2);
+}
+/* Divider between personal and hint results */
+.ac-divider {
+  padding: 4px 14px 3px;
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: var(--bg);
+  border-bottom: 1px solid var(--line-2);
+  font-weight: 500;
+  font-family: 'Jost', sans-serif;
+}
 
 /* LISTS GRID */
 .lists-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap: 14px; margin-top: .5rem; }
 .list-card {
-  background: var(--white); border: 1px solid var(--line);
-  border-radius: var(--r-lg); padding: 1.25rem; cursor: pointer;
-  transition: box-shadow .2s, transform .2s; box-shadow: var(--sh);
-  position: relative; overflow: hidden;
+background: var(--white); border: 1px solid var(--line);
+border-radius: var(--r-lg); padding: 1.25rem; cursor: pointer;
+transition: box-shadow .2s, transform .2s; box-shadow: var(--sh);
+position: relative; overflow: hidden;
 }
 .list-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(to right, transparent, var(--gold), transparent);
-  opacity: 0; transition: opacity .2s;
+content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+background: linear-gradient(to right, transparent, var(--gold), transparent);
+opacity: 0; transition: opacity .2s;
 }
 .list-card:hover { box-shadow: var(--sh-lg); transform: translateY(-2px); }
 .list-card:hover::before { opacity: 1; }
@@ -363,6 +417,7 @@ input:focus,select:focus,textarea:focus {
 
 /* TAGS */
 .rc-tags { display:flex; gap:5px; flex-wrap:wrap; margin:5px 0 2px; }
+.rc-tags-fade { flex-wrap:nowrap; overflow:hidden; mask-image:linear-gradient(to right, black 70%, transparent 100%); -webkit-mask-image:linear-gradient(to right, black 70%, transparent 100%); }
 .rc-tag { font-size:10px; letter-spacing:.08em; text-transform:uppercase; font-weight:500; padding:2px 8px; border-radius:2px; background:var(--teal-08); color:var(--teal-40); border:1px solid var(--teal-15); cursor:default; }
 .rc-tag.active-filter { background:var(--teal); color:var(--bg); border-color:var(--teal); }
 .tag-input-wrap { display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding:6px 8px; border:1px solid var(--line-2); border-radius:var(--r); background:var(--white); min-height:40px; cursor:text; }
@@ -395,22 +450,20 @@ hr { border: none; border-top: 1px solid var(--line); margin: 1.25rem 0; }
 .empty { text-align: center; padding: 3rem 1rem; color: var(--teal-40); font-size: 15px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px; }
 a { color: var(--teal); }
 </style>
+
 </head>
 <body>
 
 <header>
-  <!-- Left ornament -->
   <svg style="opacity:.35;flex-shrink:0;" width="50" height="20" viewBox="0 0 50 20" fill="none">
     <line x1="0" y1="10" x2="42" y2="10" stroke="#A89150" stroke-width="0.6"/>
     <line x1="0" y1="7" x2="28" y2="7" stroke="#A89150" stroke-width="0.4" opacity="0.6"/>
     <polygon points="46,10 50,8 50,12" fill="#A89150"/>
   </svg>
-  <!-- Centre: logo -->
   <div style="text-align:center;flex:1;">
     <span class="logo">Ingredigo</span>
     <span class="logo-ornament">a compendium of recipes</span>
   </div>
-  <!-- Right ornament + reset -->
   <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
     <svg style="opacity:.35;" width="50" height="20" viewBox="0 0 50 20" fill="none">
       <line x1="8" y1="10" x2="50" y2="10" stroke="#A89150" stroke-width="0.6"/>
@@ -427,9 +480,7 @@ a { color: var(--teal); }
   <button class="tab" id="tab-week" onclick="showPage('week')">List <span class="badge" id="wk-badge-tab" style="display:none">0</span></button>
 </nav>
 
-<!-- Slide-up active list panel — replaces floating button -->
 <div id="grocery-fab" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:90;">
-  <!-- Pull handle / collapsed state -->
   <div id="fab-handle" onclick="toggleFabPanel()" style="
     display:flex;align-items:center;justify-content:space-between;
     background:var(--teal);color:var(--bg);
@@ -451,13 +502,11 @@ a { color: var(--teal); }
       <span id="fab-chevron" style="font-size:12px;opacity:0.7;transition:transform .2s;">▲</span>
     </div>
   </div>
-  <!-- Expanded panel -->
   <div id="fab-panel" style="display:none;background:var(--bg);border-top:1px solid var(--line);max-height:260px;overflow-y:auto;padding:.75rem 1.5rem;">
     <div id="fab-panel-content"></div>
   </div>
 </div>
 
-<!-- Toast notification -->
 <div id="toast" style="display:none;position:fixed;bottom:130px;left:50%;transform:translateX(-50%);background:var(--teal);color:var(--bg);padding:8px 24px;border-radius:2px;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;z-index:500;pointer-events:none;white-space:nowrap;box-shadow:0 4px 16px rgba(10,65,71,.3);border:1px solid rgba(168,145,80,.3);"></div>
 
 <main>
@@ -520,7 +569,6 @@ a { color: var(--teal); }
   </div>
 
 </main>
-</div>
 
 <!-- MODAL: Recipe -->
 <div class="mb" id="m-recipe" onclick="if(event.target===this)cM('recipe')">
@@ -562,7 +610,6 @@ a { color: var(--teal); }
           <button class="btn btn-sm" onclick="addRow()">+ Row</button>
         </div>
       </div>
-      <!-- Rows -->
       <div class="ie" id="ie">
         <div class="ie-row ie-head">
           <span class="c-qty ie-head">Qty</span><span class="c-unit ie-head">Unit</span><span class="c-name ie-head">Ingredient</span><span class="c-note ie-head">Note</span><span class="c-del ie-head"></span>
@@ -584,7 +631,14 @@ a { color: var(--teal); }
   <div class="modal" style="max-width:380px;">
     <div class="mh"><h2 id="im-title">New Ingredient</h2><button class="xbtn" onclick="cM('ing')">×</button></div>
     <div class="mbody">
-      <div class="fr"><label>Name *</label><input type="text" id="if-name" placeholder="e.g. plain flour"></div>
+      <div class="fr">
+        <label>Name *</label>
+        <!-- Ingredient name field now has its own autocomplete wrapper -->
+        <div style="position:relative;" id="ing-name-wrap">
+          <input type="text" id="if-name" placeholder="e.g. plain flour" style="width:100%;" autocomplete="off">
+          <div class="ac-list" id="if-name-ac" style="display:none;position:absolute;top:100%;left:0;right:0;"></div>
+        </div>
+      </div>
       <div class="fg">
         <div class="fr"><label>Metric unit</label>
           <select id="if-unit" onchange="updateRatioWrap()">
@@ -620,7 +674,82 @@ a { color: var(--teal); }
   </div>
 </div>
 
+<!-- MODAL: Servings selector -->
+<div class="mb" id="m-servings" onclick="if(event.target===this)cM('servings')">
+  <div class="modal" style="max-width:340px;">
+    <div class="mh"><h2 id="serv-title">How many servings?</h2><button class="xbtn" onclick="cM('servings')">×</button></div>
+    <div class="mbody">
+      <p style="font-size:13px;color:var(--teal-40);font-style:italic;font-family:'Cormorant Garamond',serif;margin-bottom:1rem;" id="serv-subtitle"></p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:16px;padding:.5rem 0;">
+        <button onclick="stepServings(-1)" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line-2);background:var(--bg);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--teal);transition:all .15s;" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='var(--line-2)'">−</button>
+        <div style="text-align:center;min-width:80px;">
+          <div id="serv-display" style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600;color:var(--teal);line-height:1;">4</div>
+          <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-top:2px;">servings</div>
+        </div>
+        <button onclick="stepServings(1)" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line-2);background:var(--bg);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--teal);transition:all .15s;" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='var(--line-2)'">+</button>
+      </div>
+      <p id="serv-multiplier-note" style="font-size:12px;color:var(--teal-40);text-align:center;margin-top:.75rem;font-style:italic;font-family:'Cormorant Garamond',serif;"></p>
+    </div>
+    <div class="mfoot">
+      <button class="btn" onclick="cM('servings')">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmServings()">Add to list</button>
+    </div>
+  </div>
+</div>
+
 <script>
+// ═══════════════════════════════════════
+// INGREDIENT HINTS — curated fallback list
+// These appear in autocomplete only when no match is found in the personal
+// ingredients database (ings). Shown with a subtle gold "hint" badge.
+// ═══════════════════════════════════════
+const INGREDIENT_HINTS = [
+  // Flours & grains
+  'all-purpose flour','wholemeal flour','spelt flour','rye flour','buckwheat flour','almond flour','cornflour','cornmeal','polenta','semolina','oat flour','rice flour','chickpea flour','tapioca flour','arrowroot',
+  // Sugars & sweeteners
+  'demerara sugar','raw sugar','coconut sugar','maple syrup','golden syrup','treacle','molasses','agave syrup','glucose syrup','condensed milk','jam','marmalade',
+  // Oils & fats
+  'coconut oil','sesame oil','avocado oil','sunflower oil','canola oil','peanut oil','ghee','lard','duck fat','beef tallow','cream cheese','ricotta','mascarpone','crème fraîche','double cream','yoghurt','greek yoghurt',
+  // Dairy
+  'skimmed milk','oat milk','almond milk','coconut cream','buttermilk','kefir','goat milk','evaporated milk','whipping cream','clotted cream','feta','goat cheese','brie','camembert','gruyère','emmental','manchego','pecorino','gorgonzola','stilton','halloumi','cottage cheese',
+  // Eggs
+  'egg whites','egg yolks','quail eggs','duck eggs',
+  // Meat
+  'chicken drumsticks','chicken wings','whole chicken','turkey breast','turkey mince','duck breast','lamb chops','lamb leg','lamb shoulder','lamb mince','beef steak','beef brisket','beef short ribs','pork belly','pork shoulder','pork chops','pork loin','pork sausages','chorizo','pancetta','prosciutto','salami','ham','venison','rabbit','veal','osso buco','ox cheeks',
+  // Fish & seafood
+  'cod fillet','haddock','sea bass','sea bream','trout','tuna steak','swordfish','mackerel','sardines','anchovies','prawns','shrimp','scallops','squid','octopus','crab','lobster','mussels','clams','oysters','smoked salmon','smoked mackerel','tinned tuna','tinned sardines',
+  // Vegetables
+  'spinach','kale','silverbeet','cavolo nero','bok choy','cabbage','red cabbage','brussels sprouts','broccoli','broccolini','cauliflower','romanesco','fennel','leek','spring onion','shallot','sweet potato','potato','kipfler potato','new potatoes','pumpkin','butternut squash','zucchini','cucumber','capsicum','red capsicum','yellow capsicum','eggplant','avocado','asparagus','green beans','broad beans','edamame','snow peas','sugar snap peas','corn','sweetcorn','artichoke','beetroot','turnip','parsnip','radish','daikon','celeriac','kohlrabi','swede','watercress','rocket','cos lettuce','butter lettuce','iceberg lettuce','witlof','radicchio','endive','peas','frozen peas','frozen corn','frozen spinach','cherry tomatoes','roma tomatoes','sun-dried tomatoes','roasted capsicum','mushrooms','shiitake mushrooms','oyster mushrooms','porcini mushrooms','enoki mushrooms','portobello mushrooms',
+  // Fruits
+  'apple','pear','orange','blood orange','grapefruit','mandarin','mango','papaya','pineapple','passionfruit','banana','strawberries','raspberries','blueberries','blackberries','cherries','peach','nectarine','plum','apricot','fig','grape','pomegranate','watermelon','rockmelon','honeydew','kiwi fruit','lychee','dragon fruit','jackfruit','coconut','rhubarb','quince','date','prunes','currants','sultanas','raisins','cranberries',
+  // Herbs (fresh)
+  'parsley','flat-leaf parsley','coriander','basil','mint','dill','tarragon','chervil','chives','rosemary','thyme','oregano','sage','bay leaves','lemongrass','curry leaves','kaffir lime leaves','vietnamese mint','thai basil',
+  // Spices
+  'cumin','ground cumin','cumin seeds','coriander seeds','ground coriander','turmeric','smoked paprika','sweet paprika','chilli flakes','dried chilli','cayenne pepper','cinnamon','ground cinnamon','cinnamon stick','cardamom','ground cardamom','cardamom pods','cloves','ground cloves','nutmeg','ground nutmeg','allspice','star anise','fennel seeds','mustard seeds','fenugreek','nigella seeds','sesame seeds','poppy seeds','caraway seeds','sumac','za\'atar','ras el hanout','garam masala','curry powder','chinese five spice','baharat','harissa','chipotle','dried oregano','dried thyme','dried rosemary','dried basil','dried parsley','dried dill','white pepper','white peppercorns','black peppercorns','sea salt','flaky salt','table salt','celery salt','garlic powder','onion powder',
+  // Condiments & sauces
+  'worcestershire sauce','oyster sauce','hoisin sauce','teriyaki sauce','sriracha','tabasco','hot sauce','ketchup','tomato sauce','dijon mustard','wholegrain mustard','english mustard','mayonnaise','tahini','miso paste','white miso','red miso','gochujang','doubanjiang','black bean paste','shrimp paste','anchovy paste','truffle paste','pesto','romesco','aioli','chilli oil','chilli sauce','rice wine vinegar','white wine vinegar','red wine vinegar','balsamic vinegar','apple cider vinegar','sherry vinegar','malt vinegar','lemon juice','lime juice','orange juice',
+  // Stocks & liquids
+  'beef stock','fish stock','dashi','miso soup','coconut water','white wine','red wine','sake','mirin','shaoxing wine','beer','stout','cider',
+  // Tins & jars
+  'tinned chickpeas','tinned lentils','tinned kidney beans','tinned black beans','tinned cannellini beans','tinned butter beans','tinned corn','tinned coconut milk','tinned anchovies','capers','olives','kalamata olives','green olives','artichoke hearts','passata','tinned chopped tomatoes','tinned whole tomatoes',
+  // Dried legumes & pulses
+  'red lentils','green lentils','puy lentils','black lentils','yellow split peas','green split peas','chickpeas','black beans','kidney beans','cannellini beans','butter beans','borlotti beans','haricot beans','mung beans','adzuki beans','black-eyed peas','soybeans',
+  // Pasta, rice & noodles
+  'spaghetti','linguine','fettuccine','tagliatelle','pappardelle','rigatoni','penne','fusilli','farfalle','orecchiette','conchiglie','gnocchi','lasagne sheets','cannelloni','orzo','risotto rice','arborio rice','jasmine rice','long grain rice','wild rice','brown rice','sushi rice','vermicelli','rice noodles','udon noodles','soba noodles','ramen noodles','glass noodles','hokkien noodles','egg noodles','couscous','freekeh','farro','barley','bulgur wheat','quinoa',
+  // Bread & pastry
+  'sourdough bread','white bread','wholemeal bread','ciabatta','baguette','brioche','pita bread','naan','tortillas','filo pastry','puff pastry','shortcrust pastry','pizza dough',
+  // Nuts & seeds
+  'almonds','flaked almonds','almond meal','walnuts','pecans','cashews','hazelnuts','macadamia nuts','pine nuts','pistachios','peanuts','brazil nuts','chestnuts','sunflower seeds','pumpkin seeds','linseeds','chia seeds','hemp seeds','flaxseed',
+  // Baking
+  'cocoa powder','dutch cocoa','dark chocolate','milk chocolate','white chocolate','chocolate chips','cacao nibs','desiccated coconut','shredded coconut','dried yeast','instant yeast','cream of tartar','gelatine','agar agar','xanthan gum','psyllium husk','rolled oats','quick oats','wheat germ','dried breadcrumbs','panko breadcrumbs',
+  // Tofu & plant proteins
+  'firm tofu','silken tofu','tempeh','seitan',
+  // Asian pantry
+  'nori','kombu','bonito flakes','dried shrimp','dried mushrooms','rice paper','spring roll wrappers','wonton wrappers','dumpling wrappers','black vinegar',
+  // Misc
+  'nutritional yeast','rose water','orange blossom water','vanilla bean','vanilla bean paste','edible flowers'
+];
+
 // ═══════════════════════════════════════
 // SEED DATA
 // ═══════════════════════════════════════
@@ -670,27 +799,25 @@ async function sbDelete(table, id){
 // ═══════════════════════════════════════
 function ldLocal(k,d){ try{ return JSON.parse(localStorage.getItem(k))??d; }catch{ return d; } }
 function svLocal(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
-// Persist weekIds and checked locally (simple single list)
 
 let ings = [];
 let recipes = [];
-let groceryLists = [];        // kept in background for future use
-let activeList = null;        // unused for now — single list mode
-// weekIds: array of {id, servings} objects
+let groceryLists = [];
+let activeList = null;
 let _savedWeek = ldLocal('mep_week',[]);
 let weekIds = Array.isArray(_savedWeek) && _savedWeek.length && typeof _savedWeek[0]==='string'
-  ? _savedWeek.map(id=>({id, servings: null}))  // migrate old format
+  ? _savedWeek.map(id=>({id, servings: null}))
   : _savedWeek;
 let checked = ldLocal('mep_chk',[]);
-let listDirty = false;        // unused — kept for compatibility
+let listDirty = false;
 
 let editRid = null, editIid = null;
-let activeFilters = new Set(); // holds both type and tag filter values
-let recipeSort = 'name'; // 'name' | 'rating-desc' | 'rating-asc'
+let activeFilters = new Set();
+let recipeSort = 'name';
 let currentRating = null;
 let currentTags = [];
 let finaliseMode = false;
-let finalisedItems = null; // overrides consolidated list when set
+let finalisedItems = null;
 
 function setLoading(msg){
   let el = document.getElementById('loading-overlay');
@@ -730,6 +857,7 @@ async function loadAll(){
   renderRecipes();
   renderIngs();
   updBadge();
+  initIngNameAc(); // wire up autocomplete for the ingredient modal
 }
 
 // ═══════════════════════════════════════
@@ -739,14 +867,12 @@ function showPage(n){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+n).classList.add('active');
-  // Only highlight tab if it exists (week is a fab now, not a tab)
   const tabEl = document.getElementById('tab-'+n);
   if(tabEl) tabEl.classList.add('active');
   if(n==='recipes') renderRecipes();
   if(n==='ingredients') renderIngs();
   if(n==='week'){ showWeekPage(); }
 }
-
 
 // ═══════════════════════════════════════
 // MODALS
@@ -762,7 +888,136 @@ function oM(n,d){
 }
 function cM(n){ document.getElementById('m-'+n).classList.remove('open'); }
 
+// ═══════════════════════════════════════
+// AUTOCOMPLETE — shared logic
+// ═══════════════════════════════════════
+// Returns up to maxPersonal matches from ings, then fills remaining slots
+// from INGREDIENT_HINTS (excluding names already in ings).
+// Returns [{name, unit, isHint}]
+function getAcMatches(q, maxTotal=8){
+  if(!q) return [];
+  const ql = q.toLowerCase();
 
+  // 1. Personal database — starts-with first, then contains
+  const personalMatches = ings
+    .filter(i => i.name.toLowerCase().includes(ql))
+    .sort((a,b)=>{
+      const as = a.name.toLowerCase().startsWith(ql), bs = b.name.toLowerCase().startsWith(ql);
+      if(as && !bs) return -1; if(!as && bs) return 1;
+      return a.name.localeCompare(b.name);
+    })
+    .slice(0, maxTotal)
+    .map(i=>({name:i.name, unit:i.unit||'', isHint:false}));
+
+  const remaining = maxTotal - personalMatches.length;
+  if(remaining <= 0) return personalMatches;
+
+  // 2. Curated hints — only names NOT already in personal db
+  const personalNames = new Set(ings.map(i=>i.name.toLowerCase()));
+  const hintMatches = INGREDIENT_HINTS
+    .filter(h => h.toLowerCase().includes(ql) && !personalNames.has(h.toLowerCase()))
+    .sort((a,b)=>{
+      const as = a.toLowerCase().startsWith(ql), bs = b.toLowerCase().startsWith(ql);
+      if(as && !bs) return -1; if(!as && bs) return 1;
+      return a.localeCompare(b);
+    })
+    .slice(0, remaining)
+    .map(h=>({name:h, unit:'', isHint:true}));
+
+  return [...personalMatches, ...hintMatches];
+}
+
+// Renders matches into a given acList element.
+// onPick(name, unit) is called when an item is selected.
+function renderAcList(acList, matches, onPick){
+  acList.innerHTML='';
+  if(!matches.length){ acList.style.display='none'; return; }
+
+  let hasPersonal = matches.some(m=>!m.isHint);
+  let hasHint = matches.some(m=>m.isHint);
+  let shownDivider = false;
+
+  matches.forEach(m=>{
+    // Insert divider between personal and hints
+    if(m.isHint && !shownDivider && hasPersonal){
+      const div = document.createElement('div');
+      div.className='ac-divider';
+      div.textContent='Suggestions';
+      acList.appendChild(div);
+      shownDivider=true;
+    }
+    const item = document.createElement('div');
+    item.className='ac-item';
+
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = m.name;
+    item.appendChild(nameSpan);
+
+    const right = document.createElement('div');
+    right.style.cssText='display:flex;align-items:center;gap:6px;';
+
+    if(m.unit && !m.isHint){
+      const unitSpan = document.createElement('span');
+      unitSpan.style.cssText='font-size:11px;color:var(--teal-40);';
+      unitSpan.textContent = m.unit;
+      right.appendChild(unitSpan);
+    }
+
+    const badge = document.createElement('span');
+    badge.className = 'ac-badge ' + (m.isHint ? 'ac-badge-hint' : 'ac-badge-mine');
+    badge.textContent = m.isHint ? 'hint' : 'mine';
+    right.appendChild(badge);
+    item.appendChild(right);
+
+    item.addEventListener('mousedown', e=>e.preventDefault());
+    item.addEventListener('click', ()=>onPick(m.name, m.unit));
+    acList.appendChild(item);
+  });
+
+  acList.style.display='block';
+}
+
+// ═══════════════════════════════════════
+// AUTOCOMPLETE — Ingredient modal name field
+// ═══════════════════════════════════════
+function initIngNameAc(){
+  const nameEl = document.getElementById('if-name');
+  const acList = document.getElementById('if-name-ac');
+  if(!nameEl || !acList) return;
+
+  let acIdx = -1;
+
+  function pick(name){
+    nameEl.value = name;
+    acList.style.display='none';
+    // Try to auto-fill unit from personal db
+    const existing = ings.find(i=>i.name.toLowerCase()===name.toLowerCase());
+    if(existing){
+      if(existing.unit) document.getElementById('if-unit').value = existing.unit;
+      if(existing.cat)  document.getElementById('if-cat').value  = existing.cat;
+    }
+    updateRatioWrap();
+  }
+
+  nameEl.addEventListener('input', ()=>{
+    const q = nameEl.value.trim();
+    const matches = getAcMatches(q, 8);
+    acIdx = -1;
+    // For this list, position is absolute within the wrapper — no fixed coords needed
+    renderAcList(acList, matches, pick);
+  });
+
+  nameEl.addEventListener('keydown', e=>{
+    const items = [...acList.querySelectorAll('.ac-item')];
+    if(!items.length) return;
+    if(e.key==='ArrowDown'){ e.preventDefault(); acIdx=Math.min(acIdx+1,items.length-1); items.forEach((el,i)=>el.classList.toggle('ac-sel',i===acIdx)); }
+    else if(e.key==='ArrowUp'){ e.preventDefault(); acIdx=Math.max(acIdx-1,0); items.forEach((el,i)=>el.classList.toggle('ac-sel',i===acIdx)); }
+    else if(e.key==='Enter'&&acIdx>=0){ e.preventDefault(); items[acIdx].click(); }
+    else if(e.key==='Escape'){ acList.style.display='none'; }
+  });
+
+  nameEl.addEventListener('blur',()=>setTimeout(()=>acList.style.display='none',150));
+}
 
 // ═══════════════════════════════════════
 // RECIPES — RENDER
@@ -772,13 +1027,11 @@ function renderRecipes(){
   const types=[...new Set(recipes.map(r=>r.type).filter(Boolean))].sort();
   const allTags=[...new Set(recipes.flatMap(r=>r.tags||[]))].sort();
 
-  // Unified multi-select filter chips — types then tags, no divider needed
   document.getElementById('rfilters').innerHTML=
     types.map(t=>`<button class="chip ${activeFilters.has(t)?'active':''}" onclick="toggleFilter('${esc(t)}')">${esc(t)}</button>`).join('')+
     (allTags.length&&types.length?'<span style="width:1px;background:var(--line-2);margin:2px 6px;align-self:stretch;display:inline-block;opacity:.4;"></span>':'')+
     allTags.map(t=>`<button class="chip ${activeFilters.has(t)?'active':''}" onclick="toggleFilter('${esc(t)}')">${esc(t)}</button>`).join('');
 
-  // Show/hide clear bar
   const clearBar=document.getElementById('rfilter-clear');
   const summary=document.getElementById('rfilter-summary');
   if(clearBar){ clearBar.style.display=activeFilters.size?'block':'none'; }
@@ -797,7 +1050,6 @@ function renderRecipes(){
     const allTags=[...new Set(recipes.flatMap(r=>r.tags||[]))];
     const activeTypes=[...activeFilters].filter(f=>types.includes(f));
     const activeTags=[...activeFilters].filter(f=>allTags.includes(f));
-    // OR within types, OR within tags, AND between the two groups
     list=list.filter(r=>{
       const typeMatch = activeTypes.length===0 || activeTypes.includes(r.type);
       const tagMatch  = activeTags.length===0  || activeTags.some(t=>(r.tags||[]).includes(t));
@@ -817,8 +1069,9 @@ function renderRecipes(){
     const tags=(r.tags||[]).map(t=>`<span class="rc-tag">${esc(t)}</span>`).join('');
     return `<div class="rc ${iw?'in-week':''}" onclick="oM('redit',getRec('${r.id}'))">
       <div class="rc-name">${esc(r.name)}${stars?` <span style="font-size:11px;color:var(--gold);letter-spacing:1px;">${stars}</span>`:''}</div>
-      ${tags?`<div class="rc-tags">${tags}</div>`:''}
-      <div class="rc-meta">${[r.type,r.cuisine,r.source].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('')}</div>
+      ${(r.type||r.cuisine)?`<div class="rc-meta" style="margin-bottom:4px;">${[r.type,r.cuisine].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('')}</div>`:''}
+      ${tags?`<div class="rc-tags rc-tags-fade">${tags}</div>`:''}
+      <div class="rc-meta">${[r.source].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('')}</div>
       <div class="rc-footer">
         <span class="ic">${r.ingredients.length} ingredient${r.ingredients.length!==1?'s':''}</span>
         <button class="wk-btn" onclick="event.stopPropagation();toggleWk('${r.id}')">${iw?'✓ Added':'+ Add to list'}</button>
@@ -894,7 +1147,6 @@ function hideTagSuggestions(){
 function renderTagPills(){
   const wrap=document.getElementById('tag-input-wrap');
   const ghost=document.getElementById('tag-ghost');
-  // Remove existing pills
   wrap.querySelectorAll('.tag-pill').forEach(el=>el.remove());
   currentTags.forEach(t=>{
     const pill=document.createElement('span');
@@ -914,6 +1166,10 @@ function renderStars(){
   });
   document.getElementById('rf-rating-label').textContent=currentRating?RATING_LABELS[currentRating]:'';
 }
+
+// ═══════════════════════════════════════
+// INGREDIENT ROWS (in recipe modal)
+// ═══════════════════════════════════════
 function addRow(d){
   const wrap=document.createElement('div');
   wrap.className='ie-wrap';
@@ -934,14 +1190,12 @@ function addRow(d){
   wrap.appendChild(hint);
   document.getElementById('irows').appendChild(wrap);
 
-  // Numeric-only qty
   const qtyEl=div.querySelector('[data-f="qty"]');
   qtyEl.addEventListener('input',()=>{
     qtyEl.value=qtyEl.value.replace(/[^0-9.\/]/g,'');
     updateHint();
   });
 
-  // Unit hint
   const unitEl=div.querySelector('[data-f="unit"]');
   unitEl.addEventListener('change',updateHint);
 
@@ -954,40 +1208,28 @@ function addRow(d){
     } else { hint.textContent=''; }
   }
 
-  // Autocomplete on ingredient name
+  // ── Autocomplete for ingredient name in recipe rows ──
   const nameEl=div.querySelector('[data-f="name"]');
   const acList=div.querySelector('.ac-list');
   let acIdx=-1;
 
   function pick(name, unit){
     nameEl.value=name;
-    const unitEl=div.querySelector('[data-f="unit"]');
     if(unit){ unitEl.value=unit; updateHint(); }
     acList.style.display='none';
     div.querySelector('[data-f="note"]').focus();
   }
 
   function showAc(){
-    const q=nameEl.value.trim().toLowerCase();
-    if(!q){ acList.style.display='none'; return; }
-    const matches=ings.filter(i=>i.name.toLowerCase().includes(q)).slice(0,8);
-    if(!matches.length){ acList.style.display='none'; return; }
+    const q=nameEl.value.trim();
+    const matches = getAcMatches(q, 8);
     acIdx=-1;
-    acList.innerHTML='';
-    matches.forEach(m=>{
-      const item=document.createElement('div');
-      item.className='ac-item';
-      item.innerHTML=`${esc(m.name)}<span style="font-size:11px;color:var(--ink-4);margin-left:6px;">${esc(m.unit||'')}</span>`;
-      item.addEventListener('mousedown', e=>e.preventDefault());
-      item.addEventListener('click', ()=>pick(m.name, m.unit||''));
-      acList.appendChild(item);
-    });
-    // Position relative to input using fixed coords
+    // Position using fixed coords (modal can scroll)
     const rect=nameEl.getBoundingClientRect();
     acList.style.top=(rect.bottom+2)+'px';
     acList.style.left=rect.left+'px';
     acList.style.width=rect.width+'px';
-    acList.style.display='block';
+    renderAcList(acList, matches, pick);
   }
 
   nameEl.addEventListener('input',showAc);
@@ -1016,12 +1258,12 @@ function collectRows(){
     };
   }).filter(r=>r.name);
 }
+
 async function saveRecipe(){
   const name=document.getElementById('rf-name').value.trim();
   if(!name){ alert('Recipe name is required.'); return; }
   if(recipes.find(r=>r.name.toLowerCase()===name.toLowerCase()&&r.id!==editRid)){ alert('A recipe with this name already exists.'); return; }
   const ingList=collectRows();
-  // Auto-register unknown ingredients into Supabase
   const newIngs=[];
   ingList.forEach(i=>{
     const k=i.name.toLowerCase().trim();
@@ -1031,7 +1273,6 @@ async function saveRecipe(){
     }
   });
   if(newIngs.length){ try{ await sbUpsert('ingredients',newIngs); }catch(e){ alert('Error saving ingredients: '+e.message); return; } }
-  // Commit any half-typed tag
   const ghostVal=document.getElementById('tag-ghost').value.trim();
   if(ghostVal) commitTag(ghostVal);
   const rec={id:editRid||('r'+Date.now()),name,source:document.getElementById('rf-src').value.trim(),
@@ -1047,6 +1288,7 @@ async function saveRecipe(){
   setLoading(null);
   cM('recipe'); renderRecipes(); renderIngs();
 }
+
 async function delRecipe(){
   if(!editRid||!confirm('Delete this recipe?')) return;
   setLoading('Deleting…');
@@ -1057,8 +1299,6 @@ async function delRecipe(){
   setLoading(null);
   cM('recipe'); renderRecipes();
 }
-
-
 
 // ═══════════════════════════════════════
 // INGREDIENTS DB
@@ -1080,22 +1320,17 @@ function renderIngs(){
 function getIng(id){ return ings.find(i=>i.id===id); }
 function getIngByName(name){ return ings.find(i=>i.name.toLowerCase()===name.toLowerCase().trim()); }
 
-// ── DUAL UNIT HELPERS ──────────────────────────────────────────────────────
-// Known common ratios (fallback when ingredient has no ratio set)
+// ── DUAL UNIT HELPERS ──
 const KNOWN_RATIOS = {
-  // volume ingredients: 1 cup = Xml
   'cup-ml': 250, 'cup-L': 0.25,
   'tbsp-ml': 15, 'tsp-ml': 5,
   'fl oz-ml': 30, 'pint-ml': 473,
-  // weight ingredients: 1 cup flour ~125g, sugar ~200g etc — these need ingredient-specific ratios
   'oz-g': 28.35, 'lb-g': 453.6, 'oz-kg': 0.02835, 'lb-kg': 0.4536,
 };
 
-// Convert a value from one unit to another using ingredient's stored ratio or known conversions
 function convertUnit(val, fromUnit, toUnit, ingRatio){
   if(!val || fromUnit === toUnit) return val;
   if(!fromUnit || !toUnit) return null;
-  // Use ingredient-specific ratio if available (e.g. 1 cup flour = 125g)
   if(ingRatio){
     const metricUnits = ['g','kg','ml','L'];
     const cookingUnits = ['cup','tbsp','tsp','fl oz','pint','oz','lb'];
@@ -1104,7 +1339,6 @@ function convertUnit(val, fromUnit, toUnit, ingRatio){
     if(fromMetric && cookingUnits.includes(toUnit)) return val / ingRatio;
     if(cookingUnits.includes(fromUnit) && toMetric)  return val * ingRatio;
   }
-  // Fallback: convert via base units
   const fb = toBase(String(val), fromUnit);
   if(!fb) return null;
   const tb = toBase('1', toUnit);
@@ -1114,7 +1348,6 @@ function convertUnit(val, fromUnit, toUnit, ingRatio){
 
 function fmtNum(n){ if(n===null||n===undefined||isNaN(n)) return ''; const r=Math.round(n*100)/100; return r % 1 === 0 ? String(r) : r.toFixed(2).replace(/\.?0+$/,''); }
 
-// Show/hide ratio field in ingredient modal
 function updateRatioWrap(){
   const uc = document.getElementById('if-unit-cooking').value;
   const um = document.getElementById('if-unit').value;
@@ -1123,7 +1356,6 @@ function updateRatioWrap(){
   wrap.style.display = uc ? 'block' : 'none';
   document.getElementById('if-ratio-unit-label').textContent = uc || '';
   document.getElementById('if-ratio-metric-label').textContent = um || 'metric unit';
-  // Suggest known ratio
   const key = uc+'-'+um;
   const hint = document.getElementById('if-ratio-hint');
   if(KNOWN_RATIOS[key]){
@@ -1132,6 +1364,7 @@ function updateRatioWrap(){
     hint.textContent = 'Enter how many '+um+' are in 1 '+uc;
   }
 }
+
 async function saveIng(){
   const name=document.getElementById('if-name').value.trim().toLowerCase();
   if(!name){ alert('Name is required.'); return; }
@@ -1145,6 +1378,7 @@ async function saveIng(){
   else ings.push(obj);
   setLoading(null); cM('ing'); renderIngs();
 }
+
 async function delIng(){
   if(!editIid||!confirm("Delete this ingredient? It won't be removed from existing recipes.")) return;
   setLoading('Deleting…');
@@ -1156,7 +1390,6 @@ async function delIng(){
 // ═══════════════════════════════════════
 // GROCERY LIST
 // ═══════════════════════════════════════
-
 function showWeekPage(){ renderWk(); renderWkPicker(); }
 
 function clearWeekFromRecipes(){
@@ -1172,7 +1405,6 @@ let _pendingServCount = 1;
 
 function toggleWk(id){
   if(weekIds.some(w=>w.id===id)){
-    // Already added — remove directly
     weekIds=weekIds.filter(x=>x.id!==id);
     finalisedItems=null; finaliseMode=false;
     svLocal('mep_week',weekIds); svLocal('mep_chk',checked);
@@ -1181,7 +1413,6 @@ function toggleWk(id){
     updBadge(); renderRecipes();
     if(document.getElementById('page-week').classList.contains('active')){ renderWk(); renderWkPicker(); }
   } else {
-    // Show servings selector before adding
     openServingsModal(id);
   }
 }
@@ -1274,7 +1505,7 @@ function renderFabPanel(){
   if(!wkRecs.length){ el.innerHTML='<p style="font-size:13px;color:var(--ink-4);font-style:italic;font-family:Crimson Text,serif;padding:.5rem 0;">No recipes added yet</p>'; return; }
   el.innerHTML=wkRecs.map(r=>`
     <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--rule);">
-      <span style="font-family:Caveat,cursive;font-size:15px;">${esc(r.name)}</span>
+      <span style="font-size:15px;">${esc(r.name)}</span>
       <button class="btn btn-sm btn-ghost" style="font-size:12px;" onclick="toggleWk('${r.id}')">Remove</button>
     </div>`).join('');
 }
@@ -1288,21 +1519,20 @@ function showToast(msg){
   toastTimer=setTimeout(()=>el.style.display='none', 2200);
 }
 
-// ── FINALISE ──────────────────────────────────────────────────────────────
+// ── FINALISE ──
 function toggleFinalise(){
   if(!weekIds.length){ alert('Add some recipes first.'); return; }
   finaliseMode=!finaliseMode;
   const btn=document.getElementById('finalise-btn');
   if(btn){ btn.textContent=finaliseMode?'Done ✓':'Finalise'; btn.style.background=finaliseMode?'var(--teal)':''; btn.style.color=finaliseMode?'var(--bg)':'var(--gold)'; btn.style.borderColor=finaliseMode?'var(--teal)':'var(--gold)'; }
   if(finaliseMode && !finalisedItems){
-    // Seed from consolidated list on first enter
     const wkRecs=weekIds.map(w=>{ const r=recipes.find(r=>r.id===w.id); return r?{...r,_servings:w.servings}:null; }).filter(Boolean);
     const cons=consolidate(wkRecs);
     finalisedItems=cons.map(item=>{
       let qty=item.dq;
       if(item.isCount){
         const n=parseFloat(item.dq);
-        qty=isNaN(n)?item.dq:String(Math.ceil(n)); // round up for whole items
+        qty=isNaN(n)?item.dq:String(Math.ceil(n));
       }
       return {
         name:item.name, qty, unit:item.isCount?'':(item._u||''), cups:item._ml?mlToCooking(item._ml):'',
@@ -1310,7 +1540,6 @@ function toggleFinalise(){
         isCount:item.isCount, sources:item.sources, cat:catOf(item.name), _ml:item._ml
       };
     });
-    // Save to list
     if(activeList){ activeList.finalised_items=finalisedItems; activeList.updated_at=new Date().toISOString(); sbUpsert('grocery_lists',activeList).catch(()=>{}); }
   }
   renderWk();
@@ -1346,7 +1575,6 @@ function syncFin(idx, changed, val){
 function finStep(idx, col, delta){
   if(!finalisedItems||!finalisedItems[idx]) return;
   const item = finalisedItems[idx];
-  const ing = getIngByName(item.name);
   const isMetric = col === 'metric';
   const currentVal = isMetric
     ? (parseFloat(item.qty_metric !== undefined ? item.qty_metric : item.qty)||0)
@@ -1365,13 +1593,13 @@ function finDelete(idx){
 }
 
 function saveFinalisedItems(){
-  if(activeList){ activeList.finalised_items=finalisedItems; activeList.updated_at=new Date().toISOString(); sbUpsert('grocery_lists',activeList).catch(()=>{}); markDirty(); }
+  if(activeList){ activeList.finalised_items=finalisedItems; activeList.updated_at=new Date().toISOString(); sbUpsert('grocery_lists',activeList).catch(()=>{}); }
 }
 
 function resetFinalise(){
   finalisedItems=null; finaliseMode=false;
   const btn=document.getElementById('finalise-btn');
-  if(btn){ btn.textContent='Finalise ✦'; btn.style.background=''; btn.style.color='var(--gold)'; }
+  if(btn){ btn.textContent='Finalise'; btn.style.background=''; btn.style.color='var(--gold)'; }
   if(activeList){ activeList.finalised_items=null; sbUpsert('grocery_lists',activeList).catch(()=>{}); }
   renderWk();
 }
@@ -1418,10 +1646,10 @@ function renderFinaliseView(byCat, sortedCats){
 
 function renderWk(){
   const el=document.getElementById('wk-main');
-  if(!weekIds.length){ el.innerHTML='<div class="empty" style="padding:3rem 1rem;"><div style="font-size:32px;margin-bottom:12px;">🛒</div><div style="font-size:16px;font-style:italic;color:var(--ink-3);">Add recipes using the panel on the right</div></div>'; return; }
+  if(!weekIds.length){ el.innerHTML='<div class="empty" style="padding:3rem 1rem;"><div style="font-size:32px;margin-bottom:12px;">🛒</div><div style="font-size:16px;font-style:italic;color:var(--teal-40);">Add recipes using the panel on the right</div></div>'; return; }
   const wkRecs=weekIds.map(w=>{ const r=recipes.find(r=>r.id===w.id); return r?{...r,_servings:w.servings}:null; }).filter(Boolean);
 
-  let html='<div style="font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:8px;font-family:Crimson Text,serif;font-style:italic;">Selected recipes</div>';
+  let html='<div style="font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--teal-40);font-weight:500;margin-bottom:8px;font-style:italic;">Selected recipes</div>';
   html+=wkRecs.map(r=>`<div class="wk-ri"><div><div>${esc(r.name)}</div><div class="wk-ri-meta">${[r.type,r.cuisine,r._servings?r._servings+' servings':r.servings?r.servings+' servings (default)':''].filter(Boolean).join(' · ')}</div></div><button class="btn btn-sm btn-ghost" onclick="toggleWk('${r.id}')">Remove</button></div>`).join('');
 
   const cons=consolidate(wkRecs);
@@ -1430,18 +1658,14 @@ function renderWk(){
   const CAT_ORDER=['Produce','Meat & Fish','Dairy & Eggs','Bakery','Pantry','Spices & Herbs','Condiments','Frozen','Beverages','Other'];
   const sortedCats=[...CAT_ORDER.filter(c=>byCat[c]),...Object.keys(byCat).filter(c=>!CAT_ORDER.includes(c))];
 
-  // ── Shopping list section ──
   if(finaliseMode){
     html+=renderFinaliseView(byCat, sortedCats);
   } else {
     html+='<div style="font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--teal-40);font-weight:500;margin:1.25rem 0 6px;">Shopping list</div>';
-    // If we have a finalised list, show it in read mode
     const displayItems = finalisedItems || null;
     if(displayItems){
-      // Show finalised read-only view with check-off
       const finByCat={};
       displayItems.forEach(item=>{ const c=item.cat||catOf(item.name); (finByCat[c]=finByCat[c]||[]).push(item); });
-      const CAT_ORDER=['Produce','Meat & Fish','Dairy & Eggs','Bakery','Pantry','Spices & Herbs','Condiments','Frozen','Beverages','Other'];
       const cats=[...CAT_ORDER.filter(c=>finByCat[c]),...Object.keys(finByCat).filter(c=>!CAT_ORDER.includes(c))];
       html+=cats.map(cat=>`
         <div class="shop-sec">
@@ -1489,24 +1713,23 @@ function renderWkPicker(){
   if(q) list=list.filter(r=>r.name.toLowerCase().includes(q)||(r.type||'').toLowerCase().includes(q));
   document.getElementById('wkpicker').innerHTML=list.map(r=>{
     const iw=weekIds.some(w=>w.id===r.id);
-    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 2px;border-bottom:1px solid var(--page-4);">
-      <div><div style="font-size:15px;font-family:Caveat,cursive;${iw?'color:var(--aged-green);font-weight:600;':''}">${esc(r.name)}</div>${r.type?`<div style="font-size:12px;color:var(--ink-4);font-style:italic;">${esc(r.type)}</div>`:''}</div>
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 2px;border-bottom:1px solid var(--line);">
+      <div><div style="font-size:14px;font-weight:300;${iw?'color:var(--teal);font-weight:500;':''}">${esc(r.name)}</div>${r.type?`<div style="font-size:12px;color:var(--gold);font-style:italic;">${esc(r.type)}</div>`:''}</div>
       <button class="btn btn-sm ${iw?'btn-green':'btn-ghost'}" onclick="toggleWk('${r.id}')">${iw?'✓':'+'}</button>
     </div>`;
-  }).join('')||'<p style="font-size:14px;color:var(--ink-4);padding:8px 0;font-style:italic;">No recipes found</p>';
+  }).join('')||'<p style="font-size:14px;color:var(--teal-40);padding:8px 0;font-style:italic;">No recipes found</p>';
 }
 
 function copyList(){
   const wkRecs=weekIds.map(w=>{ const r=recipes.find(r=>r.id===w.id); return r?{...r,_servings:w.servings}:null; }).filter(Boolean);
   const items=consolidate(wkRecs);
   if(!items.length) return;
-  const header=activeList?activeList.name+' — Grocery List\n'+'—'.repeat(40)+'\n':'';
   const lines=items.map(i=>{
     const metric=i.dq2?i.dq+' ('+i.dq2+')':i.dq;
     const cups=i._ml!==null?mlToCooking(i._ml):'';
     return i.name.padEnd(28)+metric.padEnd(14)+(cups?cups.padEnd(12):'')+i.sources.join(', ');
   });
-  navigator.clipboard.writeText(header+lines.join('\n')).then(()=>alert('Copied!')).catch(()=>{});
+  navigator.clipboard.writeText(lines.join('\n')).then(()=>alert('Copied!')).catch(()=>{});
 }
 
 // ═══════════════════════════════════════
@@ -1536,7 +1759,6 @@ const VOL={ml:1,l:1000,L:1000,cup:250,cups:250,tsp:5,tbsp:15,'fl oz':30,'fl.oz':
 const WGT={g:1,kg:1000,oz:28.35,lb:453.6,lbs:453.6};
 function pn(s){ if(!s) return null; s=String(s).trim(); if(s.includes('/')){ const p=s.split('/'); return parseFloat(p[0])/parseFloat(p[1]); } const n=parseFloat(s); return isNaN(n)?null:n; }
 function toBase(qty,unit){ const n=pn(qty); if(n===null) return null; const u=(unit||'').trim(); const l=u.toLowerCase(); if(VOL[l]!==undefined) return{v:n*VOL[l],t:'vol'}; if(VOL[u]!==undefined) return{v:n*VOL[u],t:'vol'}; if(WGT[l]!==undefined) return{v:n*WGT[l],t:'wgt'}; if(WGT[u]!==undefined) return{v:n*WGT[u],t:'wgt'}; return{v:n,t:'cnt',u}; }
-// Returns {primary, secondary}. Secondary shows alternate scale when useful.
 function fmtVal(base,t,ou){
   if(t==='vol'){
     const ml=Math.round(base), L=Math.round(base/100)/10;
@@ -1556,7 +1778,6 @@ function fmtDisplay(base,t,ou){ const f=fmtVal(base,t,ou); return f.secondary?f.
 function consolidate(recs){
   const map=new Map();
   recs.forEach(rec=>{
-    // _servings is the requested servings count; rec.servings is the default
     const defaultServ = parseInt(rec.servings)||1;
     const requestedServ = (rec._servings != null) ? rec._servings : defaultServ;
     const mult = requestedServ / defaultServ;
@@ -1564,7 +1785,6 @@ function consolidate(recs){
     (rec.ingredients||[]).forEach(ing=>{
       const key=ing.name.trim().toLowerCase();
       const hasUnit = ing.unit && ing.unit.trim() !== '';
-      // Apply multiplier to quantity
       const origNum = parseFloat(ing.qty)||0;
       const scaledNum = origNum * mult;
       const scaledQty = ing.qty ? String(Math.round(scaledNum * 1000) / 1000) : ing.qty;
@@ -1574,7 +1794,6 @@ function consolidate(recs){
 
       if(!map.has(key)){
         const fmt = b ? fmtVal(b.v, b.t, ing.unit) : null;
-        // For display: use scaled qty
         const scaledDisplay = fmt ? fmt.primary : (scaledQty || '—');
         map.set(key, {
           name: key,
@@ -1592,7 +1811,6 @@ function consolidate(recs){
         const e = map.get(key);
         if(!e.sources.includes(rec.name)) e.sources.push(rec.name);
         if(isCount && e.isCount){
-          // Add counts together: 2 tomatoes + 3 tomatoes = 5 tomatoes
           e._count += countVal;
           e.dq = String(e._count);
         } else if(b && e._b !== null && b.t === e._t){
@@ -1616,25 +1834,20 @@ function consolidate(recs){
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 function resetApp(){
-  // Clear all selections, filters, search, finalise state
   weekIds=[]; checked=[]; finalisedItems=null; finaliseMode=false;
   activeFilters.clear();
   svLocal('mep_week',[]); svLocal('mep_chk',[]);
-  // Reset search and sort
   const search=document.getElementById('rsearch');
   if(search) search.value='';
   const sort=document.getElementById('recipe-sort-sel');
   if(sort){ sort.value='name'; recipeSort='name'; }
-  // Reset finalise button
   const finBtn=document.getElementById('finalise-btn');
   if(finBtn){ finBtn.textContent='Finalise'; finBtn.style.background=''; finBtn.style.color='var(--gold)'; finBtn.style.borderColor='var(--gold)'; }
-  // Reset fab panel
   fabOpen=false;
   const panel=document.getElementById('fab-panel');
   const chev=document.getElementById('fab-chevron');
   if(panel) panel.style.display='none';
   if(chev) chev.style.transform='';
-  // Navigate to recipes tab and re-render
   showPage('recipes');
   showToast('App reset');
 }
@@ -1644,27 +1857,6 @@ function resetApp(){
 // ═══════════════════════════════════════
 loadAll();
 </script>
-<!-- MODAL: Servings selector -->
-<div class="mb" id="m-servings" onclick="if(event.target===this)cM('servings')">
-  <div class="modal" style="max-width:340px;">
-    <div class="mh"><h2 id="serv-title">How many servings?</h2><button class="xbtn" onclick="cM('servings')">×</button></div>
-    <div class="mbody">
-      <p style="font-size:13px;color:var(--teal-40);font-style:italic;font-family:'Cormorant Garamond',serif;margin-bottom:1rem;" id="serv-subtitle"></p>
-      <div style="display:flex;align-items:center;justify-content:center;gap:16px;padding:.5rem 0;">
-        <button onclick="stepServings(-1)" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line-2);background:var(--bg);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--teal);transition:all .15s;" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='var(--line-2)'">−</button>
-        <div style="text-align:center;min-width:80px;">
-          <div id="serv-display" style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600;color:var(--teal);line-height:1;">4</div>
-          <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-top:2px;">servings</div>
-        </div>
-        <button onclick="stepServings(1)" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line-2);background:var(--bg);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--teal);transition:all .15s;" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='var(--line-2)'">+</button>
-      </div>
-      <p id="serv-multiplier-note" style="font-size:12px;color:var(--teal-40);text-align:center;margin-top:.75rem;font-style:italic;font-family:'Cormorant Garamond',serif;"></p>
-    </div>
-    <div class="mfoot">
-      <button class="btn" onclick="cM('servings')">Cancel</button>
-      <button class="btn btn-primary" onclick="confirmServings()">Add to list</button>
-    </div>
-  </div>
-</div>
 
 </body>
+</html>
