@@ -283,13 +283,13 @@ display: flex; align-items: center; justify-content: center; transition: all .15
 .si-src { font-size: 11px; color: var(--gold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: .04em; font-style: italic; font-family: 'Cormorant Garamond', serif; }
 
 /* MODAL */
-.mb { display: none; position: fixed; inset: 0; background: rgba(10,65,71,.5); backdrop-filter: blur(3px); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
+.mb { display: none; position: fixed; inset: 0; background: rgba(10,65,71,.5); backdrop-filter: blur(3px); z-index: 200; align-items: flex-start; justify-content: center; padding: 1rem; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .mb.open { display: flex; }
-.modal { background: var(--bg); border-radius: var(--r-lg); box-shadow: var(--sh-lg); width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; overflow-x: visible; border: 1px solid var(--line-2); }
-.mh { padding: 1.5rem 1.5rem 1.25rem; display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid var(--line); }
+.modal { background: var(--bg); border-radius: var(--r-lg); box-shadow: var(--sh-lg); width: 100%; max-width: 560px; max-height: none; display: flex; flex-direction: column; border: 1px solid var(--line-2); margin: auto; }
+.mh { padding: 1.5rem 1.5rem 1.25rem; display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid var(--line); flex-shrink: 0; }
 .mh h2 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; font-weight: 300; color: var(--teal); }
-.mbody { padding: 1.25rem 1.5rem; }
-.mfoot { padding: 1.25rem 1.5rem; display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid var(--line); }
+.mbody { padding: 1.25rem 1.5rem; overflow-y: auto; -webkit-overflow-scrolling: touch; flex: 1; }
+.mfoot { padding: 1.25rem 1.5rem; display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid var(--line); flex-shrink: 0; background: var(--bg); position: sticky; bottom: 0; }
 .xbtn { background: none; border: none; cursor: pointer; color: var(--teal-40); font-size: 20px; line-height: 1; padding: 2px; transition: color .2s; }
 .xbtn:hover { color: var(--teal); }
 
@@ -326,12 +326,15 @@ margin-bottom: 6px; font-weight: 500;
 /* AUTOCOMPLETE */
 .ac-wrap { position: relative; flex: 1; }
 .ac-list {
-  position: fixed;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
   background: var(--white);
   border: 1px solid var(--line-2);
   border-radius: var(--r);
   z-index: 9999;
-  max-height: 220px;
+  max-height: 200px;
   overflow-y: auto;
   box-shadow: var(--sh-lg);
   min-width: 200px;
@@ -417,6 +420,47 @@ opacity: 0; transition: opacity .2s;
 
 /* TAGS */
 .rc-tags { display:flex; gap:5px; flex-wrap:wrap; margin:5px 0 2px; }
+/* Folded corner link */
+.rc-corner {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 32px; height: 32px;
+  cursor: pointer;
+  z-index: 2;
+}
+.rc-corner::before {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 0 0 32px 32px;
+  border-color: transparent transparent var(--bg-3) transparent;
+  transition: border-width .2s;
+  filter: drop-shadow(-1px -1px 1px rgba(10,65,71,.12));
+}
+.rc-corner::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 0 0 32px 32px;
+  border-color: transparent transparent var(--gold) transparent;
+  opacity: .25;
+  transition: opacity .2s, border-width .2s;
+}
+.rc-corner svg {
+  position: absolute;
+  bottom: 4px; right: 4px;
+  opacity: .45;
+  transition: opacity .2s;
+  pointer-events: none;
+}
+.rc-corner:hover::before { border-width: 0 0 38px 38px; }
+.rc-corner:hover::after  { opacity: .55; border-width: 0 0 38px 38px; }
+.rc-corner:hover svg     { opacity: .85; }
+.rc.in-week .rc-corner::before { border-color: transparent transparent var(--bg-2) transparent; }
 .rc-tags-fade { flex-wrap:nowrap; overflow:hidden; mask-image:linear-gradient(to right, black 70%, transparent 100%); -webkit-mask-image:linear-gradient(to right, black 70%, transparent 100%); }
 .rc-tag { font-size:10px; letter-spacing:.08em; text-transform:uppercase; font-weight:500; padding:2px 8px; border-radius:2px; background:var(--teal-08); color:var(--teal-40); border:1px solid var(--teal-15); cursor:default; }
 .rc-tag.active-filter { background:var(--teal); color:var(--bg); border-color:var(--teal); }
@@ -585,6 +629,10 @@ a { color: var(--teal); }
         <div class="fr"><label>Cuisine</label><input type="text" id="rf-cuisine" placeholder="e.g. Italian, Thai"></div>
         <div class="fr"><label>Servings</label><input type="text" id="rf-servings" placeholder="e.g. 4" style="width:90px;"></div>
       </div>
+      <div class="fr" style="margin-top:.25rem;">
+        <label>Recipe URL <span style="font-weight:300;text-transform:none;letter-spacing:0;font-size:11px;color:var(--teal-40);">— paste a link to the original recipe</span></label>
+        <input type="text" id="rf-url" placeholder="e.g. https://www.example.com/recipe">
+      </div>
       <div class="fg" style="margin-top:.25rem;">
         <div class="fr">
           <label>Tags <span style="font-weight:300;text-transform:none;letter-spacing:0;font-size:11px;color:var(--teal-40);">— press Enter or comma to add</span></label>
@@ -643,8 +691,19 @@ a { color: var(--teal); }
       <div class="fg">
         <div class="fr"><label>Metric unit</label>
           <select id="if-unit" onchange="updateRatioWrap()">
-            <option value="g">g</option><option value="kg">kg</option><option value="oz">oz</option><option value="lb">lb</option>
-            <option value="ml">ml</option><option value="L">L</option><option value=""></option>
+            <optgroup label="Weight">
+              <option value="g">g</option><option value="kg">kg</option><option value="oz">oz</option><option value="lb">lb</option>
+            </optgroup>
+            <optgroup label="Volume">
+              <option value="ml">ml</option><option value="L">L</option>
+            </optgroup>
+            <optgroup label="Cooking">
+              <option value="tsp">tsp</option><option value="tbsp">tbsp</option><option value="cup">cup</option><option value="fl oz">fl oz</option><option value="pint">pint</option>
+            </optgroup>
+            <optgroup label="Shopping">
+              <option value="bunch">bunch</option><option value="head">head</option><option value="clove">clove</option><option value="sprig">sprig</option><option value="stalk">stalk</option><option value="slice">slice</option><option value="sheet">sheet</option><option value="can">can</option><option value="jar">jar</option><option value="packet">packet</option><option value="punnet">punnet</option><option value="tray">tray</option><option value="bag">bag</option><option value="block">block</option><option value="bottle">bottle</option>
+            </optgroup>
+            <option value="">— none —</option>
           </select>
         </div>
         <div class="fr"><label>Cooking unit</label>
@@ -833,7 +892,9 @@ const INGREDIENT_HINTS = [
   // Asian pantry
   'nori','kombu','bonito flakes','dried shrimp','dried mushrooms','rice paper','spring roll wrappers','wonton wrappers','dumpling wrappers','black vinegar',
   // Misc
-  'nutritional yeast','rose water','orange blossom water','vanilla bean','vanilla bean paste','edible flowers'
+  'nutritional yeast','rose water','orange blossom water','vanilla bean','vanilla bean paste','edible flowers',
+  // Produce by the punnet / bag
+  'strawberries punnet','blueberries punnet','raspberries punnet','cherry tomatoes punnet','grape tomatoes punnet','mixed salad leaves','baby spinach','microgreens','sprouts'
 ];
 
 // ═══════════════════════════════════════
@@ -1153,7 +1214,15 @@ function renderRecipes(){
     const iw=weekIds.some(w=>w.id===r.id);
     const stars=r.rating ? '★'.repeat(r.rating)+'☆'.repeat(5-r.rating) : '';
     const tags=(r.tags||[]).map(t=>`<span class="rc-tag">${esc(t)}</span>`).join('');
+    const cornerHtml = r.url
+      ? `<div class="rc-corner" onclick="event.stopPropagation();window.open('${r.url.replace(/'/g,'%27')}','_blank')" title="Open original recipe">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="var(--teal)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 2H2a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V7"/>
+            <path d="M8 1h3v3"/><line x1="11" y1="1" x2="6" y2="6"/>
+          </svg>
+        </div>` : '';
     return `<div class="rc ${iw?'in-week':''}" onclick="oM('redit',getRec('${r.id}'))">
+      ${cornerHtml}
       <div class="rc-name">${esc(r.name)}${stars?` <span style="font-size:11px;color:var(--gold);letter-spacing:1px;">${stars}</span>`:''}</div>
       ${(r.type||r.cuisine)?`<div class="rc-meta" style="margin-bottom:4px;">${[r.type,r.cuisine].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('')}</div>`:''}
       ${tags?`<div class="rc-tags rc-tags-fade">${tags}</div>`:''}
@@ -1174,7 +1243,7 @@ function getRec(id){ return recipes.find(r=>r.id===id); }
 // RECIPE FORM
 // ═══════════════════════════════════════
 function clearRForm(){
-  ['rf-name','rf-src','rf-cuisine','rf-servings'].forEach(id=>document.getElementById(id).value='');
+  ['rf-name','rf-src','rf-cuisine','rf-servings','rf-url'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('rf-type').value='';
   document.getElementById('irows').innerHTML='';
   currentTags=[]; currentRating=null;
@@ -1186,6 +1255,7 @@ function populateRForm(r){
   document.getElementById('rf-type').value=r.type||'';
   document.getElementById('rf-cuisine').value=r.cuisine||'';
   document.getElementById('rf-servings').value=r.servings||'';
+  document.getElementById('rf-url').value=r.url||'';
   document.getElementById('irows').innerHTML='';
   (r.ingredients||[]).forEach(i=>addRow(i));
   currentTags=[...(r.tags||[])]; currentRating=r.rating||null;
@@ -1281,9 +1351,11 @@ function addRow(d){
     qtyEl.value=qtyEl.value.replace(/[^0-9.\/]/g,'');
     updateHint();
   });
+  qtyEl.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); nameEl && nameEl.focus(); } });
 
   const unitEl=div.querySelector('[data-f="unit"]');
   unitEl.addEventListener('change',updateHint);
+  unitEl.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); nameEl && nameEl.focus(); } });
 
   function updateHint(){
     const qty=qtyEl.value.trim(), unit=unitEl.value.trim();
@@ -1310,27 +1382,44 @@ function addRow(d){
     const q=nameEl.value.trim();
     const matches = getAcMatches(q, 8);
     acIdx=-1;
-    // Position using fixed coords (modal can scroll)
-    const rect=nameEl.getBoundingClientRect();
-    acList.style.top=(rect.bottom+2)+'px';
-    acList.style.left=rect.left+'px';
-    acList.style.width=rect.width+'px';
     renderAcList(acList, matches, pick);
   }
 
   nameEl.addEventListener('input',showAc);
   nameEl.addEventListener('keydown',e=>{
     const items=[...acList.querySelectorAll('.ac-item')];
-    if(!items.length) return;
     if(e.key==='ArrowDown'){ e.preventDefault(); acIdx=Math.min(acIdx+1,items.length-1); items.forEach((el,i)=>el.classList.toggle('ac-sel',i===acIdx)); }
     else if(e.key==='ArrowUp'){ e.preventDefault(); acIdx=Math.max(acIdx-1,0); items.forEach((el,i)=>el.classList.toggle('ac-sel',i===acIdx)); }
     else if(e.key==='Enter'&&acIdx>=0){ e.preventDefault(); items[acIdx].click(); }
+    else if(e.key==='Enter'&&acIdx<0){ e.preventDefault(); acList.style.display='none'; advanceFromRow(wrap); }
     else if(e.key==='Escape'){ acList.style.display='none'; }
   });
   nameEl.addEventListener('blur',()=>setTimeout(()=>acList.style.display='none',150));
 
+  const noteEl=div.querySelector('[data-f="note"]');
+  noteEl.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); advanceFromRow(wrap); } });
+
   if(d) updateHint();
   if(!d) qtyEl.focus();
+}
+
+// Move focus to the next row's qty, or add a new row if this is the last one
+function advanceFromRow(currentWrap){
+  const allWraps=[...document.querySelectorAll('#irows .ie-wrap')];
+  const idx=allWraps.indexOf(currentWrap);
+  let targetWrap;
+  if(idx >= 0 && idx < allWraps.length-1){
+    targetWrap = allWraps[idx+1];
+    targetWrap.querySelector('[data-f="qty"]').focus();
+  } else {
+    addRow();
+    const updated=[...document.querySelectorAll('#irows .ie-wrap')];
+    targetWrap = updated[updated.length-1];
+  }
+  setTimeout(()=>{
+    const mbody = document.querySelector('#m-recipe .mbody');
+    if(mbody) mbody.scrollTop = mbody.scrollHeight;
+  }, 80);
 }
 
 function collectRows(){
@@ -1361,10 +1450,12 @@ async function saveRecipe(){
   if(newIngs.length){ try{ await sbUpsert('ingredients',newIngs); }catch(e){ alert('Error saving ingredients: '+e.message); return; } }
   const ghostVal=document.getElementById('tag-ghost').value.trim();
   if(ghostVal) commitTag(ghostVal);
+  const rawUrl=document.getElementById('rf-url').value.trim();
+  const recUrl=rawUrl&&!rawUrl.startsWith('http')?'https://'+rawUrl:rawUrl;
   const rec={id:editRid||('r'+Date.now()),name,source:document.getElementById('rf-src').value.trim(),
     type:document.getElementById('rf-type').value,cuisine:document.getElementById('rf-cuisine').value.trim(),
     servings:document.getElementById('rf-servings').value.trim(),ingredients:ingList,
-    tags:currentTags, rating:currentRating};
+    tags:currentTags, rating:currentRating, url:recUrl||null};
   setLoading('Saving recipe…');
   try{
     await sbUpsert('recipes',rec);
@@ -1558,7 +1649,7 @@ function renderIngs(){
   list=[...list].sort((a,b)=>a.name.localeCompare(b.name));
   const tb=document.getElementById('itbody');
   if(!list.length){ tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--teal-40)">No ingredients found</td></tr>'; return; }
-  const rows = [];
+  tb.innerHTML = '';
   list.forEach(function(i){
     const sel = mergeSelected.has(i.id);
     const tr = document.createElement('tr');
@@ -1585,9 +1676,8 @@ function renderIngs(){
     const tdCat = document.createElement('td');
     const catSpan = document.createElement('span'); catSpan.className = 'cat-b'; catSpan.textContent = i.cat || '—';
     tdCat.appendChild(catSpan); tr.appendChild(tdCat);
-    rows.push(tr.outerHTML);
+    tb.appendChild(tr);
   });
-  tb.innerHTML = rows.join('');
 }
 function getIng(id){ return ings.find(i=>i.id===id); }
 function getIngByName(name){ return ings.find(i=>i.name.toLowerCase()===name.toLowerCase().trim()); }
