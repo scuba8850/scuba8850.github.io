@@ -260,6 +260,7 @@ font-family: 'Jost', sans-serif;
 font-size: 10px; padding: 2px 10px; border-radius: 2px;
 background: var(--bg); color: var(--gold);
 border: 1px solid var(--line); letter-spacing: .08em; text-transform: uppercase;
+white-space: nowrap; display: inline-block;
 }
 
 /* SHOPPING LIST */
@@ -895,7 +896,7 @@ a { color: var(--teal); }
       <div class="fr"><label>Category</label>
         <select id="if-cat">
           <option>Pantry</option><option>Produce</option><option>Dairy &amp; Eggs</option><option>Meat &amp; Fish</option>
-          <option>Bakery</option><option>Frozen</option><option>Condiments</option><option>Spices &amp; Herbs</option><option>Beverages</option><option>Other</option>
+          <option>Bakery</option><option>Frozen</option><option>Condiments</option><option>Herbs &amp; Spices</option><option>Beverages</option><option>Other</option>
         </select>
       </div>
       <div class="fr"><label>Metric unit</label>
@@ -962,7 +963,7 @@ a { color: var(--teal); }
           <div class="fr"><label>Category</label>
             <select id="merge-cat">
               <option>Pantry</option><option>Produce</option><option>Dairy &amp; Eggs</option><option>Meat &amp; Fish</option>
-              <option>Bakery</option><option>Frozen</option><option>Condiments</option><option>Spices &amp; Herbs</option><option>Beverages</option><option>Other</option>
+              <option>Bakery</option><option>Frozen</option><option>Condiments</option><option>Herbs &amp; Spices</option><option>Beverages</option><option>Other</option>
             </select>
           </div>
         </div>
@@ -1012,7 +1013,7 @@ a { color: var(--teal); }
           <label style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:500;">Category</label>
           <select id="batch-cat" disabled style="width:100%;margin-top:4px;opacity:.5;transition:opacity .15s;" onchange="this.style.opacity=1;">
             <option>Pantry</option><option>Produce</option><option>Dairy &amp; Eggs</option><option>Meat &amp; Fish</option>
-            <option>Bakery</option><option>Frozen</option><option>Condiments</option><option>Spices &amp; Herbs</option><option>Beverages</option><option>Other</option>
+            <option>Bakery</option><option>Frozen</option><option>Condiments</option><option>Herbs &amp; Spices</option><option>Beverages</option><option>Other</option>
           </select>
         </div>
       </div>
@@ -1144,7 +1145,7 @@ const INGREDIENT_HINTS = [
 const SEED = [
   {n:'plain flour',u:'g',c:'Pantry'},{n:'self-raising flour',u:'g',c:'Pantry'},{n:'bread flour',u:'g',c:'Pantry'},
   {n:'caster sugar',u:'g',c:'Pantry'},{n:'brown sugar',u:'g',c:'Pantry'},{n:'icing sugar',u:'g',c:'Pantry'},
-  {n:'salt',u:'g',c:'Spices & Herbs'},{n:'black pepper',u:'g',c:'Spices & Herbs'},{n:'olive oil',u:'ml',c:'Pantry'},
+  {n:'salt',u:'g',c:'Herbs & Spices'},{n:'black pepper',u:'g',c:'Herbs & Spices'},{n:'olive oil',u:'ml',c:'Pantry'},
   {n:'vegetable oil',u:'ml',c:'Pantry'},{n:'butter',u:'g',c:'Dairy & Eggs'},{n:'eggs',u:'',c:'Dairy & Eggs'},
   {n:'whole milk',u:'ml',c:'Dairy & Eggs'},{n:'cream',u:'ml',c:'Dairy & Eggs'},{n:'sour cream',u:'ml',c:'Dairy & Eggs'},
   {n:'parmesan',u:'g',c:'Dairy & Eggs'},{n:'cheddar',u:'g',c:'Dairy & Eggs'},{n:'mozzarella',u:'g',c:'Dairy & Eggs'},
@@ -2232,14 +2233,14 @@ function renderIngs(){
     tr.appendChild(tdChk);
     // Name cell — with optional aka badge if aliases exist
     const tdName = document.createElement('td');
-    tdName.style.cssText = 'display:flex;align-items:center;gap:7px;';
+    tdName.style.cssText = 'vertical-align:middle;';
     const nameSpan = document.createElement('span');
     nameSpan.textContent = i.name;
     tdName.appendChild(nameSpan);
     if((i.aliases||[]).length){
       const akaBadge = document.createElement('span');
       akaBadge.title = 'Also known as: ' + (i.aliases||[]).join(', ');
-      akaBadge.style.cssText = 'font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:1px 6px;border-radius:2px;background:var(--gold-pale);color:var(--gold);border:1px solid var(--line-2);cursor:default;white-space:nowrap;flex-shrink:0;';
+      akaBadge.style.cssText = 'font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:1px 6px;border-radius:2px;background:var(--gold-pale);color:var(--gold);border:1px solid var(--line-2);cursor:default;white-space:nowrap;display:inline-block;margin-left:7px;vertical-align:middle;';
       akaBadge.textContent = 'aka';
       tdName.appendChild(akaBadge);
     }
@@ -2773,7 +2774,7 @@ function renderFinaliseView(byCat, sortedCats){
   }
   const finByCat={};
   finalisedItems.forEach((item,idx)=>{ const c=item.cat||'Other'; (finByCat[c]=finByCat[c]||[]).push({...item,_idx:idx}); });
-  const CAT_ORDER=['Produce','Meat & Fish','Dairy & Eggs','Bakery','Pantry','Spices & Herbs','Condiments','Frozen','Beverages','Other'];
+  const CAT_ORDER=['Produce','Meat & Fish','Dairy & Eggs','Bakery','Pantry','Herbs & Spices','Condiments','Frozen','Beverages','Other'];
   const cats=[...CAT_ORDER.filter(c=>finByCat[c]),...Object.keys(finByCat).filter(c=>!CAT_ORDER.includes(c))];
   let html='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;"><span style="font-size:12px;color:var(--teal-40);font-style:italic;font-family:Cormorant Garamond,serif;">Adjust quantities — editing either unit updates the other</span><button class="btn btn-sm btn-ghost" onclick="resetFinalise()">Reset to generated</button></div>';
   html+=cats.map(cat=>`
@@ -2818,7 +2819,7 @@ function renderWk(){
   const cons=consolidate(wkRecs);
   const byCat={};
   cons.forEach(item=>{ const c=catOf(item.name); (byCat[c]=byCat[c]||[]).push(item); });
-  const CAT_ORDER=['Produce','Meat & Fish','Dairy & Eggs','Bakery','Pantry','Spices & Herbs','Condiments','Frozen','Beverages','Other'];
+  const CAT_ORDER=['Produce','Meat & Fish','Dairy & Eggs','Bakery','Pantry','Herbs & Spices','Condiments','Frozen','Beverages','Other'];
   const sortedCats=[...CAT_ORDER.filter(c=>byCat[c]),...Object.keys(byCat).filter(c=>!CAT_ORDER.includes(c))];
 
   if(finaliseMode){
