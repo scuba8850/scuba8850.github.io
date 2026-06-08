@@ -223,15 +223,27 @@ margin-bottom: 6px; line-height: 1.3; color: var(--teal);
 .rc.in-week .rc-meta span { background: rgba(10,65,71,.06); border-color: var(--teal-15); }
 .rc-footer { margin-top: auto; padding-top: 12px; display: flex; align-items: center; justify-content: space-between; }
 .ic { font-size: 11px; color: var(--teal-40); letter-spacing: .04em; }
+.wk-btn-wrap { display: inline-flex; align-items: stretch; }
 .wk-btn {
 font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 500;
 letter-spacing: .1em; text-transform: uppercase;
-padding: 4px 12px; border-radius: var(--r);
-border: 1px solid var(--line-2); background: transparent;
+padding: 4px 12px; border-radius: var(--r) 0 0 var(--r);
+border: 1px solid var(--line-2); border-right: none; background: transparent;
 color: var(--teal-40); cursor: pointer; transition: all .2s;
 }
 .wk-btn:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-08); }
+.wk-btn-serv {
+font-family: 'Jost', sans-serif; font-size: 11px;
+padding: 0 7px; border-radius: 0 var(--r) var(--r) 0;
+border: 1px solid var(--line-2); background: transparent;
+color: var(--teal-40); cursor: pointer; transition: all .2s;
+display: flex; align-items: center; align-self: stretch;
+}
+.wk-btn-serv:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-08); }
+/* Added state */
 .rc.in-week .wk-btn { background: var(--teal); color: var(--bg); border-color: var(--teal); }
+.rc.in-week .wk-btn-serv { background: var(--teal); color: rgba(242,232,211,.6); border-color: var(--teal); border-left-color: rgba(168,145,80,.35); }
+.rc.in-week .wk-btn-serv:hover { color: var(--bg); background: var(--teal-light); border-color: var(--teal-light); border-left-color: rgba(168,145,80,.35); }
 
 /* FILTER CHIPS */
 .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
@@ -1512,7 +1524,10 @@ function renderRecipes(){
       ${tags?`<div class="rc-tags rc-tags-fade">${tags}</div>`:''}
       <div class="rc-footer">
         <span class="ic">${r.ingredients.length} ingredient${r.ingredients.length!==1?'s':''}</span>
-        <button class="wk-btn" onclick="event.stopPropagation();toggleWk('${r.id}')">${iw?'✓ Added':'+ Add to list'}</button>
+        <div class="wk-btn-wrap">
+          <button class="wk-btn" onclick="event.stopPropagation();quickAddWk('${r.id}')">${iw?'✓ Added':'+ Add to list'}</button>
+          <button class="wk-btn-serv" onclick="event.stopPropagation();${iw?'openServingsModal(\''+r.id+'\')':'openServingsModal(\''+r.id+'\')'}" title="${iw?'Adjust servings':'Choose servings'}">▾</button>
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -2391,6 +2406,35 @@ function clearWeekFromRecipes(){
 let _pendingServId = null;
 let _pendingServCount = 1;
 
+function quickAddWk(id){
+  // If already on the list, remove it
+  if(weekIds.some(w=>w.id===id)){
+    weekIds=weekIds.filter(x=>x.id!==id);
+    finalisedItems=null; finaliseMode=false;
+    svLocal('mep_week',weekIds); svLocal('mep_chk',checked);
+    const finBtn=document.getElementById('finalise-btn');
+    if(finBtn){ finBtn.textContent='Finalise'; finBtn.style.background=''; finBtn.style.color='var(--gold)'; finBtn.style.borderColor='var(--gold)'; }
+    updBadge(); renderRecipes();
+    if(document.getElementById('page-week').classList.contains('active')){ renderWk(); renderWkPicker(); }
+    return;
+  }
+  // Quick-add at default servings (no modal)
+  const recipe = recipes.find(r=>r.id===id);
+  if(!recipe) return;
+  _pendingServId = id;
+  const defaultServ = parseInt(recipe.servings)||1;
+  _pendingServCount = defaultServ;
+  _pendingMult = 1;
+  // Check for unit conflicts before adding
+  const conflicts = detectUnitConflicts(id);
+  if(conflicts.length){
+    openConflictModal(conflicts, recipe);
+    return;
+  }
+  commitAddToList(id, 1);
+  _pendingServId = null;
+}
+
 function toggleWk(id){
   if(weekIds.some(w=>w.id===id)){
     weekIds=weekIds.filter(x=>x.id!==id);
@@ -2410,10 +2454,13 @@ function openServingsModal(id){
   if(!recipe) return;
   _pendingServId = id;
   const defaultServ = parseInt(recipe.servings)||1;
-  _pendingServCount = defaultServ;
+  const existing = weekIds.find(w=>w.id===id);
+  // Pre-fill current servings if already on list, otherwise default
+  _pendingServCount = existing?.servings || defaultServ;
   document.getElementById('serv-title').textContent = recipe.name;
-  document.getElementById('serv-subtitle').textContent =
-    recipe.servings ? 'Recipe makes '+recipe.servings+' servings' : 'Recipe has no default serving size';
+  document.getElementById('serv-subtitle').textContent = existing
+    ? 'Currently ' + _pendingServCount + ' servings — adjust below'
+    : (recipe.servings ? 'Recipe makes '+recipe.servings+' servings' : 'Recipe has no default serving size');
   updateServDisplay();
   document.getElementById('m-servings').classList.add('open'); document.body.style.overflow='hidden';
 }
@@ -2440,10 +2487,22 @@ function confirmServings(){
   const defaultServ = parseInt(recipe?.servings)||1;
   const mult = _pendingServCount / defaultServ;
 
+  // If already on list, just update servings in place
+  const existingIdx = weekIds.findIndex(w=>w.id===_pendingServId);
+  if(existingIdx >= 0){
+    weekIds[existingIdx] = {...weekIds[existingIdx], servings:_pendingServCount, mult};
+    finalisedItems=null;
+    svLocal('mep_week',weekIds);
+    showToast('Servings updated');
+    updBadge(); renderRecipes();
+    if(document.getElementById('page-week').classList.contains('active')){ renderWk(); renderWkPicker(); }
+    _pendingServId = null;
+    return;
+  }
+
   // Check for unit conflicts before adding
   const conflicts = detectUnitConflicts(_pendingServId);
   if(conflicts.length){
-    // Stage the add — commit after conflict resolution or skip
     _pendingMult = mult;
     openConflictModal(conflicts, recipe);
     return;
