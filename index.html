@@ -13,10 +13,6 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html {
-  height: -webkit-fill-available;
-}
-
 :root {
 --teal:        #0A4147;
 --teal-80:     rgba(10,65,71,.80);
@@ -47,12 +43,8 @@ color: var(--teal);
 font-size: 15px;
 line-height: 1.6;
 font-weight: 300;
-min-height: 100dvh;
-min-height: -webkit-fill-available;
-overflow-y: auto;
+min-height: 100vh;
 overflow-x: hidden;
--webkit-overflow-scrolling: touch;
-overscroll-behavior-y: none;
 }
 
 /* HEADER */
@@ -498,7 +490,6 @@ opacity: 0; transition: opacity .2s;
 #merge-float-bar { padding-bottom: max(10px, env(safe-area-inset-bottom)) !important; }
 
 /* Main content bottom padding accounts for FAB and safe area */
-main { padding-bottom: max(5rem, calc(4rem + env(safe-area-inset-bottom))); }
 
 /* TAGS */
 .rc-tags { display:flex; gap:5px; flex-wrap:wrap; margin:5px 0 2px; }
@@ -679,7 +670,7 @@ a { color: var(--teal); }
     <div style="font-size:12px;color:var(--teal-40);font-style:italic;font-family:'Cormorant Garamond',serif;margin-bottom:.75rem;">Select one ingredient to edit, or select multiple to merge.</div>
     <div class="card" style="overflow:hidden;">
       <table class="ing-table">
-        <thead><tr><th style="width:36px;"></th><th>Name</th><th>Also known as</th><th>Metric unit</th><th>Category</th></tr></thead>
+        <thead><tr><th style="width:36px;"></th><th>Name</th><th>Metric unit</th><th>Category</th></tr></thead>
         <tbody id="itbody"></tbody>
       </table>
     </div>
@@ -2240,13 +2231,20 @@ function renderIngs(){
     if(sel){ chkBox.innerHTML = '<svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 3.5,6.5 9,1" stroke="#faf7f0" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'; }
     tdChk.appendChild(chkBox);
     tr.appendChild(tdChk);
-    // Name
-    const tdName = document.createElement('td'); tdName.textContent = i.name; tr.appendChild(tdName);
-    // Aliases (matches header column 2)
-    const tdAliases = document.createElement('td');
-    tdAliases.style.cssText = 'font-size:12px;color:var(--teal-40);font-style:italic;';
-    tdAliases.textContent = (i.aliases||[]).length ? (i.aliases||[]).join(', ') : '';
-    tr.appendChild(tdAliases);
+    // Name cell — with optional aka badge if aliases exist
+    const tdName = document.createElement('td');
+    tdName.style.cssText = 'display:flex;align-items:center;gap:7px;';
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = i.name;
+    tdName.appendChild(nameSpan);
+    if((i.aliases||[]).length){
+      const akaBadge = document.createElement('span');
+      akaBadge.title = 'Also known as: ' + (i.aliases||[]).join(', ');
+      akaBadge.style.cssText = 'font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:1px 6px;border-radius:2px;background:var(--gold-pale);color:var(--gold);border:1px solid var(--line-2);cursor:default;white-space:nowrap;flex-shrink:0;';
+      akaBadge.textContent = 'aka';
+      tdName.appendChild(akaBadge);
+    }
+    tr.appendChild(tdName);
     // Unit (matches header column 3)
     const tdUnit = document.createElement('td'); tdUnit.textContent = i.unit || '—'; tr.appendChild(tdUnit);
     // Category
