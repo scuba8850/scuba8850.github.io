@@ -295,13 +295,18 @@ display: flex; align-items: center; justify-content: center; transition: all .15
 .si-src { font-size: 11px; color: var(--gold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: .04em; font-style: italic; font-family: 'Cormorant Garamond', serif; }
 
 /* MODAL */
-.mb { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100dvh; height: -webkit-fill-available; background: rgba(10,65,71,.5); backdrop-filter: blur(3px); z-index: 200; align-items: flex-start; justify-content: center; padding: 1rem; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.mb { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100dvh; height: -webkit-fill-available; background: rgba(10,65,71,.5); backdrop-filter: blur(3px); z-index: 200; align-items: flex-start; justify-content: center; padding: 1rem; overflow: hidden; }
 .mb.open { display: flex; }
 .modal { background: var(--bg); border-radius: var(--r-lg); box-shadow: var(--sh-lg); width: 100%; max-width: 560px; max-height: 90dvh; max-height: 90vh; display: flex; flex-direction: column; border: 1px solid var(--line-2); margin: auto; }
 .mh { padding: 1.5rem 1.5rem 1.25rem; display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid var(--line); flex-shrink: 0; }
 .mh h2 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; font-weight: 300; color: var(--teal); }
-.mbody { padding: 1.25rem 1.5rem; overflow-y: auto; -webkit-overflow-scrolling: touch; flex: 1; }
+.mbody { padding: 1.25rem 1.5rem; overflow-y: auto; -webkit-overflow-scrolling: touch; flex: 1; min-height: 0; }
 .mfoot { padding: 1.25rem 1.5rem; display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid var(--line); flex-shrink: 0; background: var(--bg); position: sticky; bottom: 0; }
+/* Recipe modal: no max-height cap — irows handles scroll, content grows naturally */
+#m-recipe { max-height: 96dvh; max-height: 96vh; }
+#m-recipe .mbody { overflow-y: visible; min-height: 0; }
+/* View mode ingredient list scrolls independently */
+#rm-view-body .ing-list-scroll { max-height: 260px; overflow-y: auto; -webkit-overflow-scrolling: touch; border-radius: var(--r); }
 .xbtn { background: none; border: none; cursor: pointer; color: var(--teal-40); font-size: 20px; line-height: 1; padding: 2px; transition: color .2s; }
 .xbtn:hover { color: var(--teal); }
 
@@ -321,6 +326,10 @@ margin-bottom: 6px; font-weight: 500;
 .ie { border: 1px solid var(--line); border-radius: var(--r); overflow: visible; margin-bottom: 10px; background: var(--white); }
 .ie-wrap { border-bottom: 1px solid var(--line); }
 .ie-wrap:last-child { border-bottom: none; }
+/* Ingredient rows scroll within the editor box */
+#irows { max-height: 260px; overflow-y: auto; overflow-x: visible; -webkit-overflow-scrolling: touch; }
+/* View mode ingredient list also scrolls */
+#rm-view-body .ing-list-scroll { display: block; }
 .row-hint { font-size: 11px; color: var(--teal-40); padding: 2px 12px 4px; font-style: italic; min-height: 4px; font-family: 'Cormorant Garamond', serif; }
 .ie-row { display: flex; align-items: center; }
 .ie-row input,.ie-row select { border: none; border-right: 1px solid var(--line); padding: 8px 12px; font-size: 14px; background: transparent; color: var(--teal); border-radius: 0; font-weight: 300; }
@@ -1698,7 +1707,7 @@ function renderRecipeView(r){
       ${sourceHtml ? `<div style="display:flex;flex-direction:column;gap:3px;margin-top:4px;">${sourceHtml}</div>` : ''}
     </div>
     <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:8px;">Ingredients</div>
-    <div style="border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--white);">
+    <div class="ing-list-scroll" style="border:1px solid var(--line);border-radius:var(--r);background:var(--white);">
       ${(r.ingredients||[]).length === 0
         ? '<div style="padding:1rem;color:var(--teal-40);font-style:italic;font-size:13px;text-align:center;">No ingredients added</div>'
         : (r.ingredients||[]).map(i=>`
@@ -1857,6 +1866,16 @@ function addRow(d){
   const acList=div.querySelector('.ac-list');
   let acIdx=-1;
 
+  // Position the dropdown using fixed coords so it escapes the clipped #irows container
+  function positionAcList(){
+    const rect = nameEl.getBoundingClientRect();
+    acList.style.position = 'fixed';
+    acList.style.top  = rect.bottom + 'px';
+    acList.style.left = rect.left + 'px';
+    acList.style.width = rect.width + 'px';
+    acList.style.right = 'auto';
+  }
+
   function pick(name, unit){
     nameEl.value=name;
     if(unit){ unitEl.value=unit; updateHint(); }
@@ -1869,6 +1888,7 @@ function addRow(d){
     const matches = getAcMatches(q, 8);
     acIdx=-1;
     renderAcList(acList, matches, pick);
+    if(acList.style.display!=='none') positionAcList();
   }
 
   nameEl.addEventListener('input',showAc);
@@ -1881,6 +1901,8 @@ function addRow(d){
     else if(e.key==='Escape'){ acList.style.display='none'; }
   });
   nameEl.addEventListener('blur',()=>setTimeout(()=>acList.style.display='none',150));
+  // Reposition if irows scrolls while dropdown is open
+  document.getElementById('irows')?.addEventListener('scroll',()=>{ if(acList.style.display!=='none') positionAcList(); });
 
   const noteEl=div.querySelector('[data-f="note"]');
   noteEl.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); advanceFromRow(wrap); } });
@@ -1903,8 +1925,8 @@ function advanceFromRow(currentWrap){
     targetWrap = updated[updated.length-1];
   }
   setTimeout(()=>{
-    const mbody = document.querySelector('#m-recipe .mbody');
-    if(mbody) mbody.scrollTop = mbody.scrollHeight;
+    const irows = document.getElementById('irows');
+    if(irows) irows.scrollTop = irows.scrollHeight;
   }, 80);
 }
 
@@ -3423,8 +3445,8 @@ function confirmImport(){
   cM('import');
   // Scroll recipe modal to bottom to show new rows
   setTimeout(()=>{
-    const mbody = document.querySelector('#m-recipe .mbody');
-    if(mbody) mbody.scrollTop = mbody.scrollHeight;
+    const irows = document.getElementById('irows');
+    if(irows) irows.scrollTop = irows.scrollHeight;
   }, 80);
   showToast(importParsed.length + ' ingredient' + (importParsed.length!==1?'s':'') + ' added');
 }
