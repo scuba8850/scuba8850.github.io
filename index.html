@@ -3,12 +3,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
 <title>Ingredigo</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cormorant+SC:wght@400;600&family=Jost:wght@300;400;500&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  height: -webkit-fill-available;
+  overflow: hidden;
+}
+
 :root {
 --teal:        #0A4147;
 --teal-80:     rgba(10,65,71,.80);
@@ -39,7 +48,10 @@ color: var(--teal);
 font-size: 15px;
 line-height: 1.6;
 font-weight: 300;
-min-height: 100vh;
+min-height: 100dvh;
+min-height: -webkit-fill-available;
+overflow-x: hidden;
+overscroll-behavior-y: none;
 }
 
 /* HEADER */
@@ -283,9 +295,9 @@ display: flex; align-items: center; justify-content: center; transition: all .15
 .si-src { font-size: 11px; color: var(--gold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: .04em; font-style: italic; font-family: 'Cormorant Garamond', serif; }
 
 /* MODAL */
-.mb { display: none; position: fixed; inset: 0; background: rgba(10,65,71,.5); backdrop-filter: blur(3px); z-index: 200; align-items: flex-start; justify-content: center; padding: 1rem; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.mb { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100dvh; height: -webkit-fill-available; background: rgba(10,65,71,.5); backdrop-filter: blur(3px); z-index: 200; align-items: flex-start; justify-content: center; padding: 1rem; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .mb.open { display: flex; }
-.modal { background: var(--bg); border-radius: var(--r-lg); box-shadow: var(--sh-lg); width: 100%; max-width: 560px; max-height: none; display: flex; flex-direction: column; border: 1px solid var(--line-2); margin: auto; }
+.modal { background: var(--bg); border-radius: var(--r-lg); box-shadow: var(--sh-lg); width: 100%; max-width: 560px; max-height: 90dvh; max-height: 90vh; display: flex; flex-direction: column; border: 1px solid var(--line-2); margin: auto; }
 .mh { padding: 1.5rem 1.5rem 1.25rem; display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid var(--line); flex-shrink: 0; }
 .mh h2 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; font-weight: 300; color: var(--teal); }
 .mbody { padding: 1.25rem 1.5rem; overflow-y: auto; -webkit-overflow-scrolling: touch; flex: 1; }
@@ -410,13 +422,73 @@ opacity: 0; transition: opacity .2s;
 /* WEEK LAYOUT */
 .wk-layout { display: grid; grid-template-columns: 1fr 280px; gap: 1.5rem; align-items: start; }
 @media(max-width:680px){ .wk-layout { grid-template-columns: 1fr; } }
+
+/* ── MOBILE OPTIMISATIONS ── */
+@media(max-width:600px){
+  /* Tighter main padding */
+  main { padding: 1.25rem .85rem max(5rem, calc(4rem + env(safe-area-inset-bottom))); }
+
+  /* Header slightly shorter */
+  header { height: 56px; padding: 0 1rem; }
+  .tabs { top: 56px; padding: 0 .75rem; }
+  .tab { padding: 0 .85rem; font-size: 10px; }
+
+  /* Recipe grid single column */
+  .recipe-grid { grid-template-columns: 1fr; gap: 12px; }
+
+  /* Toolbar wraps better */
+  .toolbar { gap: 8px; }
+  .toolbar-title { font-size: 22px; }
+
+  /* Modal fills screen on mobile */
+  .mb { padding: .5rem; align-items: flex-end; }
+  .modal {
+    max-width: 100%;
+    max-height: 92dvh;
+    max-height: 92vh;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    margin: 0;
+  }
+  .mbody { padding: 1rem; }
+  .mh { padding: 1rem 1rem .85rem; }
+  .mfoot { padding: .85rem 1rem; }
+
+  /* Form grids go single column on small screens */
+  .fg { grid-template-columns: 1fr; gap: 10px; }
+
+  /* Ingredient row — tighter */
+  .c-note { width: 90px; }
+  .c-qty  { width: 64px; }
+  .c-unit { width: 74px; }
+
+  /* Shopping list columns */
+  .sl-header { grid-template-columns: 28px 1fr 80px 0 100px; }
+  .si        { grid-template-columns: 28px 1fr 80px 0 100px; }
+  .si-cups   { display: none; }
+
+  /* Filter bar smaller chips */
+  .chip { font-size: 10px; padding: 3px 10px; }
+
+  /* Week layout picker always below */
+  #wkpicker { max-height: 300px; }
+
+  /* Toast position */
+  #toast { bottom: max(80px, calc(70px + env(safe-area-inset-bottom))); font-size: 11px; padding: 7px 18px; }
+}
+
 .wk-ri { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--r); background: var(--white); font-size: 14px; margin-bottom: 6px; font-weight: 300; }
 .wk-ri-meta { font-size: 11px; color: var(--gold); margin-top: 2px; letter-spacing: .06em; text-transform: uppercase; font-family: 'Cormorant Garamond', serif; font-style: italic; }
 
 /* SLIDE-UP PANEL */
 #grocery-fab { border-top: 1px solid rgba(168,145,80,.5); }
-#fab-handle { background: var(--teal) !important; border-top: 1px solid rgba(168,145,80,.4) !important; }
+#fab-handle { background: var(--teal) !important; border-top: 1px solid rgba(168,145,80,.4) !important; padding-bottom: max(10px, env(safe-area-inset-bottom)) !important; }
 #fab-panel { background: var(--bg) !important; border-top: 1px solid var(--line) !important; }
+
+/* Safe-area padding for fixed bottom bars */
+#merge-float-bar { padding-bottom: max(10px, env(safe-area-inset-bottom)) !important; }
+
+/* Main content bottom padding accounts for FAB and safe area */
+main { padding-bottom: max(5rem, calc(4rem + env(safe-area-inset-bottom))); }
 
 /* TAGS */
 .rc-tags { display:flex; gap:5px; flex-wrap:wrap; margin:5px 0 2px; }
@@ -681,34 +753,13 @@ a { color: var(--teal); }
           <div id="rf-rating-label" style="font-size:12px;color:var(--gold);margin-top:4px;font-style:italic;font-family:'Cormorant Garamond',serif;height:16px;"></div>
         </div>
       </div>
-      <!-- Row 4: Source -->
-      <div class="fg" style="margin-bottom:.5rem;">
-        <div class="fr" style="margin-bottom:0;"><label>Source</label>
-          <select id="rf-source-type" onchange="updateSourceFields()" style="width:100%;">
-            <option value="">— none —</option>
-            <option value="online">Online</option>
-            <option value="book">Recipe book</option>
-            <option value="other">Other</option>
-          </select>
+      <!-- Row 4: Sources (multi) -->
+      <div style="margin-bottom:1.1rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <label style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:500;">Source</label>
+          <button type="button" class="btn btn-sm btn-ghost" style="font-size:11px;padding:3px 10px;" onclick="addSourceEntry()">+ Add another</button>
         </div>
-        <div class="fr" style="margin-bottom:0;" id="rf-source-inline-wrap"><!-- populated by updateSourceFields --></div>
-      </div>
-      <div id="rf-source-fields" style="display:none;margin-bottom:1.1rem;">
-        <div id="rf-source-online" style="display:none;">
-          <div class="fg">
-            <div class="fr" style="margin-bottom:0;"><label>URL</label><input type="text" id="rf-url" placeholder="https://…"></div>
-            <div class="fr" style="margin-bottom:0;"><label>Site name <span style="font-weight:300;text-transform:none;letter-spacing:0;font-size:11px;color:var(--teal-40);">— optional</span></label><input type="text" id="rf-src" placeholder="e.g. Serious Eats"></div>
-          </div>
-        </div>
-        <div id="rf-source-book" style="display:none;">
-          <div class="fg">
-            <div class="fr" style="margin-bottom:0;"><label>Book name</label><input type="text" id="rf-book" placeholder="e.g. Plenty by Ottolenghi"></div>
-            <div class="fr" style="margin-bottom:0;"><label>Page</label><input type="text" id="rf-page" inputmode="numeric" placeholder="e.g. 142"></div>
-          </div>
-        </div>
-        <div id="rf-source-other" style="display:none;">
-          <div class="fr" style="margin-bottom:0;"><label>Description</label><input type="text" id="rf-src-other" placeholder="e.g. Mum's recipe, handwritten card"></div>
-        </div>
+        <div id="rf-sources-list"></div>
       </div>
       <hr>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
@@ -725,6 +776,11 @@ a { color: var(--teal); }
         <div id="irows"></div>
       </div>
       <button class="btn btn-sm btn-ghost" onclick="addRow()">+ Add row</button>
+      <hr style="margin-top:1.25rem;">
+      <div class="fr" style="margin-top:1.1rem;">
+        <label>Notes <span style="font-weight:300;text-transform:none;letter-spacing:0;font-size:11px;color:var(--teal-40);">— tips, variations, memories</span></label>
+        <textarea id="rf-notes" style="width:100%;min-height:80px;resize:vertical;" placeholder="e.g. Double the garlic. Great with crusty bread. Mum's version uses cream instead of stock."></textarea>
+      </div>
     </div>
     <div class="mfoot">
       <button class="btn btn-danger btn-sm" id="r-del-btn" style="margin-right:auto;display:none;" onclick="delRecipe()">Delete recipe</button>
@@ -1175,7 +1231,7 @@ async function loadAll(){
       sbGet('recipes','order=name.asc')
     ]);
     ings = fetchedIngs;
-    recipes = fetchedRecs.map(r=>({...r, ingredients: r.ingredients||[], tags: r.tags||[], rating: r.rating||null, source_type: r.source_type||null, url: r.url||null, page: r.page||null}));
+    recipes = fetchedRecs.map(r=>({...r, ingredients: r.ingredients||[], tags: r.tags||[], rating: r.rating||null, source_type: r.source_type||null, url: r.url||null, page: r.page||null, sources: r.sources||null, notes: r.notes||null}));
     ings = ings.map(i=>({...i, aliases: i.aliases||[]}));
     if(ings.length === 0){
       const seedData = SEED.map((s,i)=>({id:'i'+i,name:s.n,unit:s.u,cat:s.c}));
@@ -1227,9 +1283,13 @@ function oM(n,d){
   if(n==='iedit'&&d){ editIid=d.id; document.getElementById('im-title').textContent='Edit Ingredient'; document.getElementById('i-del-btn').style.display='inline-flex'; document.getElementById('if-name').value=d.name; document.getElementById('if-unit').value=d.unit||'g'; document.getElementById('if-unit-cooking').value=d.unit_cooking||''; document.getElementById('if-ratio').value=d.unit_cooking_ratio||''; document.getElementById('if-cat').value=d.cat; updateRatioWrap(); loadAliases(d.aliases); }
   const key = n.replace('rnew','recipe').replace('redit','recipe').replace('inew','ing').replace('iedit','ing').replace('namelist','namelist');
   const el = document.getElementById('m-'+key);
-  if(el){ el.classList.add('open'); if(n==='namelist') setTimeout(()=>document.getElementById('namelist-input').focus(),50); }
+  if(el){ el.classList.add('open'); document.body.style.overflow='hidden'; if(n==='namelist') setTimeout(()=>document.getElementById('namelist-input').focus(),50); }
 }
-function cM(n){ document.getElementById('m-'+n).classList.remove('open'); }
+function cM(n){
+  document.getElementById('m-'+n).classList.remove('open');
+  // Unlock body scroll if no modals remain open
+  if(!document.querySelector('.mb.open')) document.body.style.overflow='';
+}
 
 // ═══════════════════════════════════════
 // AUTOCOMPLETE — shared logic
@@ -1424,20 +1484,31 @@ function renderRecipes(){
     const iw=weekIds.some(w=>w.id===r.id);
     const stars=r.rating ? '★'.repeat(r.rating)+'☆'.repeat(5-r.rating) : '';
     const tags=(r.tags||[]).map(t=>`<span class="rc-tag">${esc(t)}</span>`).join('');
-    const cornerHtml = r.url
-      ? `<div class="rc-corner" onclick="event.stopPropagation();window.open('${r.url.replace(/'/g,'%27')}','_blank')" title="Open original recipe">
+    // Resolve sources — prefer new array, fall back to legacy
+    const sourcesArr = (r.sources && r.sources.length) ? r.sources : (r.source_type ? [{type:r.source_type,title:r.source||'',url:r.url||'',page:r.page||''}] : []);
+    const firstUrl = sourcesArr.find(s=>s.url)?.url || null;
+    const cornerHtml = firstUrl
+      ? `<div class="rc-corner" onclick="event.stopPropagation();window.open('${firstUrl.replace(/'/g,'%27')}','_blank')" title="Open original recipe">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="var(--teal)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
             <path d="M5 2H2a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V7"/>
             <path d="M8 1h3v3"/><line x1="11" y1="1" x2="6" y2="6"/>
           </svg>
         </div>` : '';
+    const sourceLineHtml = (()=>{
+      if(!sourcesArr.length) return '';
+      return sourcesArr.map(s=>{
+        if(s.type==='book') return `<div style="font-size:11px;color:var(--teal-40);font-style:italic;font-family:'Cormorant Garamond',serif;margin-bottom:1px;">${esc(s.title||'Recipe book')}${s.page?' p.'+esc(s.page):''}</div>`;
+        if(s.type==='online'&&s.title) return `<div style="font-size:11px;color:var(--teal-40);font-style:italic;font-family:'Cormorant Garamond',serif;margin-bottom:1px;">${esc(s.title)}</div>`;
+        if(s.type==='other'&&s.title) return `<div style="font-size:11px;color:var(--teal-40);font-style:italic;font-family:'Cormorant Garamond',serif;margin-bottom:1px;">${esc(s.title)}</div>`;
+        return '';
+      }).filter(Boolean).join('');
+    })();
     return `<div class="rc ${iw?'in-week':''}" onclick="oM('redit',getRec('${r.id}'))">
       ${cornerHtml}
       <div class="rc-name">${esc(r.name)}${stars?` <span style="font-size:11px;color:var(--gold);letter-spacing:1px;">${stars}</span>`:''}</div>
-      ${(()=>{ if(!r.source_type) return ''; if(r.source_type==='book') return `<div style="font-size:11px;color:var(--teal-40);font-style:italic;font-family:'Cormorant Garamond',serif;margin-bottom:3px;">${esc(r.source)}${r.page?' p.'+esc(r.page):''}</div>`; if(r.source_type==='online'&&r.source) return `<div style="font-size:11px;color:var(--teal-40);font-style:italic;font-family:'Cormorant Garamond',serif;margin-bottom:3px;">${esc(r.source)}</div>`; if(r.source_type==='other'&&r.source) return `<div style="font-size:11px;color:var(--teal-40);font-style:italic;font-family:'Cormorant Garamond',serif;margin-bottom:3px;">${esc(r.source)}</div>`; return ''; })()}
+      ${sourceLineHtml}
       ${r.type?`<div class="rc-meta" style="margin-bottom:4px;"><span>${esc(r.type)}</span></div>`:''}
       ${tags?`<div class="rc-tags rc-tags-fade">${tags}</div>`:''}
-
       <div class="rc-footer">
         <span class="ic">${r.ingredients.length} ingredient${r.ingredients.length!==1?'s':''}</span>
         <button class="wk-btn" onclick="event.stopPropagation();toggleWk('${r.id}')">${iw?'✓ Added':'+ Add to list'}</button>
@@ -1453,13 +1524,107 @@ function getRec(id){ return recipes.find(r=>r.id===id); }
 // ═══════════════════════════════════════
 // RECIPE FORM
 // ═══════════════════════════════════════
-function updateSourceFields(){
-  const t = document.getElementById('rf-source-type').value;
-  document.getElementById('rf-source-fields').style.display = t ? 'block' : 'none';
-  document.getElementById('rf-source-online').style.display = t==='online' ? 'block' : 'none';
-  document.getElementById('rf-source-book').style.display   = t==='book'   ? 'block' : 'none';
-  document.getElementById('rf-source-other').style.display  = t==='other'  ? 'block' : 'none';
+// ── MULTI-SOURCE MANAGEMENT ──
+function buildSourceEntryHtml(idx, src){
+  const t = src?.type || '';
+  const isOnline = t === 'online';
+  const isBook   = t === 'book';
+  const isOther  = t === 'other';
+  return `<div class="source-entry" id="src-entry-${idx}" style="background:var(--teal-08);border:1px solid var(--teal-15);border-radius:var(--r);padding:10px 12px;margin-bottom:8px;position:relative;">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:${t?'10px':'0'};">
+      <select class="src-type-sel" style="flex:1;font-size:13px;" onchange="onSourceTypeChange(${idx},this.value)">
+        <option value="">— none —</option>
+        <option value="online"${isOnline?' selected':''}>Online</option>
+        <option value="book"${isBook?' selected':''}>Recipe book</option>
+        <option value="other"${isOther?' selected':''}>Other</option>
+      </select>
+      <button type="button" onclick="removeSourceEntry(${idx})" style="background:none;border:none;cursor:pointer;color:var(--teal-40);font-size:18px;line-height:1;padding:2px 4px;flex-shrink:0;" title="Remove source">×</button>
+    </div>
+    <div class="src-fields" style="display:${t?'block':'none'};">
+      <div class="src-online" style="display:${isOnline?'block':'none'};">
+        <div class="fg">
+          <div class="fr" style="margin-bottom:0;"><label>URL</label><input type="text" class="src-url" placeholder="https://…" value="${esc(src?.url||'')}"></div>
+          <div class="fr" style="margin-bottom:0;"><label>Site name <span style="font-weight:300;text-transform:none;letter-spacing:0;font-size:11px;color:var(--teal-40);">— optional</span></label><input type="text" class="src-title" placeholder="e.g. Serious Eats" value="${esc(src?.title||'')}"></div>
+        </div>
+      </div>
+      <div class="src-book" style="display:${isBook?'block':'none'};">
+        <div class="fg">
+          <div class="fr" style="margin-bottom:0;"><label>Book name</label><input type="text" class="src-title" placeholder="e.g. Plenty by Ottolenghi" value="${esc(src?.title||'')}"></div>
+          <div class="fr" style="margin-bottom:0;"><label>Page</label><input type="text" class="src-page" inputmode="numeric" placeholder="e.g. 142" value="${esc(src?.page||'')}"></div>
+        </div>
+      </div>
+      <div class="src-other" style="display:${isOther?'block':'none'};">
+        <div class="fr" style="margin-bottom:0;"><label>Description</label><input type="text" class="src-title" placeholder="e.g. Mum's recipe, handwritten card" value="${esc(src?.title||'')}"></div>
+      </div>
+    </div>
+  </div>`;
 }
+
+function renderSourcesList(sources){
+  const list = document.getElementById('rf-sources-list');
+  if(!list) return;
+  const arr = (sources && sources.length) ? sources : [{}];
+  list.innerHTML = arr.map((s,i) => buildSourceEntryHtml(i, s)).join('');
+}
+
+function addSourceEntry(){
+  const list = document.getElementById('rf-sources-list');
+  if(!list) return;
+  const idx = list.querySelectorAll('.source-entry').length;
+  list.insertAdjacentHTML('beforeend', buildSourceEntryHtml(idx, {}));
+}
+
+function removeSourceEntry(idx){
+  const entry = document.getElementById('src-entry-'+idx);
+  if(entry) entry.remove();
+  // Re-index remaining entries so add/remove stays consistent
+  const list = document.getElementById('rf-sources-list');
+  if(!list) return;
+  [...list.querySelectorAll('.source-entry')].forEach((el,i)=>{
+    el.id = 'src-entry-'+i;
+    const sel = el.querySelector('.src-type-sel');
+    if(sel) sel.setAttribute('onchange','onSourceTypeChange('+i+',this.value)');
+    const xbtn = el.querySelector('button[title="Remove source"]');
+    if(xbtn) xbtn.setAttribute('onclick','removeSourceEntry('+i+')');
+  });
+}
+
+function onSourceTypeChange(idx, val){
+  const entry = document.getElementById('src-entry-'+idx);
+  if(!entry) return;
+  entry.querySelector('.src-fields').style.display = val ? 'block' : 'none';
+  entry.querySelector('.src-online').style.display = val==='online' ? 'block' : 'none';
+  entry.querySelector('.src-book').style.display   = val==='book'   ? 'block' : 'none';
+  entry.querySelector('.src-other').style.display  = val==='other'  ? 'block' : 'none';
+  // Clear inputs when switching type to avoid stale data
+  entry.querySelectorAll('.src-url,.src-title,.src-page').forEach(el=>el.value='');
+}
+
+function collectSources(){
+  const list = document.getElementById('rf-sources-list');
+  if(!list) return [];
+  const results = [];
+  list.querySelectorAll('.source-entry').forEach(entry=>{
+    const type = entry.querySelector('.src-type-sel').value;
+    if(!type) return;
+    const src = { type };
+    const titleEl  = entry.querySelector('.src-'+( type==='online'?'online':'book'==='book'?'book':'other' )+' .src-title') ||
+                     entry.querySelector('.src-title');
+    const urlEl    = entry.querySelector('.src-url');
+    const pageEl   = entry.querySelector('.src-page');
+    if(titleEl) src.title = titleEl.value.trim();
+    if(urlEl && type==='online'){
+      const raw = urlEl.value.trim();
+      src.url = raw ? (raw.startsWith('http')?raw:'https://'+raw) : '';
+    }
+    if(pageEl) src.page = pageEl.value.trim()||'';
+    results.push(src);
+  });
+  return results;
+}
+
+// Keep a stub for any legacy callers
+function updateSourceFields(){}
 
 function switchRecipeMode(mode){
   const isNew = mode === 'new';
@@ -1504,11 +1669,20 @@ function renderRecipeView(r){
   const stars = r.rating ? '★'.repeat(r.rating) + '<span style="color:var(--line-2);">★</span>'.repeat(5-r.rating) : '';
   const tags = (r.tags||[]).map(t=>`<span class="rc-tag">${esc(t)}</span>`).join('');
 
-  // Source line
-  let sourceLine = '';
-  if(r.source_type === 'book') sourceLine = esc(r.source) + (r.page ? ' — p.' + esc(r.page) : '');
-  else if(r.source_type === 'online' && r.source) sourceLine = esc(r.source);
-  else if(r.source_type === 'other' && r.source) sourceLine = esc(r.source);
+  // Build sources display — prefer new sources array, fall back to legacy
+  const sourcesArr = (r.sources && r.sources.length) ? r.sources : (r.source_type ? [{type:r.source_type, title:r.source||'', url:r.url||'', page:r.page||''}] : []);
+  const sourceHtml = sourcesArr.map(s=>{
+    if(s.type==='book'){
+      const line = (s.title||'') + (s.page ? ' — p.' + esc(s.page) : '');
+      return `<div style="font-size:12px;color:var(--teal-40);font-style:italic;font-family:'Cormorant Garamond',serif;">📖 ${esc(line)}</div>`;
+    } else if(s.type==='online'){
+      const label = s.title || (s.url ? new URL(s.url).hostname.replace('www.','') : 'Online');
+      return `<div style="font-size:12px;color:var(--teal-40);font-style:italic;font-family:'Cormorant Garamond',serif;">🔗 ${esc(label)}${s.url?` — <a href="${esc(s.url)}" target="_blank" style="color:var(--gold);">View online ↗</a>`:''}</div>`;
+    } else if(s.type==='other' && s.title){
+      return `<div style="font-size:12px;color:var(--teal-40);font-style:italic;font-family:'Cormorant Garamond',serif;">📝 ${esc(s.title)}</div>`;
+    }
+    return '';
+  }).filter(Boolean).join('');
 
   const meta = [
     r.type ? `<span class="rc-meta" style="display:inline-flex;">${esc(r.type)}</span>` : '',
@@ -1521,7 +1695,7 @@ function renderRecipeView(r){
       ${meta ? `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">${meta}</div>` : ''}
       ${stars ? `<div style="font-size:16px;color:var(--gold);letter-spacing:2px;margin-bottom:6px;">${stars}</div>` : ''}
       ${tags ? `<div class="rc-tags" style="margin-bottom:6px;">${tags}</div>` : ''}
-      ${sourceLine ? `<div style="font-size:12px;color:var(--teal-40);font-style:italic;font-family:'Cormorant Garamond',serif;">${sourceLine}${r.url?` — <a href="${esc(r.url)}" target="_blank" style="color:var(--gold);">View online ↗</a>`:''}</div>` : (r.url ? `<div style="font-size:12px;"><a href="${esc(r.url)}" target="_blank" style="color:var(--gold);">View online ↗</a></div>` : '')}
+      ${sourceHtml ? `<div style="display:flex;flex-direction:column;gap:3px;margin-top:4px;">${sourceHtml}</div>` : ''}
     </div>
     <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:8px;">Ingredients</div>
     <div style="border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--white);">
@@ -1535,36 +1709,39 @@ function renderRecipeView(r){
           <span style="color:var(--teal-40);font-size:12px;font-style:italic;font-family:'Cormorant Garamond',serif;">${esc(i.note||'')}</span>
         </div>`).join('')
       }
-    </div>`;
+    </div>
+    ${r.notes ? `
+    <div style="margin-top:1.25rem;">
+      <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:8px;">Notes</div>
+      <div style="background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;font-size:14px;font-weight:300;line-height:1.7;color:var(--teal);font-family:'Cormorant Garamond',serif;font-style:italic;white-space:pre-wrap;">${esc(r.notes)}</div>
+    </div>` : ''}`;
 }
 
 function clearRForm(){
-  ['rf-name','rf-src','rf-url','rf-book','rf-page','rf-src-other','rf-cuisine','rf-servings'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['rf-name','rf-cuisine','rf-servings','rf-notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('rf-type').value='';
-  document.getElementById('rf-source-type').value='';
-  updateSourceFields();
+  renderSourcesList([]);
   document.getElementById('irows').innerHTML='';
   currentTags=[]; currentRating=null;
   renderTagPills(); renderStars();
 }
 function populateRForm(r){
   document.getElementById('rf-name').value=r.name||'';
-  // Restore source fields
-  const st = r.source_type||'';
-  document.getElementById('rf-source-type').value = st;
-  updateSourceFields();
-  if(st==='online'){
-    const el=document.getElementById('rf-src'); if(el) el.value=r.source||'';
-    const uel=document.getElementById('rf-url'); if(uel) uel.value=r.url||'';
-  } else if(st==='book'){
-    const bel=document.getElementById('rf-book'); if(bel) bel.value=r.source||'';
-    const pel=document.getElementById('rf-page'); if(pel) pel.value=r.page||'';
-  } else if(st==='other'){
-    const oel=document.getElementById('rf-src-other'); if(oel) oel.value=r.source||'';
+  // Populate sources — prefer new `sources` array, fall back to legacy fields
+  let sourcesArr = r.sources && r.sources.length ? r.sources : [];
+  if(!sourcesArr.length && r.source_type){
+    // Legacy fallback: reconstruct from old flat fields
+    const legacy = { type: r.source_type };
+    if(r.source_type==='online'){ legacy.title=r.source||''; legacy.url=r.url||''; }
+    else if(r.source_type==='book'){ legacy.title=r.source||''; legacy.page=r.page||''; }
+    else if(r.source_type==='other'){ legacy.title=r.source||''; }
+    sourcesArr = [legacy];
   }
+  renderSourcesList(sourcesArr);
   document.getElementById('rf-type').value=r.type||'';
   document.getElementById('rf-cuisine').value=r.cuisine||'';
   document.getElementById('rf-servings').value=r.servings||'';
+  document.getElementById('rf-notes').value=r.notes||'';
   document.getElementById('irows').innerHTML='';
   (r.ingredients||[]).forEach(i=>addRow(i));
   currentTags=[...(r.tags||[])]; currentRating=r.rating||null;
@@ -1759,21 +1936,16 @@ async function saveRecipe(){
   if(newIngs.length){ try{ await sbUpsert('ingredients',newIngs); }catch(e){ alert('Error saving ingredients: '+e.message); return; } }
   const ghostVal=document.getElementById('tag-ghost').value.trim();
   if(ghostVal) commitTag(ghostVal);
-  // Collect structured source
-  const sourceType = document.getElementById('rf-source-type').value;
-  let recSource='', recUrl=null, recPage=null;
-  if(sourceType==='online'){
-    const rawUrl=(document.getElementById('rf-url').value||'').trim();
-    recUrl = rawUrl ? (rawUrl.startsWith('http')?rawUrl:'https://'+rawUrl) : null;
-    recSource = (document.getElementById('rf-src').value||'').trim();
-  } else if(sourceType==='book'){
-    recSource = (document.getElementById('rf-book').value||'').trim();
-    recPage   = (document.getElementById('rf-page').value||'').trim()||null;
-  } else if(sourceType==='other'){
-    recSource = (document.getElementById('rf-src-other').value||'').trim();
-  }
-  const rec={id:editRid||('r'+Date.now()),name,source:recSource,source_type:sourceType||null,
-    url:recUrl, page:recPage,
+  // Collect structured sources array
+  const sourcesArr = collectSources();
+  const rec={id:editRid||('r'+Date.now()),name,
+    sources: sourcesArr.length ? sourcesArr : null,
+    notes: document.getElementById('rf-notes').value.trim()||null,
+    // Keep legacy fields populated from first source for backward compat
+    source_type: sourcesArr[0]?.type||null,
+    source: sourcesArr[0]?.title||null,
+    url: sourcesArr[0]?.url||null,
+    page: sourcesArr[0]?.page||null,
     type:document.getElementById('rf-type').value,cuisine:document.getElementById('rf-cuisine').value.trim(),
     servings:document.getElementById('rf-servings').value.trim(),ingredients:ingList,
     tags:currentTags, rating:currentRating};
@@ -1850,7 +2022,7 @@ function openBatchEditModal(){
   document.getElementById('batch-cat').disabled = true;
   document.getElementById('batch-unit').disabled = true;
 
-  document.getElementById('m-batch').classList.add('open');
+  document.getElementById('m-batch').classList.add('open'); document.body.style.overflow='hidden';
 }
 
 async function confirmBatchEdit(){
@@ -1936,7 +2108,7 @@ function openMergeModal(){
     scopeEl.style.display = 'none';
   }
 
-  document.getElementById('m-merge').classList.add('open');
+  document.getElementById('m-merge').classList.add('open'); document.body.style.overflow='hidden';
   setTimeout(()=>document.getElementById('merge-name').focus(), 50);
 }
 
@@ -2222,7 +2394,7 @@ function openServingsModal(id){
   document.getElementById('serv-subtitle').textContent =
     recipe.servings ? 'Recipe makes '+recipe.servings+' servings' : 'Recipe has no default serving size';
   updateServDisplay();
-  document.getElementById('m-servings').classList.add('open');
+  document.getElementById('m-servings').classList.add('open'); document.body.style.overflow='hidden';
 }
 
 function stepServings(delta){
@@ -2348,7 +2520,7 @@ function openConflictModal(conflicts, recipe){
       </div>
     </div>`).join('');
 
-  document.getElementById('m-conflict').classList.add('open');
+  document.getElementById('m-conflict').classList.add('open'); document.body.style.overflow='hidden';
 }
 
 function updateConflictPreview(i){
@@ -2846,8 +3018,13 @@ function openImportModal(){
   document.getElementById('import-confirm-btn').style.display = 'none';
   document.getElementById('import-parse-btn').style.display = 'inline-flex';
   document.getElementById('import-photo-preview').style.display = 'none';
-  // Pre-fill URL if recipe already has one
-  const existingUrl = document.getElementById('rf-url')?.value?.trim();
+  // Pre-fill URL if recipe already has an online source
+  const sourcesListEl = document.getElementById('rf-sources-list');
+  let existingUrl = '';
+  if(sourcesListEl){
+    const urlEl = sourcesListEl.querySelector('.src-url');
+    if(urlEl) existingUrl = urlEl.value.trim();
+  }
   if(existingUrl){
     document.getElementById('import-url').value = existingUrl;
     document.getElementById('import-url-prefill-note').style.display = 'block';
@@ -2859,7 +3036,7 @@ function openImportModal(){
   // Show key prompt immediately if not yet set
   const _hasKey = !!localStorage.getItem('ingredigo_apikey');
   document.getElementById('import-apikey-wrap').style.display = _hasKey ? 'none' : 'block';
-  document.getElementById('m-import').classList.add('open');
+  document.getElementById('m-import').classList.add('open'); document.body.style.overflow='hidden';
 }
 
 function switchImportTab(tab){
